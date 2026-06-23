@@ -1,6 +1,14 @@
 import React from 'react';
 
 export default function Contact() {
+  React.useEffect(() => {
+    document.title = "Contact Concierge | MOVITEA";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute("content", "Connect with the MOVITEA Atelier Concierge for bulk orders, gifting inquiries, customer care, and custom tea packaging requests.");
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
   return (
     <div style={styles.page}>
       <div className="container" style={styles.grid}>

@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { Leaf, Sparkles, Flame, Flower2, Heart } from 'lucide-react';
 
 const FLAVOURS = [
   {
@@ -10,7 +11,7 @@ const FLAVOURS = [
     bg: '#F4D3DC', // soft blush pink
     textColor: '#2B1A12',
     img: '/assets/rose.jpeg',
-    floatingItems: ['🌸', '🍃', '🌸', '🍃', '🌸'],
+    floatingItems: [Leaf, Sparkles, Leaf, Sparkles, Leaf],
   },
   {
     id: 'chocolate',
@@ -20,7 +21,7 @@ const FLAVOURS = [
     bg: '#2B1A12', // deep cocoa brown
     textColor: '#FAF7F2',
     img: '/assets/chocolate.jpeg',
-    floatingItems: ['🍫', '🍂', '🍫', '🍂', '🍫'],
+    floatingItems: [Heart, Sparkles, Heart, Sparkles, Heart],
   },
   {
     id: 'vanilla',
@@ -30,7 +31,7 @@ const FLAVOURS = [
     bg: '#FAF7F2', // creamy ivory
     textColor: '#2B1A12',
     img: '/assets/vanilla.jpeg',
-    floatingItems: ['✨', '🌼', '✨', '🌼', '✨'],
+    floatingItems: [Flower2, Sparkles, Flower2, Sparkles, Flower2],
   },
   {
     id: 'butterscotch',
@@ -40,7 +41,7 @@ const FLAVOURS = [
     bg: '#D0853E', // warm caramel
     textColor: '#FAF7F2',
     img: '/assets/butterscotch.jpeg',
-    floatingItems: ['🍯', '✨', '🍯', '✨', '🍯'],
+    floatingItems: [Flame, Sparkles, Flame, Sparkles, Flame],
   },
 ];
 
@@ -85,16 +86,15 @@ function FlavourSlide({ flavor, index, onSelectProduct }) {
     <div ref={slideRef} style={{ ...styles.slide, backgroundColor: flavor.bg, color: flavor.textColor }}>
       {/* Floating elements animation */}
       <div style={styles.floatingContainer}>
-        {flavor.floatingItems.map((item, i) => (
+        {flavor.floatingItems.map((IconComponent, i) => (
           <motion.div
             key={i}
             style={{
               ...styles.floatingItem,
               left: `${15 + i * 18}%`,
-              fontSize: i % 2 === 0 ? '1.8rem' : '1.2rem',
             }}
             animate={{
-              y: [0, -30, 0],
+              y: [0, -35, 0],
               x: [0, i % 2 === 0 ? 15 : -15, 0],
               rotate: [0, i % 2 === 0 ? 25 : -25, 0],
             }}
@@ -105,7 +105,7 @@ function FlavourSlide({ flavor, index, onSelectProduct }) {
               delay: i * 0.4,
             }}
           >
-            {item}
+            <IconComponent size={i % 2 === 0 ? 24 : 16} strokeWidth={1.5} style={{ opacity: 0.25 }} />
           </motion.div>
         ))}
       </div>

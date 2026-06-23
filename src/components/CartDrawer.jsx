@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Minus, Trash2, ShieldCheck, Truck, Gift } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { X, Plus, Minus, Trash2, ShieldCheck, Truck, Gift, Sparkles } from 'lucide-react';
 import { PRICING, FEES } from '../utils/pricing';
 
 export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem }) {
+  const navigate = useNavigate();
   const standardSubtotal = cartItems.reduce((acc, item) => {
     const price = PRICING[item.id]?.sale || item.price;
     return acc + price * item.quantity;
@@ -45,7 +47,10 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
               <div style={styles.headerTitleRow}>
                 <h2 style={styles.title}>Your Collection</h2>
                 {cartItems.length > 0 && (
-                  <span style={styles.welcomeBadge}>🎉 First Order Special</span>
+                  <span style={styles.welcomeBadge}>
+                    <Sparkles size={12} style={{ marginRight: '4px', display: 'inline-block', verticalAlign: 'middle' }} />
+                    First Order Special
+                  </span>
                 )}
               </div>
               <button onClick={onClose} style={styles.closeBtn}>
@@ -151,7 +156,10 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
                 </div>
 
                 <button
-                  onClick={() => alert("Checkout system is integrated. Proceeding to mock gateway...")}
+                  onClick={() => {
+                    onClose();
+                    navigate('/checkout');
+                  }}
                   className="luxury-btn"
                   style={styles.checkoutBtn}
                 >

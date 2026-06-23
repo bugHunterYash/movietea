@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Sparkles, Compass, Leaf, Heart } from 'lucide-react';
@@ -99,8 +100,19 @@ const FLAVOUR_DETAILS = {
   }
 };
 
-export default function ProductDetails({ productId = 'butterscotch', onAddToCart }) {
+export default function ProductDetails({ onAddToCart }) {
+  const { id } = useParams();
+  const productId = id || 'butterscotch';
   const flavor = FLAVOUR_DETAILS[productId] || FLAVOUR_DETAILS.butterscotch;
+
+  useEffect(() => {
+    document.title = `${flavor.name} | MOVITEA`;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute("content", `Indulge in ${flavor.name} - ${flavor.subtitle}. ${flavor.description}`);
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [productId, flavor.name, flavor.subtitle, flavor.description]);
 
   return (
     <div style={{ ...styles.page, backgroundColor: flavor.bg, color: flavor.textColor }}>
@@ -133,7 +145,10 @@ export default function ProductDetails({ productId = 'butterscotch', onAddToCart
             {/* Elegant cream-colored offer card */}
             <div style={styles.offerBox}>
               <div style={styles.offerTitleRow}>
-                <span style={styles.offerBadge}>🎉 First Order Special</span>
+                <span style={styles.offerBadge}>
+                  <Sparkles size={12} style={{ marginRight: '4px', display: 'inline-block', verticalAlign: 'middle' }} />
+                  First Order Special
+                </span>
                 <span style={styles.offerTitle}>Get 50% OFF on your first order</span>
               </div>
               <div style={styles.offerDetails}>

@@ -28,6 +28,14 @@ const GIFTS = [
 ];
 
 export default function GiftCollection({ onAddToCart }) {
+  React.useEffect(() => {
+    document.title = "Gifting Collection | MOVITEA";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute("content", "Explore MOVITEA's premium curated gift chests and boxes. Perfect for corporate gifting, wedding collections, and seasonal celebrations.");
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
   return (
     <div style={styles.page}>
       {/* Hero */}

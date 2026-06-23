@@ -1,6 +1,11 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Layout Components
 import Header from './components/Layout/Header';
@@ -14,15 +19,23 @@ const Shop = lazy(() => import('./pages/Shop'));
 const ProductDetails = lazy(() => import('./pages/ProductDetails'));
 const GiftCollection = lazy(() => import('./pages/GiftCollection'));
 const Contact = lazy(() => import('./pages/Contact'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+const Admin = lazy(() => import('./pages/Admin'));
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  const location = useLocation();
+  const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState('butterscotch');
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   // Initialize Lenis Smooth Scrolling
   useEffect(() => {
+    // Disable Lenis smooth scrolling inside Admin Dashboard for standard table navigation
+    if (isAdminRoute) return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -30,17 +43,20 @@ export default function App() {
       wheelMultiplier: 1,
     });
 
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
+    lenis.on('scroll', ScrollTrigger.update);
 
-    requestAnimationFrame(raf);
+    const updateLenisRaf = (time) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(updateLenisRaf);
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
       lenis.destroy();
+      gsap.ticker.remove(updateLenisRaf);
     };
-  }, []);
+  }, [isAdminRoute]);
 
   // Cart operations
   const handleAddToCart = (product) => {
@@ -74,71 +90,54 @@ export default function App() {
 
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-  // Page switcher mapping
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'home':
-        return <Home setCurrentPage={setCurrentPage} setSelectedProduct={setSelectedProduct} />;
-      case 'about':
-        return <About />;
-      case 'shop':
-        return (
-          <Shop
-            onAddToCart={handleAddToCart}
-            setSelectedProduct={setSelectedProduct}
-            setCurrentPage={setCurrentPage}
-          />
-        );
-      case 'product':
-        return <ProductDetails productId={selectedProduct} onAddToCart={handleAddToCart} />;
-      case 'gifting':
-        return <GiftCollection onAddToCart={handleAddToCart} />;
-      case 'contact':
-        return <Contact />;
-      default:
-        return <Home setCurrentPage={setCurrentPage} setSelectedProduct={setSelectedProduct} />;
-    }
-  };
-
   return (
     <div style={styles.appContainer}>
-      {/* Navigation */}
-      <Header
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        cartCount={totalCartCount}
-        onOpenCart={() => setIsCartOpen(true)}
-        setSelectedProduct={setSelectedProduct}
-      />
+      {/* Conditionally render header, footer and cart for standard page layouts */}
+      {!isAdminRoute && (
+        <Header
+          cartCount={totalCartCount}
+          onOpenCart={() => setIsCartOpen(true)}
+          setSelectedProduct={setSelectedProduct}
+        />
+      )}
 
       {/* Page Content with transition animations */}
-      <div style={styles.pageContent}>
+      <div style={isAdminRoute ? styles.adminPageContent : styles.pageContent}>
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentPage}
+            key={location.pathname}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
             <Suspense fallback={<PageLoader />}>
-              {renderPage()}
+              <Routes location={location}>
+                <Route path="/" element={<Home setSelectedProduct={setSelectedProduct} />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} setSelectedProduct={setSelectedProduct} />} />
+                <Route path="/product/:id" element={<ProductDetails onAddToCart={handleAddToCart} />} />
+                <Route path="/gift-collection" element={<GiftCollection onAddToCart={handleAddToCart} />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
+                <Route path="/admin/*" element={<Admin />} />
+              </Routes>
             </Suspense>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Footer */}
-      <Footer setCurrentPage={setCurrentPage} />
+      {!isAdminRoute && <Footer />}
 
-      {/* Cart Slider */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveItem}
-      />
+      {!isAdminRoute && (
+        <CartDrawer
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          cartItems={cartItems}
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveItem={handleRemoveItem}
+        />
+      )}
     </div>
   );
 }
@@ -161,9 +160,14 @@ const styles = {
     flexDirection: 'column',
     minHeight: '100vh',
     position: 'relative',
+    backgroundColor: '#FAF7F2',
   },
   pageContent: {
     flex: 1,
+  },
+  adminPageContent: {
+    flex: 1,
+    backgroundColor: '#FAF7F2',
   },
   loader: {
     display: 'flex',

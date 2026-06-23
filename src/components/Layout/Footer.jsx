@@ -1,10 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export default function Footer({ setCurrentPage }) {
+export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const navigate = useNavigate();
 
-  const handleNavClick = (pageId) => {
-    setCurrentPage(pageId);
+  const handleNavClick = (path) => {
+    navigate(path);
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
@@ -24,10 +26,10 @@ export default function Footer({ setCurrentPage }) {
           <div style={styles.column}>
             <h4 style={styles.colTitle}>Atelier</h4>
             <div style={styles.linksList}>
-              <button onClick={() => handleNavClick('home')} style={styles.footerLink}>Home</button>
-              <button onClick={() => handleNavClick('about')} style={styles.footerLink}>About Us</button>
-              <button onClick={() => handleNavClick('shop')} style={styles.footerLink}>Shop Tea</button>
-              <button onClick={() => handleNavClick('gifting')} style={styles.footerLink}>Gift Collection</button>
+              <button onClick={() => handleNavClick('/')} style={styles.footerLink}>Home</button>
+              <button onClick={() => handleNavClick('/about')} style={styles.footerLink}>About Us</button>
+              <button onClick={() => handleNavClick('/shop')} style={styles.footerLink}>Shop Tea</button>
+              <button onClick={() => handleNavClick('/gift-collection')} style={styles.footerLink}>Gift Collection</button>
             </div>
           </div>
 
@@ -35,10 +37,10 @@ export default function Footer({ setCurrentPage }) {
           <div style={styles.column}>
             <h4 style={styles.colTitle}>Flavours</h4>
             <div style={styles.linksList}>
-              <button onClick={() => handleNavClick('product')} style={styles.footerLink}>Rose Tea</button>
-              <button onClick={() => handleNavClick('product')} style={styles.footerLink}>Vanilla Tea</button>
-              <button onClick={() => handleNavClick('product')} style={styles.footerLink}>Butterscotch Tea</button>
-              <button onClick={() => handleNavClick('product')} style={styles.footerLink}>Chocolate Tea</button>
+              <button onClick={() => handleNavClick('/product/rose')} style={styles.footerLink}>Rose Tea</button>
+              <button onClick={() => handleNavClick('/product/vanilla')} style={styles.footerLink}>Vanilla Tea</button>
+              <button onClick={() => handleNavClick('/product/butterscotch')} style={styles.footerLink}>Butterscotch Tea</button>
+              <button onClick={() => handleNavClick('/product/chocolate')} style={styles.footerLink}>Chocolate Tea</button>
             </div>
           </div>
 

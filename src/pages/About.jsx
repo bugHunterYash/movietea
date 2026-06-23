@@ -2,6 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export default function About() {
+  React.useEffect(() => {
+    document.title = "Our Story | MOVITEA";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute("content", "Discover the story of MOVITEA. Handcrafted single-estate Darjeeling and Assam tea blends infused with Kannauj Rose, Madagascar Vanilla, and roasted Kerala Cacao.");
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
   return (
     <div style={styles.page}>
       {/* Editorial Hero */}

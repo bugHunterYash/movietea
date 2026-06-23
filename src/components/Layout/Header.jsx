@@ -1,22 +1,32 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingBag } from 'lucide-react';
 
-export default function Header({ currentPage, setCurrentPage, cartCount = 0, onOpenCart, setSelectedProduct }) {
+export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
-    { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About Us' },
-    { id: 'shop', label: 'Shop' },
-    { id: 'product', label: 'Product' },
-    { id: 'gifting', label: 'Gift Collection' },
-    { id: 'contact', label: 'Contact' },
+    { id: 'home', label: 'Home', path: '/' },
+    { id: 'about', label: 'About Us', path: '/about' },
+    { id: 'shop', label: 'Shop', path: '/shop' },
+    { id: 'product', label: 'Product', path: '/product/rose' },
+    { id: 'gifting', label: 'Gift Collection', path: '/gift-collection' },
+    { id: 'contact', label: 'Contact', path: '/contact' },
   ];
 
-  const handleNavClick = (pageId) => {
-    setCurrentPage(pageId);
+  const handleNavClick = (pageId, path) => {
     setMobileMenuOpen(false);
+    navigate(path);
     window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const getIsActive = (item) => {
+    const currentPath = location.pathname;
+    if (item.id === 'home') return currentPath === '/';
+    if (item.id === 'product') return currentPath.startsWith('/product');
+    return currentPath === item.path;
   };
 
   return (
@@ -41,24 +51,27 @@ export default function Header({ currentPage, setCurrentPage, cartCount = 0, onO
       <div className="container" style={styles.container}>
         {/* Left: Nav items */}
         <nav style={styles.desktopNav}>
-          {navItems.slice(0, 3).map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleNavClick(item.id)}
-              style={{
-                ...styles.navLink,
-                color: currentPage === item.id ? 'var(--primary-color)' : 'var(--dark-color)',
-                fontWeight: currentPage === item.id ? '500' : '300',
-              }}
-            >
-              {item.label}
-              {currentPage === item.id && <span style={styles.activeDot} />}
-            </button>
-          ))}
+          {navItems.slice(0, 3).map((item) => {
+            const isActive = getIsActive(item);
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id, item.path)}
+                style={{
+                  ...styles.navLink,
+                  color: isActive ? 'var(--primary-color)' : 'var(--dark-color)',
+                  fontWeight: '500',
+                }}
+              >
+                {item.label}
+                {isActive && <span style={styles.activeDot} />}
+              </button>
+            );
+          })}
         </nav>
 
         {/* Center: Logo */}
-        <div style={styles.logoContainer} onClick={() => handleNavClick('home')}>
+        <div style={styles.logoContainer} onClick={() => handleNavClick('home', '/')}>
           <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.logoImg} />
         </div>
 
@@ -66,19 +79,20 @@ export default function Header({ currentPage, setCurrentPage, cartCount = 0, onO
         <div style={styles.rightSection}>
           <nav style={styles.desktopNav}>
             {navItems.slice(3).map((item) => {
+              const isActive = getIsActive(item);
               if (item.id === 'product') {
                 return (
                   <div key={item.id} className="nav-dropdown-container" style={styles.dropdownContainer}>
                     <button
-                      onClick={() => handleNavClick(item.id)}
+                      onClick={() => handleNavClick(item.id, item.path)}
                       style={{
                         ...styles.navLink,
-                        color: currentPage === item.id ? 'var(--primary-color)' : 'var(--dark-color)',
-                        fontWeight: currentPage === item.id ? '500' : '300',
+                        color: isActive ? 'var(--primary-color)' : 'var(--dark-color)',
+                        fontWeight: '500',
                       }}
                     >
                       {item.label}
-                      {currentPage === item.id && <span style={styles.activeDot} />}
+                      {isActive && <span style={styles.activeDot} />}
                     </button>
                     <div className="nav-dropdown-menu" style={styles.dropdownMenu}>
                       {[
@@ -91,7 +105,8 @@ export default function Header({ currentPage, setCurrentPage, cartCount = 0, onO
                           key={flavor.id}
                           onClick={() => {
                             setSelectedProduct(flavor.id);
-                            handleNavClick('product');
+                            navigate(`/product/${flavor.id}`);
+                            setMobileMenuOpen(false);
                           }}
                           style={styles.dropdownItem}
                         >
@@ -105,15 +120,15 @@ export default function Header({ currentPage, setCurrentPage, cartCount = 0, onO
               return (
                 <button
                   key={item.id}
-                  onClick={() => handleNavClick(item.id)}
+                  onClick={() => handleNavClick(item.id, item.path)}
                   style={{
                     ...styles.navLink,
-                    color: currentPage === item.id ? 'var(--primary-color)' : 'var(--dark-color)',
-                    fontWeight: currentPage === item.id ? '500' : '300',
+                    color: isActive ? 'var(--primary-color)' : 'var(--dark-color)',
+                    fontWeight: '500',
                   }}
                 >
                   {item.label}
-                  {currentPage === item.id && <span style={styles.activeDot} />}
+                  {isActive && <span style={styles.activeDot} />}
                 </button>
               );
             })}
@@ -179,6 +194,7 @@ const styles = {
     justifyContent: 'space-between',
     width: '100%',
     height: '75px',
+    position: 'relative',
   },
   announcementBar: {
     width: '100%',
@@ -203,9 +219,6 @@ const styles = {
     display: 'flex',
     gap: '2.5rem',
     alignItems: 'center',
-    '@media (max-width: 768px)': {
-      display: 'none',
-    },
   },
   navLink: {
     fontSize: '0.85rem',
@@ -227,11 +240,14 @@ const styles = {
     backgroundColor: 'var(--primary-color)',
   },
   logoContainer: {
+    position: 'absolute',
+    left: '50%',
+    transform: 'translateX(-50%)',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '0.25rem 0',
+    zIndex: 10,
   },
   logoImg: {
     height: '130px',

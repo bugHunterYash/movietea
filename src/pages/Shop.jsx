@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PRODUCTS = [
   {
@@ -58,8 +59,13 @@ const PRODUCTS = [
   },
 ];
 
-export default function Shop({ onAddToCart, setSelectedProduct, setCurrentPage }) {
+export default function Shop({ onAddToCart, setSelectedProduct }) {
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState('all');
+
+  useEffect(() => {
+    document.title = "Shop Premium Blends | MOVITEA";
+  }, []);
 
   const filteredProducts = activeFilter === 'all'
     ? PRODUCTS
@@ -70,7 +76,7 @@ export default function Shop({ onAddToCart, setSelectedProduct, setCurrentPage }
     const validIds = ['rose', 'chocolate', 'vanilla', 'butterscotch'];
     const idToSet = validIds.includes(productId) ? productId : 'butterscotch';
     setSelectedProduct(idToSet);
-    setCurrentPage('product');
+    navigate(`/product/${idToSet}`);
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
