@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PRICING, FEES } from '../utils/pricing';
-import { ShieldCheck, Truck, CreditCard, UploadCloud, ChevronLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Truck, CreditCard, UploadCloud, ChevronLeft, ArrowRight, CheckCircle2, Lock } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function Checkout({ cartItems, setCartItems }) {
   React.useEffect(() => {
@@ -240,37 +241,27 @@ export default function Checkout({ cartItems, setCartItems }) {
             </div>
           ) : (
             <div style={styles.formSection}>
-              <h3 style={styles.sectionHeader}>Select Payment Method</h3>
-              
-              <div style={styles.paymentSelector}>
-                <div
-                  onClick={() => setPaymentMethod('upi')}
-                  style={{
-                    ...styles.paymentOption,
-                    borderColor: paymentMethod === 'upi' ? 'var(--primary-color)' : 'var(--border-color)',
-                  }}
-                >
-                  <CreditCard size={18} />
-                  <span>UPI / Bank Transfer (Recommended)</span>
-                </div>
-                <div
-                  onClick={() => setPaymentMethod('cod')}
-                  style={{
-                    ...styles.paymentOption,
-                    borderColor: paymentMethod === 'cod' ? 'var(--primary-color)' : 'var(--border-color)',
-                  }}
-                >
-                  <Truck size={18} />
-                  <span>Cash on Delivery</span>
-                </div>
-              </div>
-
-              {paymentMethod === 'upi' ? (
-                <div style={styles.upiDetails}>
-                  <h4 style={styles.upiTitle}>UPI Transfer Info</h4>
-                  <p style={styles.upiDesc}>Please send the exact amount of <strong>₹{grandTotal}</strong> to our verified merchant ID:</p>
-                  <div style={styles.upiAddressBox}>
-                    <span>movitea@upi</span>
+              <h3 style={styles.sectionHeader}>Payment Details</h3>
+              <div style={styles.upiDetails}>
+                  <div style={styles.qrCard}>
+                    <div style={styles.secureBadgeWrapper}>
+                      <Lock size={12} color="#15803d" />
+                      <span style={styles.secureBadgeText}>Secure Payment</span>
+                    </div>
+                    <h4 style={styles.qrHeading}>Scan & Pay</h4>
+                    <div style={styles.qrCodeWrapper}>
+                      <QRCodeSVG 
+                        value={`upi://pay?pa=vinitsharmatafs@okhdfcbank&pn=MOVITEA&am=${grandTotal}&cu=INR&tn=Order Payment`} 
+                        size={260} 
+                        bgColor="#ffffff"
+                        fgColor="#111111"
+                        level="Q"
+                      />
+                    </div>
+                    <div style={styles.qrAmountBox}>
+                      <span>₹{grandTotal}</span>
+                    </div>
+                    <p style={styles.qrFooterText}>Open any UPI app to pay</p>
                   </div>
 
                   <div style={styles.uploadBox}>
@@ -286,9 +277,6 @@ export default function Checkout({ cartItems, setCartItems }) {
                     </label>
                   </div>
                 </div>
-              ) : (
-                <p style={styles.codDesc}>You will pay cash when the premium container arrives at your doorstep.</p>
-              )}
 
               <div style={styles.verificationAlert}>
                 <ShieldCheck size={18} />
@@ -731,4 +719,62 @@ const styles = {
     color: '#2B1A12',
     fontWeight: '600',
   },
+  qrCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: '16px',
+    padding: '24px',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginBottom: '20px',
+    border: '1px solid rgba(0,0,0,0.05)',
+    position: 'relative'
+  },
+  secureBadgeWrapper: {
+    marginBottom: '12px',
+    backgroundColor: '#f0fdf4',
+    border: '1px solid #bbf7d0',
+    padding: '4px 8px',
+    borderRadius: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px'
+  },
+  secureBadgeText: {
+    fontSize: '0.65rem',
+    fontWeight: '600',
+    color: '#15803d',
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase'
+  },
+  qrHeading: {
+    fontSize: '1.25rem',
+    fontWeight: '600',
+    fontFamily: 'var(--font-serif)',
+    color: '#111111',
+    margin: '10px 0 20px 0'
+  },
+  qrCodeWrapper: {
+    padding: '10px',
+    backgroundColor: '#ffffff',
+    borderRadius: '12px',
+    border: '1px solid #eaeaea'
+  },
+  qrAmountBox: {
+    marginTop: '20px',
+    backgroundColor: '#FAF7F2',
+    padding: '10px 24px',
+    borderRadius: '30px',
+    fontSize: '1.4rem',
+    fontWeight: '700',
+    color: 'var(--primary-color)',
+    fontFamily: 'var(--font-serif)'
+  },
+  qrFooterText: {
+    fontSize: '0.8rem',
+    color: '#666',
+    marginTop: '15px',
+    marginBottom: '0'
+  }
 };

@@ -1,4 +1,5 @@
 // src/utils/db.js
+import api from '../api/client';
 
 const DB_KEY = 'movitea_products_v3';
 
@@ -61,9 +62,15 @@ const INITIAL_SEED_PRODUCTS = [
 ];
 
 export const getProducts = () => {
+  api.get('/products').then(res => {
+    if (res.data && res.data.data) {
+      localStorage.setItem(DB_KEY, JSON.stringify(res.data.data));
+    }
+  }).catch(err => console.error('Error syncing products', err));
+
   const stored = localStorage.getItem(DB_KEY);
   if (stored) {
-    return JSON.parse(stored);
+    try { return JSON.parse(stored); } catch(e){}
   }
   // Initialize if empty
   localStorage.setItem(DB_KEY, JSON.stringify(INITIAL_SEED_PRODUCTS));

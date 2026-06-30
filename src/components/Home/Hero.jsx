@@ -331,3 +331,283 @@ export default function Hero({ onShopClick }) {
       </div>
 
     </section>
+  );
+}
+
+const styles = {
+  heroSection: {
+    minHeight: '120vh', // Slightly longer to allow scroll trigger space
+    display: 'flex',
+    alignItems: 'center',
+    paddingTop: 'var(--header-height)',
+    position: 'relative',
+    overflow: 'hidden',
+    backgroundColor: '#FAF7F2',
+  },
+  heroBg: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'radial-gradient(circle at 75% 50%, rgba(243, 232, 211, 0.4) 0%, rgba(250, 247, 242, 0) 60%)',
+    zIndex: 1,
+  },
+  steamContainer: {
+    position: 'absolute',
+    right: '10%',
+    bottom: '10%',
+    width: '35%',
+    height: '50%',
+    zIndex: 2,
+    pointerEvents: 'none',
+  },
+  steamSvg: {
+    width: '100%',
+    height: '100%',
+    opacity: 0.7,
+  },
+  container: {
+    display: 'grid',
+    gridTemplateColumns: '1.1fr 1fr',
+    alignItems: 'center',
+    gap: '3rem',
+    zIndex: 3,
+    position: 'relative',
+    width: '100%',
+  },
+  leftCol: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.5rem',
+  },
+  badge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#FAF7F2',
+    color: 'var(--primary-color)',
+    border: '1px solid var(--primary-color)',
+    padding: '0.4rem 0.8rem',
+    borderRadius: '30px',
+    fontSize: '0.75rem',
+    fontWeight: '600',
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase',
+    fontFamily: 'var(--font-sans)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.3rem',
+  },
+  priceContainer: {
+    backgroundColor: 'var(--cream-color)',
+    padding: '1.25rem 1.5rem',
+    borderLeft: '3px solid var(--primary-color)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.6rem',
+    maxWidth: '480px',
+  },
+  priceRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.75rem',
+    flexWrap: 'wrap',
+  },
+  priceLabel: {
+    fontFamily: 'var(--font-sans)',
+    fontWeight: '600',
+    fontSize: '0.9rem',
+    color: 'var(--dark-color)',
+  },
+  priceReal: {
+    fontFamily: 'var(--font-sans)',
+    fontWeight: '700',
+    fontSize: '1.2rem',
+    color: 'var(--dark-color)',
+  },
+  priceMrp: {
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.95rem',
+    color: '#888',
+    textDecoration: 'line-through',
+  },
+  saveBadge: {
+    backgroundColor: 'var(--primary-color)',
+    color: 'var(--white)',
+    fontSize: '0.7rem',
+    fontWeight: '700',
+    padding: '0.2rem 0.5rem',
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase',
+  },
+  firstOrderOfferRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.75rem',
+  },
+  firstOrderOfferLabel: {
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.85rem',
+    color: 'var(--text-light)',
+  },
+  firstOrderPrice: {
+    fontFamily: 'var(--font-sans)',
+    fontWeight: '800',
+    fontSize: '1.3rem',
+    color: 'var(--primary-color)',
+  },
+  percentOffBadge: {
+    border: '1px dashed var(--primary-color)',
+    color: 'var(--primary-color)',
+    fontSize: '0.7rem',
+    fontWeight: '600',
+    padding: '0.1rem 0.4rem',
+  },
+  titleContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem',
+  },
+  subtitle: {
+    fontFamily: 'var(--font-sans)',
+    textTransform: 'uppercase',
+    fontSize: '0.85rem',
+    letterSpacing: '0.15em',
+    color: 'var(--primary-color)',
+    fontWeight: '500',
+  },
+  title: {
+    fontSize: '5.2rem',
+    lineHeight: '1.05',
+    color: 'var(--dark-color)',
+    fontWeight: '300',
+  },
+  titleSpan: {
+    display: 'inline-block',
+  },
+  desc: {
+    fontFamily: 'var(--font-story)',
+    fontSize: '1.2rem',
+    lineHeight: '1.8',
+    maxWidth: '480px',
+    color: 'var(--text-light)',
+  },
+  rightCol: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '750px',
+    position: 'relative',
+  },
+  interactiveGroup: {
+    width: '640px',
+    height: '640px',
+    position: 'relative',
+    transition: 'transform 0.2s ease-out',
+    transformStyle: 'preserve-3d',
+  },
+  mainBoxWrapper: {
+    width: '100%',
+    height: '100%',
+    zIndex: 10,
+    position: 'relative',
+  },
+  boxImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain',
+  },
+  productShadow: {
+    position: 'absolute',
+    bottom: '-10px',
+    left: '10%',
+    width: '80%',
+    height: '25px',
+    background: 'radial-gradient(ellipse at center, rgba(43, 26, 18, 0.2) 0%, rgba(250, 247, 242, 0) 70%)',
+    zIndex: -1,
+  },
+  sachet: {
+    position: 'absolute',
+    top: '25%',
+    left: '25%',
+    width: '320px',
+    height: '320px',
+    zIndex: 5,
+    backgroundColor: '#FFFFFF',
+    border: '1px solid var(--border-color)',
+    padding: '1.5rem',
+    boxShadow: '0 10px 25px rgba(0,0,0,0.06)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '0.8rem',
+  },
+  sachetImg: {
+    width: '100%',
+    height: '80%',
+    objectFit: 'contain',
+  },
+  sachetLabel: {
+    fontFamily: 'var(--font-serif)',
+    fontSize: '1.2rem',
+    color: 'var(--dark-color)',
+  },
+};
+
+// Add responsive media query styles for Hero
+if (typeof document !== 'undefined') {
+  const styleSheetHero = document.createElement('style');
+  styleSheetHero.innerText = `
+    @media (max-width: 1024px) {
+      section {
+        min-height: auto !important;
+        padding-bottom: 6rem !important;
+      }
+      section > div[style*="gridTemplateColumns"] {
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+        padding-top: 3rem !important;
+        gap: 4rem !important;
+      }
+      section h1[style*="fontSize"] {
+        font-size: 3.5rem !important;
+      }
+      section div[style*="leftCol"] {
+        align-items: center !important;
+      }
+      section p[style*="desc"] {
+        text-align: center !important;
+      }
+      section div[style*="rightCol"] {
+        height: 480px !important;
+      }
+      section div[style*="interactiveGroup"] {
+        width: 320px !important;
+        height: 320px !important;
+      }
+      section div[style*="sachet"] {
+        width: 160px !important;
+        height: 160px !important;
+        top: 25% !important;
+        left: 25% !important;
+      }
+      section span[style*="sachetLabel"] {
+        font-size: 0.85rem !important;
+      }
+    }
+    @media (max-width: 480px) {
+      section h1[style*="fontSize"] {
+        font-size: 2.8rem !important;
+      }
+      section div[style*="interactiveGroup"] {
+        width: 260px !important;
+        height: 260px !important;
+      }
+      section div[style*="sachet"] {
+        width: 130px !important;
+        height: 130px !important;
+      }
+    }
+  `;
+  document.head.appendChild(styleSheetHero);
+}
+

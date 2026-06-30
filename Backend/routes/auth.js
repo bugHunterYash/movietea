@@ -65,6 +65,30 @@ router.get('/google/callback',
   }
 );
 
+// Developer Bypass Login
+router.post('/dev-login', async (req, res) => {
+  try {
+    let user = await prisma.user.findFirst({ where: { email: 'dev@movitea.com' }});
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: 'dev@movitea.com',
+          name: 'Developer Tester',
+          role: 'ADMIN'
+        }
+      });
+    }
+    const token = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.JWT_SECRET || 'movitea_jwt_secret_key_2026_premium_tea',
+      { expiresIn: '24h' }
+    );
+    res.json({ token, user });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // Get current user
 router.get('/me', async (req, res) => {
   try {

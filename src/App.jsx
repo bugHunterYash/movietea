@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Lenis from 'lenis';
+import api from './api/client';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -58,6 +59,28 @@ export default function App() {
       gsap.ticker.remove(updateLenisRaf);
     };
   }, [isAdminRoute]);
+
+  // Developer Bypass Login & Cart Fetch
+  useEffect(() => {
+    const initBackend = async () => {
+      try {
+        const authRes = await api.post('/auth/dev-login');
+        localStorage.setItem('token', authRes.data.token);
+        
+        const cartRes = await api.get('/cart');
+        if (cartRes.data && cartRes.data.items) {
+           const mappedItems = cartRes.data.items.map(i => ({
+             ...i.product,
+             quantity: i.quantity
+           }));
+           setCartItems(mappedItems);
+        }
+      } catch (err) {
+        console.error('Failed to init backend', err);
+      }
+    };
+    initBackend();
+  }, []);
 
   // Cart operations
   const handleAddToCart = (product) => {

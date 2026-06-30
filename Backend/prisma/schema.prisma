@@ -3,38 +3,19 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
-enum UserRole {
-  CUSTOMER
-  ADMIN
-}
 
-enum OrderStatus {
-  PLACED
-  SHIPPED
-  DELIVERED
-  CANCELLED
-}
 
-enum VerificationStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
 
-enum PaymentStatus {
-  UNPAID
-  PAID
-  REFUNDED
-}
 
-enum PaymentMethod {
-  UPI
-  COD
-}
+
+
+
+
+
 
 model User {
   id        String   @id @default(cuid())
@@ -42,7 +23,7 @@ model User {
   email     String?  @unique
   image     String?
   googleId  String?  @unique
-  role      UserRole @default(CUSTOMER)
+  role String @default("CUSTOMER")
   phone     String?
   address1  String?
   address2  String?
@@ -103,10 +84,10 @@ model Order {
   customerEmail      String?
   customerPhone      String?
   totalAmount        Int
-  paymentMethod      PaymentMethod      @default(UPI)
-  paymentStatus      PaymentStatus      @default(UNPAID)
-  verificationStatus VerificationStatus @default(PENDING)
-  orderStatus        OrderStatus        @default(PLACED)
+  paymentMethod String @default("UPI")
+  paymentStatus String @default("UNPAID")
+  verificationStatus String @default("PENDING")
+  orderStatus String @default("PLACED")
   address1           String
   address2           String?
   city               String
@@ -139,8 +120,8 @@ model Payment {
   id        String        @id @default(cuid())
   orderId   String        @unique
   amount    Int
-  method    PaymentMethod
-  status    PaymentStatus @default(UNPAID)
+  method String @default("UPI")
+  status String @default("UNPAID")
   screenshotUrl String?
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
