@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PLACED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
+
+enum PaymentMethod {
+  UPI
+  COD
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?  @unique
+  image     String?
+  googleId  String?  @unique
+  role      UserRole @default(CUSTOMER)
+  phone     String?
+  address1  String?
+  address2  String?
+  city      String?
+  state     String?
+  pincode   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders     Order[]
+  cartItems  CartItem[]
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  price         Int
+  discountPrice Int?
+  stock         Int      @default(0)
+  orderNumber   Int      @default(0)
+  category      String   @default("Loose Leaf")
+  flavorType    String?
+  desc          String?
+  shortDesc     String?
+  image         String?
+  active        Boolean  @default(true)
+  featured      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  orderItems OrderItem[]
+  cartItems  CartItem[]
+}
+
+model PromoCode {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  discountAmount  Int      @default(0)
+  discountPercent Int?
+  originalPrice   Int?
+  discountedPrice Int?
+  validity        DateTime
+  active          Boolean  @default(true)
+  usageLimit      Int?
+  usedCount       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  orders Order[]
+}
+
+model Order {
+  id                 String             @id @default(cuid())
+  orderNumber        String             @unique
+  userId             String
+  customerName       String
+  customerEmail      String?
+  customerPhone      String?
+  totalAmount        Int
+  paymentMethod      PaymentMethod      @default(UPI)
+  paymentStatus      PaymentStatus      @default(UNPAID)
+  verificationStatus VerificationStatus @default(PENDING)
+  orderStatus        OrderStatus        @default(PLACED)
+  address1           String
+  address2           String?
+  city               String
+  state              String
+  pincode            String
+  screenshotUrl      String?
+  promoCodeId        String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  user      User        @relation(fields: [userId], references: [id])
+  promoCode PromoCode?  @relation(fields: [promoCodeId], references: [id])
+  items     OrderItem[]
+  payment   Payment?
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  name      String
+  price     Int
+  quantity  Int
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  orderId   String        @unique
+  amount    Int
+  method    PaymentMethod
+  status    PaymentStatus @default(UNPAID)
+  screenshotUrl String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
