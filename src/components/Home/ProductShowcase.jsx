@@ -380,6 +380,7 @@ const styles = {
     fontFamily: 'var(--font-serif)',
     lineHeight: '1.1',
     fontWeight: '300',
+    color: 'inherit',
   },
   cardDesc: {
     fontFamily: 'var(--font-story)',
@@ -387,6 +388,7 @@ const styles = {
     lineHeight: '1.7',
     fontWeight: '400',
     opacity: 0.9,
+    color: 'inherit',
   },
   priceRow: {
     display: 'flex',

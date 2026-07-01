@@ -50,6 +50,7 @@ const promoRoutes = require('./routes/promos');
 const userRoutes = require('./routes/users');
 const adminRoutes = require('./routes/admin');
 const cartRoutes = require('./routes/cart');
+const preorderRoutes = require('./routes/preorders');
 
 // Use routes
 app.use('/api/auth', authRoutes);
@@ -59,6 +60,7 @@ app.use('/api/promos', promoRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/preorders', preorderRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

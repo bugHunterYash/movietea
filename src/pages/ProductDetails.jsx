@@ -6,6 +6,7 @@ import { Sparkles, Compass, Leaf, Heart, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../api/client';
 import SEO from '../components/SEO';
+import PreOrderModal from '../components/PreOrderModal';
 
 const getVisuals = (flavour, category) => {
   const f = (flavour || '').toLowerCase();
@@ -55,12 +56,13 @@ const getTasteProfile = (flavour) => {
   return { Sweetness: 60, Creaminess: 60, 'Floral Notes': 60, Richness: 80 }; // Balanced for combo
 };
 
-export default function ProductDetails({ onAddToCart }) {
+export default function ProductDetails() {
   const { id } = useParams(); // The slug from the URL
   const navigate = useNavigate();
-  
+
   const [product, setProduct] = useState(null);
   const [visuals, setVisuals] = useState(null);
+  const [isPreOrderModalOpen, setIsPreOrderModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -94,10 +96,10 @@ export default function ProductDetails({ onAddToCart }) {
   if (!product || !visuals) return <div style={{ minHeight: '100vh', backgroundColor: '#FAF7F2' }}></div>;
 
   const activePrice = product.discountPrice || product.price;
-  const savings = product.discountPrice && product.price > product.discountPrice 
-    ? Math.round(((product.price - product.discountPrice) / product.price) * 100) 
+  const savings = product.discountPrice && product.price > product.discountPrice
+    ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
     : 0;
-  
+
   const isCombo = product.category?.includes('Combo');
   const ingredients = getIngredients(product.flavorType);
   const tasteProfile = getTasteProfile(product.flavorType);
@@ -136,7 +138,7 @@ export default function ProductDetails({ onAddToCart }) {
 
   return (
     <div style={{ ...styles.page, backgroundColor: visuals.bg, color: visuals.textColor }}>
-      <SEO 
+      <SEO
         title={`${product.name} | MOVITEA Premium Flavoured Tea`}
         description={`Experience rich ${product.name} by MOVITEA. ${product.desc} Premium ingredients, no added sugar and ready in 60 seconds.`}
         image={product.image}
@@ -147,29 +149,29 @@ export default function ProductDetails({ onAddToCart }) {
         <div className="container details-showcase-grid" style={styles.showcaseGrid}>
           <div style={styles.imageCol}>
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 30 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 1, cubicBezier: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               style={styles.imgWrapper}
             >
-              <img src={product.image} alt={product.name} style={styles.mainImg} />
+              <div style={styles.imageGlow} />
+              <img src={product.image} alt={product.name} style={styles.mainImg} className="product-float" />
             </motion.div>
           </div>
 
           <div style={styles.infoCol} className="details-info-col">
             <div style={styles.breadcrumbs}>
-              <Link to="/" style={{ color: visuals.primaryColor, textDecoration: 'none' }}>Home</Link>
-              <ChevronRight size={14} style={{ margin: '0 0.2rem' }} />
-              <Link to="/shop" style={{ color: visuals.primaryColor, textDecoration: 'none' }}>Shop</Link>
-              <ChevronRight size={14} style={{ margin: '0 0.2rem' }} />
-              <span style={{ color: visuals.textColor, opacity: 0.7 }}>{product.name}</span>
+              <Link to="/" className="breadcrumb-link" style={styles.breadcrumbLink}>HOME</Link>
+              <span style={styles.breadcrumbSep}>/</span>
+              <Link to="/shop" className="breadcrumb-link" style={styles.breadcrumbLink}>SHOP</Link>
+              <span style={styles.breadcrumbSep}>/</span>
+              <span style={styles.breadcrumbCurrent}>{product.name.toUpperCase()}</span>
             </div>
 
             <span style={{ ...styles.subtitle, color: visuals.primaryColor }}>
               {isCombo ? 'Premium Combo Collection' : visuals.subtitle}
             </span>
             <h1 style={{ ...styles.title, color: visuals.textColor }} className="details-title">{product.name}</h1>
-            
             <div style={styles.priceContainer}>
               <span style={{ ...styles.price, color: visuals.textColor }}>₹{activePrice}</span>
               {product.discountPrice && product.price > product.discountPrice && (
@@ -179,7 +181,7 @@ export default function ProductDetails({ onAddToCart }) {
               )}
               {savings > 0 && <span style={styles.saveBadge}>Save {savings}%</span>}
             </div>
-            
+
             <p style={{ ...styles.desc, color: visuals.textColor === '#FAF7F2' ? 'rgba(250, 247, 242, 0.85)' : 'var(--text-light)' }}>
               {product.desc}
             </p>
@@ -226,10 +228,10 @@ export default function ProductDetails({ onAddToCart }) {
             </div>
 
             <button
-              onClick={() => onAddToCart({ id: product.id, name: product.name, price: activePrice, img: product.image, desc: product.desc })}
+              onClick={() => setIsPreOrderModalOpen(true)}
               style={{ ...styles.addCartBtn, backgroundColor: visuals.primaryColor }}
             >
-              Add to Collection
+              PRE-ORDER
             </button>
           </div>
         </div>
@@ -319,6 +321,12 @@ export default function ProductDetails({ onAddToCart }) {
           </p>
         </div>
       </section>
+
+      <PreOrderModal
+        isOpen={isPreOrderModalOpen}
+        onClose={() => setIsPreOrderModalOpen(false)}
+        product={{ id: product.id, name: product.name }}
+      />
     </div>
   );
 }
@@ -358,18 +366,20 @@ const styles = {
     transition: 'background-color 0.6s ease',
   },
   showcaseSection: {
-    padding: '6rem 0',
+    padding: '3rem 0 6rem 0',
   },
   showcaseGrid: {
     display: 'grid',
     gridTemplateColumns: '1.1fr 1fr',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: '5rem',
   },
   imageCol: {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    position: 'sticky',
+    top: '120px',
   },
   imgWrapper: {
     width: '100%',
@@ -378,18 +388,55 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
+  },
+  imageGlow: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '120%',
+    height: '120%',
+    background: 'radial-gradient(circle, rgba(255,245,230,0.5) 0%, rgba(255,245,230,0) 70%)',
+    zIndex: 1,
+    pointerEvents: 'none',
   },
   mainImg: {
     width: '100%',
     height: '100%',
+    maxHeight: '600px',
     objectFit: 'contain',
     filter: 'drop-shadow(0 25px 40px rgba(43, 26, 18, 0.12))',
+    position: 'relative',
+    zIndex: 2,
   },
   infoCol: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '1.5rem',
+    gap: '2rem',
+  },
+  breadcrumbs: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.6rem',
+    fontSize: '0.75rem',
+    fontFamily: 'var(--font-sans)',
+    letterSpacing: '0.15em',
+    marginBottom: '1rem',
+  },
+  breadcrumbLink: {
+    color: '#8A7A6B',
+    textDecoration: 'none',
+    transition: 'color 0.2s ease',
+  },
+  breadcrumbSep: {
+    color: 'rgba(138, 122, 107, 0.5)',
+  },
+  breadcrumbCurrent: {
+    color: 'var(--dark-color)',
+    fontWeight: '600',
+    opacity: 0.8,
   },
   subtitle: {
     fontFamily: 'var(--font-sans)',
@@ -695,6 +742,12 @@ styleSheetDetails.innerText = `
       grid-template-columns: 1fr !important;
       text-align: center !important;
       gap: 3rem !important;
+      align-items: center !important;
+    }
+    div[style*="imageCol"] {
+      position: relative !important;
+      top: 0 !important;
+      align-items: center !important;
     }
     .details-info-col {
       align-items: center !important;
@@ -714,9 +767,20 @@ styleSheetDetails.innerText = `
       grid-template-columns: 1fr !important;
       gap: 3rem !important;
     }
-    .details-section-title {
-      font-size: 2.5rem !important;
+    div[style*="breadcrumbs"] {
+      justify-content: flex-start !important;
+      align-self: flex-start;
     }
+  }
+  .breadcrumb-link:hover {
+    color: var(--dark-color) !important;
+  }
+  .product-float {
+    transition: transform 0.4s ease-out, filter 0.4s ease-out !important;
+  }
+  .product-float:hover {
+    transform: translateY(-5px) rotate(1deg) scale(1.02) !important;
+    filter: drop-shadow(0 35px 50px rgba(43, 26, 18, 0.2)) !important;
   }
   @media (max-width: 640px) {
     .details-title {

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingBag, User, LogOut } from 'lucide-react';
+import { Menu, X, User, LogOut } from 'lucide-react';
 
-export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct }) {
+export default function Header({ setSelectedProduct }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   const isLoggedIn = !!localStorage.getItem('token');
-  
+
   const handleAuthAction = () => {
     if (isLoggedIn) {
       localStorage.removeItem('token');
@@ -22,7 +22,6 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct }
     { id: 'home', label: 'Home', path: '/' },
     { id: 'about', label: 'About Us', path: '/about' },
     { id: 'shop', label: 'Shop', path: '/shop' },
-    { id: 'product', label: 'Product', path: '/product/rose' },
     { id: 'bulk-orders', label: 'Bulk Orders', path: '/bulk-orders' },
     { id: 'contact', label: 'Contact', path: '/contact' },
   ];
@@ -91,43 +90,6 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct }
           <nav style={styles.desktopNav}>
             {navItems.slice(3).map((item) => {
               const isActive = getIsActive(item);
-              if (item.id === 'product') {
-                return (
-                  <div key={item.id} className="nav-dropdown-container" style={styles.dropdownContainer}>
-                    <button
-                      onClick={() => handleNavClick(item.id, item.path)}
-                      style={{
-                        ...styles.navLink,
-                        color: isActive ? 'var(--primary-color)' : 'var(--dark-color)',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {item.label}
-                      {isActive && <span style={styles.activeDot} />}
-                    </button>
-                    <div className="nav-dropdown-menu" style={styles.dropdownMenu}>
-                      {[
-                        { id: 'rose', name: 'Rose Atelier' },
-                        { id: 'chocolate', name: 'Cacao Reserve' },
-                        { id: 'vanilla', name: 'Vanilla Orchid' },
-                        { id: 'butterscotch', name: 'Toasted Butterscotch' }
-                      ].map((flavor) => (
-                        <button
-                          key={flavor.id}
-                          onClick={() => {
-                            setSelectedProduct(flavor.id);
-                            navigate(`/product/${flavor.id}`);
-                            setMobileMenuOpen(false);
-                          }}
-                          style={styles.dropdownItem}
-                        >
-                          {flavor.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                );
-              }
               return (
                 <button
                   key={item.id}
@@ -145,13 +107,18 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct }
             })}
           </nav>
 
-          <button onClick={handleAuthAction} style={styles.cartBtn} aria-label={isLoggedIn ? 'Sign out' : 'Sign in'}>
-            {isLoggedIn ? <LogOut size={20} strokeWidth={1.5} color="var(--dark-color)" /> : <User size={20} strokeWidth={1.5} color="var(--dark-color)" />}
-          </button>
-
-          <button onClick={onOpenCart} style={styles.cartBtn} aria-label="Open cart">
-            <ShoppingBag size={20} strokeWidth={1.5} color="var(--dark-color)" />
-            {cartCount > 0 && <span style={styles.cartBadge}>{cartCount}</span>}
+          <button onClick={handleAuthAction} style={styles.authBtn} aria-label={isLoggedIn ? 'Sign out' : 'Sign in'}>
+            {isLoggedIn ? (
+              <>
+                <LogOut size={24} strokeWidth={1.5} color="var(--dark-color)" />
+                <span style={styles.authText}>Logout</span>
+              </>
+            ) : (
+              <>
+                <User size={24} strokeWidth={1.5} color="var(--dark-color)" />
+                <span style={styles.authText}>Login</span>
+              </>
+            )}
           </button>
 
           <button
@@ -283,27 +250,24 @@ const styles = {
     alignItems: 'center',
     gap: '1.5rem',
   },
-  cartBtn: {
+  authBtn: {
     position: 'relative',
     padding: '0.5rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    gap: '0.4rem',
   },
-  cartBadge: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    backgroundColor: 'var(--primary-color)',
-    color: 'var(--white)',
-    fontSize: '0.7rem',
-    fontWeight: 'bold',
-    borderRadius: '50%',
-    width: '16px',
-    height: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  authText: {
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    color: 'var(--dark-color)',
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase',
   },
   mobileMenuBtn: {
     display: 'none',

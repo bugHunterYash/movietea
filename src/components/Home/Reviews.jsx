@@ -6,28 +6,28 @@ const REVIEWS = [
     role: 'Connoisseur',
     quote: 'Movitea has completely transformed my mornings. The Rose Flavour is subtle, pure, and absolutely divine. Worth every rupee.',
     rating: 5,
-    img: '/assets/review-1.jfif',
+    img: '/assets/avatar_aishwarya.png',
   },
   {
     name: 'Kabir S.',
     role: 'Tea Enthusiast',
     quote: 'The Toasted Butterscotch smells like a luxury Parisian patisserie. The creaminess without added sugar is wizardry.',
     rating: 5,
-    img: '/assets/review-1.jfif',
+    img: '/assets/avatar_kabir.png',
   },
   {
     name: 'Meera G.',
     role: 'Wellness Designer',
     quote: 'I love how clean it is. Just hot water and you get this rich, deep cacao chocolate tea that feels like pure indulgence.',
     rating: 5,
-    img: '/assets/review-1.jfif',
+    img: '/assets/avatar_meera.png',
   },
   {
     name: 'Rohan M.',
     role: 'Creative Director',
     quote: 'Beautiful brand, premium packaging, but most importantly: taste is 10/10. The vanilla pods add a silky texture that default teas lack.',
     rating: 5,
-    img: '/assets/review-1.jfif',
+    img: '/assets/avatar_rohan.png',
   },
 ];
 

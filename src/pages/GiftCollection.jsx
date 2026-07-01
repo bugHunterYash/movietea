@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PreOrderModal from '../components/PreOrderModal';
 
 const GIFTS = [
   {
@@ -27,7 +28,9 @@ const GIFTS = [
   },
 ];
 
-export default function GiftCollection({ onAddToCart }) {
+export default function GiftCollection() {
+  const [isPreOrderModalOpen, setIsPreOrderModalOpen] = useState(false);
+  const [preOrderProduct, setPreOrderProduct] = useState(null);
   React.useEffect(() => {
     document.title = "Gifting Collection | MOVITEA";
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -71,11 +74,14 @@ export default function GiftCollection({ onAddToCart }) {
                 </ul>
 
                 <button
-                  onClick={() => onAddToCart({ id: gift.id, name: gift.name, price: parseInt(gift.price.replace(/[^\d]/g, '')), img: gift.img })}
+                  onClick={() => {
+                    setPreOrderProduct({ id: gift.id, name: gift.name });
+                    setIsPreOrderModalOpen(true);
+                  }}
                   className="luxury-btn"
                   style={styles.addBtn}
                 >
-                  Order Gift Box
+                  PRE-ORDER
                 </button>
               </div>
             </div>
@@ -101,6 +107,12 @@ export default function GiftCollection({ onAddToCart }) {
           </form>
         </div>
       </section>
+
+      <PreOrderModal 
+        isOpen={isPreOrderModalOpen}
+        onClose={() => setIsPreOrderModalOpen(false)}
+        product={preOrderProduct}
+      />
     </div>
   );
 }
