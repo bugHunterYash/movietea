@@ -6,21 +6,30 @@ import api from '../api/client';
 export default function Shop({ onAddToCart, setSelectedProduct }) {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     document.title = "Shop Premium Blends | MOVITEA";
     const fetchProducts = async () => {
       try {
         const res = await api.get('/products');
-        setProducts(res.data);
+        console.log("Fetched products:", res.data);
+        if (Array.isArray(res.data)) {
+          setProducts(res.data);
+        } else {
+          console.error("Products is not an array:", res.data);
+        }
       } catch (err) {
         console.error('Failed to fetch products', err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProducts();
   }, []);
 
   const handleProductSelect = (product) => {
+    if (!product || !product.slug) return;
     setSelectedProduct(product.slug);
     navigate(`/product/${product.slug}`);
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -54,87 +63,93 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
           <p style={styles.desc}>Pure ingredients, zero added sugar, premium flavor curation.</p>
         </div>
 
-        {/* Continuous Product Grid */}
-        <motion.div 
-          className="shop-product-grid"
-          style={styles.productGrid}
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-50px" }}
-        >
-          {products.map((prod) => {
-            const isCombo = prod.type === 'combo';
-            const cardStyle = isCombo ? { ...styles.card, ...styles.comboCard } : styles.card;
-            const tagText = isCombo ? prod.shortDesc : prod.shortDesc || prod.tag;
-            const tagStyle = isCombo ? { ...styles.cardTag, ...styles.comboTag } : styles.cardTag;
-            const activePrice = prod.discountPrice || prod.price;
-            const savings = getSavingsPercent(prod.price, prod.discountPrice || prod.price);
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '4rem', fontSize: '1.2rem' }}>Loading premium blends...</div>
+        ) : products.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '4rem', fontSize: '1.2rem' }}>No products found. Please check back later.</div>
+        ) : (
+          {/* Continuous Product Grid */}
+          <motion.div 
+            className="shop-product-grid"
+            style={styles.productGrid}
+            variants={containerVariants}
+            initial="show"
+            animate="show"
+          >
+            {products.map((prod) => {
+              if (!prod) return null;
+              const isCombo = prod.type === 'combo';
+              const cardStyle = isCombo ? { ...styles.card, ...styles.comboCard } : styles.card;
+              const tagText = isCombo ? prod.shortDesc : (prod.shortDesc || prod.tag);
+              const tagStyle = isCombo ? { ...styles.cardTag, ...styles.comboTag } : styles.cardTag;
+              const activePrice = prod.discountPrice || prod.price || 0;
+              const savings = getSavingsPercent(prod.price, prod.discountPrice || prod.price);
 
-            return (
-              <motion.div 
-                key={prod.id} 
-                variants={itemVariants}
-                className={`shop-product-card ${isCombo ? 'combo-card-hover' : ''}`}
-                style={cardStyle}
-              >
-                {tagText && <span style={tagStyle}>{tagText}</span>}
-                
-                <div style={styles.imgContainer} onClick={() => handleProductSelect(prod)}>
-                  <img src={prod.image} alt={prod.name} style={styles.productImg} />
-                </div>
-
-                <div style={styles.info}>
-                  <h3 
-                    style={isCombo ? { ...styles.productName, ...styles.comboProductName } : styles.productName} 
-                    onClick={() => handleProductSelect(prod)}
-                  >
-                    {prod.name}
-                  </h3>
-                  <p style={styles.productDesc}>{prod.desc}</p>
+              return (
+                <motion.div 
+                  key={prod.id || Math.random()} 
+                  variants={itemVariants}
+                  className={`shop-product-card ${isCombo ? 'combo-card-hover' : ''}`}
+                  style={cardStyle}
+                >
+                  {tagText && <span style={tagStyle}>{tagText}</span>}
                   
-                  <div style={styles.priceRow}>
-                    <div style={styles.priceContainer}>
-                      <span style={styles.price}>₹{activePrice}</span>
-                      {prod.discountPrice && prod.price > prod.discountPrice && (
-                        <span style={styles.mrp}>₹{prod.price}</span>
-                      )}
-                      {savings > 0 && (
-                        <span style={isCombo ? { ...styles.saveBadge, ...styles.comboSaveBadge } : styles.saveBadge}>
-                          SAVE {savings}%
-                        </span>
-                      )}
-                    </div>
+                  <div style={styles.imgContainer} onClick={() => handleProductSelect(prod)}>
+                    <img src={prod.image || '/assets/rose.jpeg'} alt={prod.name || 'Product'} style={styles.productImg} />
+                  </div>
+
+                  <div style={styles.info}>
+                    <h3 
+                      style={isCombo ? { ...styles.productName, ...styles.comboProductName } : styles.productName} 
+                      onClick={() => handleProductSelect(prod)}
+                    >
+                      {prod.name || 'Premium Blend'}
+                    </h3>
+                    <p style={styles.productDesc}>{prod.desc || ''}</p>
                     
-                    <div style={styles.actionButtons}>
-                      <button
-                        onClick={() => handleProductSelect(prod)}
-                        style={isCombo ? { ...styles.exploreBtn, ...styles.comboExploreBtn } : styles.exploreBtn}
-                      >
-                        Explore
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onAddToCart({
-                            id: prod.id,
-                            name: prod.name,
-                            price: activePrice,
-                            img: prod.image,
-                            desc: prod.desc
-                          });
-                        }}
-                        style={isCombo ? { ...styles.addBtn, ...styles.comboAddBtn } : styles.addBtn}
-                      >
-                        Add to Cart
-                      </button>
+                    <div style={styles.priceRow}>
+                      <div style={styles.priceContainer}>
+                        <span style={styles.price}>₹{activePrice}</span>
+                        {prod.discountPrice && prod.price > prod.discountPrice && (
+                          <span style={styles.mrp}>₹{prod.price}</span>
+                        )}
+                        {savings > 0 && (
+                          <span style={isCombo ? { ...styles.saveBadge, ...styles.comboSaveBadge } : styles.saveBadge}>
+                            SAVE {savings}%
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div style={styles.actionButtons}>
+                        <button
+                          onClick={() => handleProductSelect(prod)}
+                          style={isCombo ? { ...styles.exploreBtn, ...styles.comboExploreBtn } : styles.exploreBtn}
+                        >
+                          Explore
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onAddToCart({
+                              id: prod.id,
+                              name: prod.name,
+                              price: activePrice,
+                              img: prod.image,
+                              desc: prod.desc
+                            });
+                          }}
+                          style={isCombo ? { ...styles.addBtn, ...styles.comboAddBtn } : styles.addBtn}
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
       </div>
     </div>
   );
