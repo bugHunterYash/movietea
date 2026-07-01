@@ -10,6 +10,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const seed = require('./seed');
+seed().catch(console.error);
+
 // Middleware
 app.use(cors({
   origin: function (origin, callback) {
