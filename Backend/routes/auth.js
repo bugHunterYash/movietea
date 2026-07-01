@@ -3,9 +3,12 @@ const router = express.Router();
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
+
+const { sendWelcomeEmail } = require('../services/emailService');
 
 // Configure Passport Google Strategy
 passport.use(new GoogleStrategy({
@@ -27,6 +30,8 @@ passport.use(new GoogleStrategy({
           image: profile.photos[0]?.value
         }
       });
+      // Send welcome email only on first login
+      await sendWelcomeEmail(user.email, user.name);
     }
 
     return done(null, user);
@@ -61,31 +66,81 @@ router.get('/google/callback',
     );
 
     // Redirect to frontend with token
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
   }
 );
 
-// Developer Bypass Login
-router.post('/dev-login', async (req, res) => {
+// Local Registration
+router.post('/register', async (req, res) => {
   try {
-    let user = await prisma.user.findFirst({ where: { email: 'dev@movitea.com' }});
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          email: 'dev@movitea.com',
-          name: 'Developer Tester',
-          role: 'ADMIN'
-        }
-      });
+    const { name, email, password } = req.body;
+    
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'All fields are required' });
     }
+
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email already in use' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      }
+    });
+
+    await sendWelcomeEmail(user.email, user.name);
+
     const token = jwt.sign(
       { userId: user.id, role: user.role },
-      process.env.JWT_SECRET || 'movitea_jwt_secret_key_2026_premium_tea',
+      process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
-    res.json({ token, user });
-  } catch(e) {
-    res.status(500).json({ error: e.message });
+
+    res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Local Login
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    if (!user.password) {
+      return res.status(401).json({ error: 'Please sign in with Google' });
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

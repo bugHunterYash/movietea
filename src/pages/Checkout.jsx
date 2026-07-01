@@ -4,7 +4,11 @@ import { PRICING, FEES } from '../utils/pricing';
 import { ShieldCheck, Truck, CreditCard, UploadCloud, ChevronLeft, ArrowRight, CheckCircle2, Lock } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
+import api from '../api/client';
+
 export default function Checkout({ cartItems, setCartItems }) {
+  const navigate = useNavigate();
+  
   React.useEffect(() => {
     document.title = "Checkout Secured | MOVITEA";
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -12,9 +16,33 @@ export default function Checkout({ cartItems, setCartItems }) {
       metaDesc.setAttribute("content", "Secure checkout page for your MOVITEA selection. Enter your details to complete the purchase of premium organic tea blends.");
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, []);
 
-  const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    // Fetch user profile and autofill
+    api.get('/auth/me').then(res => {
+      const user = res.data;
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        address1: user.address1 || '',
+        address2: user.address2 || '',
+        city: user.city || '',
+        state: user.state || '',
+        pincode: user.pincode || ''
+      }));
+    }).catch(err => {
+      console.log('User fetch failed, redirecting to login', err);
+      navigate('/login');
+    });
+  }, [navigate]);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,7 +60,9 @@ export default function Checkout({ cartItems, setCartItems }) {
   const [paymentMethod, setPaymentMethod] = useState('upi');
   const [screenshotUploaded, setScreenshotUploaded] = useState(false);
   const [screenshotName, setScreenshotName] = useState('');
+  const [screenshotFile, setScreenshotFile] = useState(null);
   const [orderStep, setOrderStep] = useState('form'); // 'form', 'payment', 'complete'
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const standardSubtotal = cartItems.reduce((acc, item) => {
     const price = PRICING[item.id]?.sale || item.price;
@@ -68,21 +98,43 @@ export default function Checkout({ cartItems, setCartItems }) {
     if (e.target.files && e.target.files[0]) {
       setScreenshotUploaded(true);
       setScreenshotName(e.target.files[0].name);
+      setScreenshotFile(e.target.files[0]);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (orderStep === 'form') {
       setOrderStep('payment');
     } else if (orderStep === 'payment') {
-      if (!screenshotUploaded && paymentMethod === 'upi') {
-        alert('Please upload a screenshot of your payment transfer for verification.');
-        return;
+      setIsSubmitting(true);
+      
+      try {
+        const payload = new FormData();
+        payload.append('items', JSON.stringify(cartItems));
+        payload.append('totalAmount', grandTotal);
+        payload.append('paymentMethod', paymentMethod.toUpperCase());
+        payload.append('address1', formData.address1);
+        payload.append('address2', formData.address2);
+        payload.append('city', formData.city);
+        payload.append('state', formData.state);
+        payload.append('pincode', formData.pincode);
+
+        await api.post('/orders', payload, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+
+        setOrderStep('complete');
+        // Clear cart
+        setCartItems([]);
+      } catch (error) {
+        console.error('Order submission failed:', error);
+        alert('Failed to place order. Please try again.');
+      } finally {
+        setIsSubmitting(false);
       }
-      setOrderStep('complete');
-      // Clear cart
-      setCartItems([]);
     }
   };
 
@@ -264,19 +316,7 @@ export default function Checkout({ cartItems, setCartItems }) {
                     <p style={styles.qrFooterText}>Open any UPI app to pay</p>
                   </div>
 
-                  <div style={styles.uploadBox}>
-                    <label style={styles.uploadLabel}>
-                      <UploadCloud size={24} color="var(--primary-color)" />
-                      <span>{screenshotUploaded ? `Uploaded: ${screenshotName}` : 'Upload Payment Screenshot'}</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleScreenshotChange}
-                        style={{ display: 'none' }}
-                      />
-                    </label>
                   </div>
-                </div>
 
               <div style={styles.verificationAlert}>
                 <ShieldCheck size={18} />
@@ -288,8 +328,8 @@ export default function Checkout({ cartItems, setCartItems }) {
                 </div>
               </div>
 
-              <button type="submit" className="luxury-btn" style={styles.submitBtn}>
-                Place Order &mdash; ₹{grandTotal}
+              <button type="submit" disabled={isSubmitting} className="luxury-btn" style={styles.submitBtn}>
+                {isSubmitting ? 'Processing...' : `Place Order \u2014 \u20B9${grandTotal}`}
               </button>
             </div>
           )}

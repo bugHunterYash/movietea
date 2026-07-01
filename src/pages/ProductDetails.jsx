@@ -4,7 +4,7 @@ import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Sparkles, Compass, Leaf, Heart, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getProducts } from '../utils/db';
+import api from '../api/client';
 import SEO from '../components/SEO';
 
 const getVisuals = (flavour, category) => {
@@ -63,14 +63,16 @@ export default function ProductDetails({ onAddToCart }) {
   const [visuals, setVisuals] = useState(null);
 
   useEffect(() => {
-    const products = getProducts();
-    const found = products.find(p => p.slug === id);
-    if (found) {
-      setProduct(found);
-      setVisuals(getVisuals(found.flavour, found.category));
-    } else {
-      setProduct('not_found');
-    }
+    const fetchProduct = async () => {
+      try {
+        const res = await api.get(`/products/${id}`);
+        setProduct(res.data);
+        setVisuals(getVisuals(res.data.flavorType, res.data.category));
+      } catch (err) {
+        setProduct('not_found');
+      }
+    };
+    fetchProduct();
   }, [id]);
 
   useEffect(() => {
@@ -91,13 +93,14 @@ export default function ProductDetails({ onAddToCart }) {
 
   if (!product || !visuals) return <div style={{ minHeight: '100vh', backgroundColor: '#FAF7F2' }}></div>;
 
-  const savings = product.basePrice && product.basePrice > product.sellingPrice 
-    ? Math.round(((product.basePrice - product.sellingPrice) / product.basePrice) * 100) 
+  const activePrice = product.discountPrice || product.price;
+  const savings = product.discountPrice && product.price > product.discountPrice 
+    ? Math.round(((product.price - product.discountPrice) / product.price) * 100) 
     : 0;
   
-  const isCombo = product.type === 'combo';
-  const ingredients = getIngredients(product.flavour);
-  const tasteProfile = getTasteProfile(product.flavour);
+  const isCombo = product.category?.includes('Combo');
+  const ingredients = getIngredients(product.flavorType);
+  const tasteProfile = getTasteProfile(product.flavorType);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -106,7 +109,7 @@ export default function ProductDetails({ onAddToCart }) {
         "@type": "Product",
         "name": product.name,
         "image": `https://movitea.com${product.image}`,
-        "description": product.description,
+        "description": product.desc,
         "brand": {
           "@type": "Brand",
           "name": "MOVITEA"
@@ -115,7 +118,7 @@ export default function ProductDetails({ onAddToCart }) {
           "@type": "Offer",
           "url": `https://movitea.com/product/${product.slug}`,
           "priceCurrency": "INR",
-          "price": product.sellingPrice,
+          "price": activePrice,
           "availability": "https://schema.org/InStock",
           "itemCondition": "https://schema.org/NewCondition"
         }
@@ -135,7 +138,7 @@ export default function ProductDetails({ onAddToCart }) {
     <div style={{ ...styles.page, backgroundColor: visuals.bg, color: visuals.textColor }}>
       <SEO 
         title={`${product.name} | MOVITEA Premium Flavoured Tea`}
-        description={`Experience rich ${product.name} by MOVITEA. ${product.description} Premium ingredients, no added sugar and ready in 60 seconds.`}
+        description={`Experience rich ${product.name} by MOVITEA. ${product.desc} Premium ingredients, no added sugar and ready in 60 seconds.`}
         image={product.image}
         structuredData={structuredData}
       />
@@ -168,17 +171,17 @@ export default function ProductDetails({ onAddToCart }) {
             <h1 style={{ ...styles.title, color: visuals.textColor }}>{product.name}</h1>
             
             <div style={styles.priceContainer}>
-              <span style={{ ...styles.price, color: visuals.textColor }}>₹{product.sellingPrice}</span>
-              {product.basePrice && product.basePrice > product.sellingPrice && (
+              <span style={{ ...styles.price, color: visuals.textColor }}>₹{activePrice}</span>
+              {product.discountPrice && product.price > product.discountPrice && (
                 <span style={{ ...styles.mrp, color: visuals.textColor === '#FAF7F2' ? 'rgba(250,247,242,0.6)' : 'rgba(43,26,18,0.6)' }}>
-                  ₹{product.basePrice}
+                  ₹{product.price}
                 </span>
               )}
               {savings > 0 && <span style={styles.saveBadge}>Save {savings}%</span>}
             </div>
             
             <p style={{ ...styles.desc, color: visuals.textColor === '#FAF7F2' ? 'rgba(250, 247, 242, 0.85)' : 'var(--text-light)' }}>
-              {product.description}
+              {product.desc}
             </p>
             <p style={{ fontSize: '0.9rem', opacity: 0.8, marginTop: '0.5rem' }}>
               <strong>Category:</strong> {product.category}
@@ -196,7 +199,7 @@ export default function ProductDetails({ onAddToCart }) {
               <div style={styles.offerDetails}>
                 <div style={styles.offerDetailItem}>
                   <span>This {isCombo ? 'Collection' : 'Flavor'}:</span>
-                  <strong>₹{product.sellingPrice} &rarr; ₹{Math.floor(product.sellingPrice * 0.7)}</strong>
+                  <strong>₹{activePrice} &rarr; ₹{Math.floor(activePrice * 0.7)}</strong>
                 </div>
                 <div style={styles.offerDetailItem}>
                   <span>Free delivery on orders above ₹499</span>
@@ -223,7 +226,7 @@ export default function ProductDetails({ onAddToCart }) {
             </div>
 
             <button
-              onClick={() => onAddToCart({ id: product.id, name: product.name, price: product.sellingPrice, img: product.image, desc: product.description })}
+              onClick={() => onAddToCart({ id: product.id, name: product.name, price: activePrice, img: product.image, desc: product.desc })}
               style={{ ...styles.addCartBtn, backgroundColor: visuals.primaryColor }}
             >
               Add to Collection
