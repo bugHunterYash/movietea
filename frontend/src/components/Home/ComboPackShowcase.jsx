@@ -29,7 +29,7 @@ export default function ComboPackShowcase({ onShopClick }) {
     // 1. Initial positions
     // Intro texts start visible
     gsap.set([introHeadline, introSubtext], { opacity: 1, y: 0 });
-
+    
     // Combo box centered
     gsap.set(box, { scale: 1, zIndex: 20 });
 
@@ -71,7 +71,7 @@ export default function ComboPackShowcase({ onShopClick }) {
     });
 
     // Timeline Sequence (Total duration: 7.4s)
-
+    
     // --- SECTION 1: Intro Fades Out ---
     tl.to([introHeadline, introSubtext], {
       opacity: 0,
@@ -80,18 +80,17 @@ export default function ComboPackShowcase({ onShopClick }) {
       duration: 1.0,
       ease: 'power2.inOut',
     }, 0)
-      .to(box, {
-        scale: 1.03,
-        duration: 1.0,
-        ease: 'power2.inOut',
-      }, 0);
+    .to(box, {
+      scale: 1.03,
+      duration: 1.0,
+      ease: 'power2.inOut',
+    }, 0);
 
     // --- SECTION 2: Flavors Discoverability (Slide Out and Return) ---
-
-    // Rose slides left-up and returns
+    
+    // Rose slides left and returns
     tl.to(rose, {
-      x: -320,
-      y: -120,
+      x: -260,
       rotate: -12,
       opacity: 1,
       scale: 1.05,
@@ -99,13 +98,11 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.out',
     }, 1.0)
     .to(rose, {
-      x: -320,
-      y: -120,
+      x: -260,
       duration: 0.2, // brief hold
     }, 1.8)
     .to(rose, {
       x: 0,
-      y: 0,
       rotate: 0,
       opacity: 0,
       scale: 0.8,
@@ -113,10 +110,9 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.in',
     }, 2.0);
 
-    // Chocolate slides right-down and returns
+    // Chocolate slides right and returns
     tl.to(chocolate, {
-      x: 320,
-      y: 150,
+      x: 260,
       rotate: 12,
       opacity: 1,
       scale: 1.05,
@@ -124,13 +120,11 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.out',
     }, 2.6)
     .to(chocolate, {
-      x: 320,
-      y: 150,
+      x: 260,
       duration: 0.2, // brief hold
     }, 3.4)
     .to(chocolate, {
       x: 0,
-      y: 0,
       rotate: 0,
       opacity: 0,
       scale: 0.8,
@@ -138,10 +132,9 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.in',
     }, 3.6);
 
-    // Vanilla slides right-up and returns
+    // Vanilla slides up and returns
     tl.to(vanilla, {
-      x: 320,
-      y: -120,
+      y: -240,
       rotate: -5,
       opacity: 1,
       scale: 1.05,
@@ -149,12 +142,10 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.out',
     }, 4.2)
     .to(vanilla, {
-      x: 320,
-      y: -120,
+      y: -240,
       duration: 0.2, // brief hold
     }, 5.0)
     .to(vanilla, {
-      x: 0,
       y: 0,
       rotate: 0,
       opacity: 0,
@@ -163,10 +154,9 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.in',
     }, 5.2);
 
-    // Butterscotch slides left-down and returns
+    // Butterscotch slides down and returns
     tl.to(butterscotch, {
-      x: -320,
-      y: 150,
+      y: 240,
       rotate: 5,
       opacity: 1,
       scale: 1.05,
@@ -174,12 +164,10 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.out',
     }, 5.8)
     .to(butterscotch, {
-      x: -320,
-      y: 150,
+      y: 240,
       duration: 0.2, // brief hold
     }, 6.6)
     .to(butterscotch, {
-      x: 0,
       y: 0,
       rotate: 0,
       opacity: 0,
@@ -190,8 +178,8 @@ export default function ComboPackShowcase({ onShopClick }) {
 
     // --- SECTION 3: Final Composition Reveal (All 4 surround the box) ---
     tl.to(rose, {
-      x: -300,
-      y: -100,
+      x: -240,
+      y: 0,
       rotate: -8,
       opacity: 1,
       scale: 1,
@@ -199,8 +187,8 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'back.out(1.2)',
     }, 7.4)
     .to(chocolate, {
-      x: 300,
-      y: 150,
+      x: 240,
+      y: 0,
       rotate: 8,
       opacity: 1,
       scale: 1,
@@ -208,8 +196,8 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'back.out(1.2)',
     }, 7.4)
     .to(vanilla, {
-      x: 300,
-      y: -100,
+      x: 0,
+      y: -210,
       rotate: -3,
       opacity: 1,
       scale: 1,
@@ -217,23 +205,23 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'back.out(1.2)',
     }, 7.4)
     .to(butterscotch, {
-      x: -300,
-      y: 150,
+      x: 0,
+      y: 210,
       rotate: 3,
       opacity: 1,
       scale: 1,
       duration: 0.8,
       ease: 'back.out(1.2)',
     }, 7.4)
-
-      // Reveal text benefits surrounding cards
-      .to([highlightRose, highlightChocolate, highlightVanilla, highlightButterscotch], {
-        opacity: 1,
-        y: 0,
-        stagger: 0.1,
-        duration: 0.6,
-        ease: 'power2.out',
-      }, 7.8);
+    
+    // Reveal text benefits surrounding cards
+    .to([highlightRose, highlightChocolate, highlightVanilla, highlightButterscotch], {
+      opacity: 1,
+      y: 0,
+      stagger: 0.1,
+      duration: 0.6,
+      ease: 'power2.out',
+    }, 7.8);
 
     // --- SECTION 4: Reveal pricing (Shrink composition and slide up panel) ---
     tl.to(composition, {
@@ -242,62 +230,63 @@ export default function ComboPackShowcase({ onShopClick }) {
       duration: 0.8,
       ease: 'power2.inOut',
     }, 8.6)
-      .to([rose, chocolate, vanilla, butterscotch, highlightRose, highlightChocolate, highlightVanilla, highlightButterscotch], {
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power2.inOut',
-      }, 8.6)
-      .to(pricingPanel, {
-        opacity: 1,
-        y: 0,
-        pointerEvents: 'auto',
-        duration: 0.8,
-        ease: 'power2.out',
-      }, 8.8);
+    .to([rose, chocolate, vanilla, butterscotch, highlightRose, highlightChocolate, highlightVanilla, highlightButterscotch], {
+      opacity: 0,
+      duration: 0.6,
+      ease: 'power2.inOut',
+    }, 8.6)
+    .to(pricingPanel, {
+      opacity: 1,
+      y: 0,
+      pointerEvents: 'auto',
+      duration: 0.8,
+      ease: 'power2.out',
+    }, 8.8);
 
   }, { scope: containerRef });
 
   return (
     <div ref={containerRef} style={styles.outerContainer}>
       <div style={styles.stickyContainer}>
-
+        
         {/* SECTION 1: Intro Headline */}
         <div ref={introHeadlineRef} style={styles.introHeadline}>
           <span style={styles.subtitle}>THE ATELIER EXPERIENCE</span>
-          <h2 style={styles.title} className="combo-title">Experience<br />Every Mood</h2>
+          <h2 style={styles.title}>Experience<br />Every Mood</h2>
         </div>
 
         {/* SECTION 1: Intro Subtext */}
         <div ref={introSubtextRef} className="intro-subtext" style={styles.introSubtext}>
-          <span style={styles.flavorList} className="combo-flavor-list">Rose &bull; Chocolate &bull; Vanilla &bull; Butterscotch</span>
+          <span style={styles.flavorList}>Rose &bull; Chocolate &bull; Vanilla &bull; Butterscotch</span>
           <p style={styles.premiumSubtext}>One Premium Tea Experience</p>
         </div>
 
         {/* Interactive Composition Area */}
-        <div ref={compositionRef} style={styles.compositionArea} className="combo-composition">
+        <div ref={compositionRef} style={styles.compositionArea}>
+          
           {/* Supporting flavor card components */}
           {/* Rose - Left */}
-          <div className="sachet-card card-rose combo-sachet" style={{ ...styles.sachet, ...styles.roseSachet }}>
+          <div className="sachet-card card-rose" style={{ ...styles.sachet, ...styles.roseSachet }}>
             <img src="/assets/rose.jpeg" alt="Rose Blend" style={styles.sachetImg} />
-            <span style={styles.sachetName} className="combo-sachet-name">Rose Atelier</span>
+            <span style={styles.sachetName}>Rose Atelier</span>
           </div>
-
+          
           {/* Chocolate - Right */}
-          <div className="sachet-card card-chocolate combo-sachet" style={{ ...styles.sachet, ...styles.chocolateSachet }}>
+          <div className="sachet-card card-chocolate" style={{ ...styles.sachet, ...styles.chocolateSachet }}>
             <img src="/assets/chocolate.jpeg" alt="Cacao Blend" style={styles.sachetImg} />
-            <span style={styles.sachetName} className="combo-sachet-name">Cacao Reserve</span>
+            <span style={styles.sachetName}>Cacao Reserve</span>
           </div>
 
           {/* Vanilla - Top */}
-          <div className="sachet-card card-vanilla combo-sachet" style={{ ...styles.sachet, ...styles.vanillaSachet }}>
+          <div className="sachet-card card-vanilla" style={{ ...styles.sachet, ...styles.vanillaSachet }}>
             <img src="/assets/vanilla.jpeg" alt="Vanilla Blend" style={styles.sachetImg} />
-            <span style={styles.sachetName} className="combo-sachet-name">Vanilla Orchid</span>
+            <span style={styles.sachetName}>Vanilla Orchid</span>
           </div>
 
           {/* Butterscotch - Bottom */}
-          <div className="sachet-card card-butterscotch combo-sachet" style={{ ...styles.sachet, ...styles.butterscotchSachet }}>
+          <div className="sachet-card card-butterscotch" style={{ ...styles.sachet, ...styles.butterscotchSachet }}>
             <img src="/assets/butterscotch.jpeg" alt="Butterscotch Blend" style={styles.sachetImg} />
-            <span style={styles.sachetName} className="combo-sachet-name">Butterscotch</span>
+            <span style={styles.sachetName}>Butterscotch</span>
           </div>
 
           {/* Center Box Hero */}
@@ -334,16 +323,16 @@ export default function ComboPackShowcase({ onShopClick }) {
 
         {/* SECTION 4: Pricing Panel */}
         <div ref={pricingPanelRef} style={styles.pricingPanel}>
-          <div style={styles.pricingCard} className="combo-pricing-card">
+          <div style={styles.pricingCard}>
             <div style={styles.pricingHeader}>
               <span style={styles.tag}>LIMITED EDITION</span>
-              <h3 style={styles.pricingTitle} className="combo-pricing-title">Assorted Atelier Combo Box</h3>
+              <h3 style={styles.pricingTitle}>Assorted Atelier Combo Box</h3>
             </div>
-
+            
             <div style={styles.priceContainer}>
               <div style={styles.mainPriceCol}>
                 <span style={styles.priceLabel}>First Order Price</span>
-                <span style={styles.specialPrice} className="combo-special-price">₹219</span>
+                <span style={styles.specialPrice}>₹219</span>
               </div>
               <div style={styles.strikePriceCol}>
                 <span style={styles.originalLabel}>Standard Price</span>
@@ -483,21 +472,19 @@ const styles = {
     objectFit: 'contain',
   },
   sachetName: {
-    fontSize: '0.8rem',
+    fontSize: '0.72rem',
     textTransform: 'uppercase',
-    letterSpacing: '0.1em',
-    fontWeight: '800',
+    letterSpacing: '0.08em',
+    fontWeight: '700',
     textAlign: 'center',
-    marginTop: '0.4rem',
   },
   roseSachet: {
     backgroundColor: '#F4D3DC',
     color: '#2B1A12',
   },
   chocolateSachet: {
-    backgroundColor: '#4A2B1D', // Lighter brown for contrast
-    color: '#FFFFFF',
-    border: '1px solid #D0853E',
+    backgroundColor: '#2B1A12',
+    color: '#FAF7F2',
   },
   vanillaSachet: {
     backgroundColor: '#FAF7F2',
@@ -664,106 +651,49 @@ styleSheetCombo.innerText = `
     background-color: #D0853E !important;
     transform: translateY(-2px);
   }
-  .combo-title {
-    font-size: 4.2rem;
-  }
-  .combo-composition {
-    width: 560px;
-    height: 560px;
-  }
-  .combo-box-hero {
-    width: 280px;
-    height: 280px;
-  }
-  .combo-sachet {
-    width: 120px;
-    height: 155px;
-  }
   
-  @media (max-width: 1024px) {
-    .combo-title {
-      font-size: 3rem !important;
-    }
-    .combo-composition {
-      width: 400px !important;
-      height: 400px !important;
-    }
-    .combo-box-hero {
-      width: 200px !important;
-      height: 200px !important;
-    }
-    .combo-sachet {
-      width: 100px !important;
-      height: 130px !important;
-    }
-    .highlight-rose {
-      left: -160px !important;
-    }
-    .highlight-chocolate {
-      right: -160px !important;
+  @media (max-width: 900px) {
+    .pricing-card {
+      width: 90% !important;
+      max-width: 480px !important;
+      padding: 1.5rem !important;
     }
   }
   @media (max-width: 768px) {
-    .combo-title {
-      font-size: 2.2rem !important;
+    div[style*="compositionArea"] {
+      width: 320px !important;
+      height: 320px !important;
     }
-    .combo-composition {
-      width: 300px !important;
-      height: 300px !important;
+    .sachet-card {
+      width: 90px !important;
+      height: 120px !important;
+      padding: 0.5rem !important;
     }
-    .combo-box-hero {
-      width: 160px !important;
-      height: 160px !important;
-    }
-    .combo-sachet {
-      width: 80px !important;
-      height: 105px !important;
-      padding: 0.4rem !important;
-    }
-    .combo-sachet img {
-      width: 45px !important;
-      height: 45px !important;
-    }
-    .combo-sachet-name {
-      font-size: 0.6rem !important;
-    }
-    .highlight-text {
-      display: none !important;
-    }
-    .combo-pricing-card {
-      width: 90% !important;
-      max-width: 400px !important;
-      padding: 1.5rem !important;
-    }
-    .combo-pricing-title {
-      font-size: 1.3rem !important;
-    }
-    .combo-special-price {
-      font-size: 2rem !important;
-    }
-    .combo-flavor-list {
-      font-size: 0.9rem !important;
-    }
-  }
-  @media (max-width: 480px) {
-    .combo-title {
-      font-size: 1.8rem !important;
-    }
-    .combo-composition {
-      width: 240px !important;
-      height: 240px !important;
+    .sachet-card img {
+      width: 50px !important;
+      height: 50px !important;
     }
     .combo-box-hero {
-      width: 130px !important;
-      height: 130px !important;
+      width: 180px !important;
+      height: 180px !important;
     }
-    .combo-sachet {
-      width: 65px !important;
-      height: 85px !important;
+    .highlight-text h4 {
+      font-size: 0.8rem !important;
     }
-    .combo-sachet img {
-      width: 35px !important;
-      height: 35px !important;
+    .highlight-text p {
+      font-size: 0.7rem !important;
+    }
+    .highlight-rose {
+      left: -120px !important;
+    }
+    .highlight-chocolate {
+      right: -120px !important;
+    }
+    .highlight-vanilla {
+      top: -60px !important;
+    }
+    .highlight-butterscotch {
+      bottom: -60px !important;
     }
   }
 `;

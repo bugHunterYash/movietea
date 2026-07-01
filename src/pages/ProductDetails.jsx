@@ -146,7 +146,7 @@ export default function ProductDetails() {
       />
       {/* Section 1: Hero Showcase */}
       <section style={styles.showcaseSection}>
-        <div className="container" style={styles.showcaseGrid}>
+        <div className="container details-showcase-grid" style={styles.showcaseGrid}>
           <div style={styles.imageCol}>
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -159,7 +159,7 @@ export default function ProductDetails() {
             </motion.div>
           </div>
 
-          <div style={styles.infoCol}>
+          <div style={styles.infoCol} className="details-info-col">
             <div style={styles.breadcrumbs}>
               <Link to="/" className="breadcrumb-link" style={styles.breadcrumbLink}>HOME</Link>
               <span style={styles.breadcrumbSep}>/</span>
@@ -171,8 +171,7 @@ export default function ProductDetails() {
             <span style={{ ...styles.subtitle, color: visuals.primaryColor }}>
               {isCombo ? 'Premium Combo Collection' : visuals.subtitle}
             </span>
-            <h1 style={{ ...styles.title, color: visuals.textColor }}>{product.name}</h1>
-
+            <h1 style={{ ...styles.title, color: visuals.textColor }} className="details-title">{product.name}</h1>
             <div style={styles.priceContainer}>
               <span style={{ ...styles.price, color: visuals.textColor }}>₹{activePrice}</span>
               {product.discountPrice && product.price > product.discountPrice && (
@@ -210,7 +209,7 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            <div style={styles.badgeRow}>
+            <div style={styles.badgeRow} className="details-badge-row">
               <div style={styles.badge}>
                 <Leaf size={16} color={visuals.primaryColor} />
                 <span>100% Organic</span>
@@ -242,8 +241,8 @@ export default function ProductDetails() {
       <section style={styles.ingredientsSection}>
         <div className="container">
           <span style={styles.sectionSubtitle}>COMPOSITION</span>
-          <h2 style={styles.sectionTitle}>Raw Ingredients</h2>
-          <div style={styles.ingredientsGrid}>
+          <h2 style={styles.sectionTitle} className="details-section-title">Raw Ingredients</h2>
+          <div style={styles.ingredientsGrid} className="details-ingredients-grid">
             {ingredients.map((ing, i) => (
               <div key={i} style={styles.ingCard}>
                 <div style={styles.ingIcon}>
@@ -259,10 +258,10 @@ export default function ProductDetails() {
 
       {/* Section 3: Taste Profile (Animated Bars) */}
       <section style={styles.tasteSection}>
-        <div className="container" style={styles.tasteGrid}>
+        <div className="container details-taste-grid" style={styles.tasteGrid}>
           <div>
             <span style={styles.sectionSubtitle}>SENSORY SCALES</span>
-            <h2 style={styles.tasteTitle}>Taste Profile</h2>
+            <h2 style={styles.tasteTitle} className="details-section-title">Taste Profile</h2>
             <p style={styles.tasteDesc}>
               Our master blenders map every batch across critical flavor indices to guarantee consistency and balance.
             </p>
@@ -280,9 +279,9 @@ export default function ProductDetails() {
       <section style={styles.brewSection}>
         <div className="container">
           <span style={styles.sectionSubtitle}>PREPARATION</span>
-          <h2 style={styles.sectionTitle}>The 30-Second Ritual</h2>
-
-          <div style={styles.timeline}>
+          <h2 style={styles.sectionTitle} className="details-section-title">The 30-Second Ritual</h2>
+          
+          <div style={styles.timeline} className="details-timeline">
             <div style={styles.timelineItem}>
               <div style={styles.timelineBullet}>1</div>
               <div style={styles.timelineContent}>
@@ -709,8 +708,37 @@ const styles = {
 // Add responsive styles and hover effects
 const styleSheetDetails = document.createElement('style');
 styleSheetDetails.innerText = `
+  .details-showcase-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .details-title {
+    font-size: 4.5rem;
+  }
+  .details-ingredients-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3rem;
+  }
+  .details-taste-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 6rem;
+    align-items: center;
+  }
+  .details-timeline {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3rem;
+  }
+  .details-section-title {
+    font-size: 3.5rem;
+  }
+
   @media (max-width: 950px) {
-    div[style*="showcaseGrid"] {
+    .details-showcase-grid {
       grid-template-columns: 1fr !important;
       text-align: center !important;
       gap: 3rem !important;
@@ -721,18 +749,21 @@ styleSheetDetails.innerText = `
       top: 0 !important;
       align-items: center !important;
     }
-    div[style*="infoCol"] {
+    .details-info-col {
       align-items: center !important;
     }
-    div[style*="ingredientsGrid"] {
+    .details-title {
+      font-size: 3rem !important;
+    }
+    .details-ingredients-grid {
       grid-template-columns: 1fr !important;
       gap: 2rem !important;
     }
-    div[style*="tasteGrid"] {
+    .details-taste-grid {
       grid-template-columns: 1fr !important;
       gap: 4rem !important;
     }
-    div[style*="timeline"] {
+    .details-timeline {
       grid-template-columns: 1fr !important;
       gap: 3rem !important;
     }
@@ -750,6 +781,17 @@ styleSheetDetails.innerText = `
   .product-float:hover {
     transform: translateY(-5px) rotate(1deg) scale(1.02) !important;
     filter: drop-shadow(0 35px 50px rgba(43, 26, 18, 0.2)) !important;
+  }
+  @media (max-width: 640px) {
+    .details-title {
+      font-size: 2.2rem !important;
+    }
+    .details-section-title {
+      font-size: 2rem !important;
+    }
+    .details-badge-row {
+      justify-content: center;
+    }
   }
   button[style*="addCartBtn"]:hover {
     opacity: 0.9 !important;

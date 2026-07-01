@@ -1,28 +1,19 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, User, LogOut } from 'lucide-react';
+import { Menu, X, ShoppingBag, User, LogOut, LayoutDashboard } from 'lucide-react';
 
-export default function Header({ setSelectedProduct }) {
+export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, user, onLogout }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
-  const isLoggedIn = !!localStorage.getItem('token');
-
-  const handleAuthAction = () => {
-    if (isLoggedIn) {
-      localStorage.removeItem('token');
-      window.location.reload();
-    } else {
-      navigate('/login');
-    }
-  };
 
   const navItems = [
     { id: 'home', label: 'Home', path: '/' },
     { id: 'about', label: 'About Us', path: '/about' },
     { id: 'shop', label: 'Shop', path: '/shop' },
-    { id: 'bulk-orders', label: 'Bulk Orders', path: '/bulk-orders' },
+    { id: 'product', label: 'Product', path: '/product/rose' },
+    { id: 'gifting', label: 'Gift Collection', path: '/gift-collection' },
     { id: 'contact', label: 'Contact', path: '/contact' },
   ];
 
@@ -42,7 +33,7 @@ export default function Header({ setSelectedProduct }) {
   return (
     <header style={styles.header}>
       {/* Announcement Bar */}
-      <div style={styles.announcementBar} className="announcement-bar-wrap">
+      <div style={styles.announcementBar}>
         <div className="announcement-track">
           <span style={styles.announcementText}>
             First Order Special • Get 50% OFF • Free Delivery Above ₹499 &nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;
@@ -58,7 +49,7 @@ export default function Header({ setSelectedProduct }) {
           </span>
         </div>
       </div>
-      <div className="container header-container" style={styles.container}>
+      <div className="container" style={styles.container}>
         {/* Left: Nav items */}
         <nav style={styles.desktopNav}>
           {navItems.slice(0, 3).map((item) => {
@@ -82,14 +73,51 @@ export default function Header({ setSelectedProduct }) {
 
         {/* Center: Logo */}
         <div style={styles.logoContainer} onClick={() => handleNavClick('home', '/')}>
-          <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.logoImg} className="header-logo" />
+          <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.logoImg} />
         </div>
 
-        {/* Right: Nav items + Cart */}
-        <div style={styles.rightSection} className="header-right">
+        {/* Right: Nav items + Cart + Auth */}
+        <div style={styles.rightSection}>
           <nav style={styles.desktopNav}>
             {navItems.slice(3).map((item) => {
               const isActive = getIsActive(item);
+              if (item.id === 'product') {
+                return (
+                  <div key={item.id} className="nav-dropdown-container" style={styles.dropdownContainer}>
+                    <button
+                      onClick={() => handleNavClick(item.id, item.path)}
+                      style={{
+                        ...styles.navLink,
+                        color: isActive ? 'var(--primary-color)' : 'var(--dark-color)',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {item.label}
+                      {isActive && <span style={styles.activeDot} />}
+                    </button>
+                    <div className="nav-dropdown-menu" style={styles.dropdownMenu}>
+                      {[
+                        { id: 'rose', name: 'Rose Atelier' },
+                        { id: 'chocolate', name: 'Cacao Reserve' },
+                        { id: 'vanilla', name: 'Vanilla Orchid' },
+                        { id: 'butterscotch', name: 'Toasted Butterscotch' }
+                      ].map((flavor) => (
+                        <button
+                          key={flavor.id}
+                          onClick={() => {
+                            setSelectedProduct(flavor.id);
+                            navigate(`/product/${flavor.id}`);
+                            setMobileMenuOpen(false);
+                          }}
+                          style={styles.dropdownItem}
+                        >
+                          {flavor.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
               return (
                 <button
                   key={item.id}
@@ -107,18 +135,64 @@ export default function Header({ setSelectedProduct }) {
             })}
           </nav>
 
-          <button onClick={handleAuthAction} style={styles.authBtn} aria-label={isLoggedIn ? 'Sign out' : 'Sign in'}>
-            {isLoggedIn ? (
-              <>
-                <LogOut size={24} strokeWidth={1.5} color="var(--dark-color)" />
-                <span style={styles.authText}>Logout</span>
-              </>
+          {/* User Auth Section */}
+          <div style={styles.authSection}>
+            {user ? (
+              <div style={styles.userMenuContainer}>
+                <button 
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  style={styles.userBtn}
+                >
+                  {user.image ? (
+                    <img src={user.image} alt={user.name} style={styles.userAvatar} />
+                  ) : (
+                    <User size={20} strokeWidth={1.5} color="var(--dark-color)" />
+                  )}
+                </button>
+                {showUserMenu && (
+                  <div style={styles.userDropdown}>
+                    <div style={styles.userInfo}>
+                      <span style={styles.userName}>{user.name}</span>
+                      <span style={styles.userEmail}>{user.email}</span>
+                      <span style={styles.userRole}>{user.role}</span>
+                    </div>
+                    {user.role === 'ADMIN' && (
+                      <button 
+                        onClick={() => {
+                          navigate('/admin');
+                          setShowUserMenu(false);
+                        }}
+                        style={styles.dropdownMenuItem}
+                      >
+                        <LayoutDashboard size={16} /> Admin Dashboard
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => {
+                        onLogout();
+                        setShowUserMenu(false);
+                      }}
+                      style={styles.dropdownMenuItem}
+                    >
+                      <LogOut size={16} /> Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
-              <>
-                <User size={24} strokeWidth={1.5} color="var(--dark-color)" />
-                <span style={styles.authText}>Login</span>
-              </>
+              <button 
+                onClick={() => navigate('/login')}
+                style={styles.loginBtn}
+              >
+                <User size={16} strokeWidth={1.5} />
+                Sign In
+              </button>
             )}
+          </div>
+
+          <button onClick={onOpenCart} style={styles.cartBtn} aria-label="Open cart">
+            <ShoppingBag size={20} strokeWidth={1.5} color="var(--dark-color)" />
+            {cartCount > 0 && <span style={styles.cartBadge}>{cartCount}</span>}
           </button>
 
           <button
@@ -151,14 +225,40 @@ export default function Header({ setSelectedProduct }) {
               {item.label}
             </button>
           ))}
-          <div style={styles.mobileMenuActions}>
-            <button onClick={handleAuthAction} style={styles.mobileActionBtn}>
-              {isLoggedIn ? 'Sign Out' : 'Sign In'}
+          {user ? (
+            <>
+              {user.role === 'ADMIN' && (
+                <button
+                  onClick={() => {
+                    navigate('/admin');
+                    setMobileMenuOpen(false);
+                  }}
+                  style={styles.mobileNavLink}
+                >
+                  Admin Dashboard
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  onLogout();
+                  setMobileMenuOpen(false);
+                }}
+                style={styles.mobileNavLink}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => {
+                navigate('/login');
+                setMobileMenuOpen(false);
+              }}
+              style={styles.mobileNavLink}
+            >
+              Sign In
             </button>
-            <button onClick={() => { setMobileMenuOpen(false); onOpenCart(); }} style={styles.mobileActionBtn}>
-              Cart {cartCount > 0 && `(${cartCount})`}
-            </button>
-          </div>
+          )}
         </div>
       )}
     </header>
@@ -250,24 +350,108 @@ const styles = {
     alignItems: 'center',
     gap: '1.5rem',
   },
-  authBtn: {
+  authSection: {
+    position: 'relative',
+  },
+  userMenuContainer: {
+    position: 'relative',
+  },
+  userBtn: {
+    padding: '0.25rem',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userAvatar: {
+    width: '32px',
+    height: '32px',
+    borderRadius: '50%',
+    objectFit: 'cover',
+  },
+  userDropdown: {
+    position: 'absolute',
+    top: '100%',
+    right: 0,
+    backgroundColor: '#FFFFFF',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
+    padding: '0.5rem 0',
+    minWidth: '200px',
+    boxShadow: '0 8px 24px rgba(43,26,18,0.1)',
+    zIndex: 1001,
+  },
+  userInfo: {
+    padding: '0.75rem 1rem',
+    borderBottom: '1px solid var(--border-color)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.25rem',
+  },
+  userName: {
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    color: '#2B1A12',
+  },
+  userEmail: {
+    fontSize: '0.75rem',
+    color: '#8A7A6B',
+  },
+  userRole: {
+    fontSize: '0.65rem',
+    fontWeight: '600',
+    color: 'var(--primary-color)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+  },
+  dropdownMenuItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    width: '100%',
+    padding: '0.75rem 1rem',
+    fontSize: '0.85rem',
+    color: '#2B1A12',
+    textAlign: 'left',
+    transition: 'background-color 0.2s',
+  },
+  loginBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.4rem',
+    padding: '0.5rem 1rem',
+    backgroundColor: 'transparent',
+    border: '1px solid var(--border-color)',
+    borderRadius: '4px',
+    fontSize: '0.8rem',
+    fontWeight: '600',
+    color: 'var(--dark-color)',
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase',
+    cursor: 'pointer',
+    transition: 'var(--transition-fast)',
+  },
+  cartBtn: {
     position: 'relative',
     padding: '0.5rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    gap: '0.4rem',
   },
-  authText: {
-    fontFamily: 'var(--font-sans)',
-    fontSize: '0.9rem',
-    fontWeight: '600',
-    color: 'var(--dark-color)',
-    letterSpacing: '0.05em',
-    textTransform: 'uppercase',
+  cartBadge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: 'var(--primary-color)',
+    color: 'var(--white)',
+    fontSize: '0.7rem',
+    fontWeight: 'bold',
+    borderRadius: '50%',
+    width: '16px',
+    height: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   mobileMenuBtn: {
     display: 'none',
@@ -290,27 +474,6 @@ const styles = {
   mobileNavLink: {
     fontSize: '2rem',
     letterSpacing: '0.05em',
-  },
-  mobileMenuActions: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-    marginTop: '2rem',
-    alignItems: 'center',
-  },
-  mobileActionBtn: {
-    fontFamily: 'var(--font-sans)',
-    fontSize: '0.9rem',
-    fontWeight: '600',
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase',
-    padding: '0.75rem 2rem',
-    border: '1px solid var(--dark-color)',
-    backgroundColor: 'var(--dark-color)',
-    color: 'var(--bg-color)',
-    cursor: 'pointer',
-    width: '200px',
-    textAlign: 'center',
   },
   dropdownContainer: {
     position: 'relative',
@@ -342,7 +505,7 @@ const styles = {
 };
 
 // Add responsive media query and hover support
-  if (typeof document !== 'undefined') {
+if (typeof document !== 'undefined') {
   const styleSheet = document.createElement('style');
   styleSheet.innerText = `
     .announcement-track {
@@ -359,25 +522,10 @@ const styles = {
         display: none !important;
       }
       header button[aria-label="Toggle menu"] {
-        display: flex !important;
+        display: block !important;
       }
-      header .header-container {
-        height: 60px !important;
-        padding: 0 1rem !important;
-      }
-      header .header-logo {
-        height: 90px !important;
-      }
-      header .header-right {
-        gap: 0.75rem !important;
-      }
-      header .announcement-bar-wrap {
-        height: 28px !important;
-      }
-    }
-    @media (max-width: 480px) {
-      header .header-logo {
-        height: 75px !important;
+      header .auth-section {
+        display: none !important;
       }
     }
     header img:hover {
@@ -390,6 +538,9 @@ const styles = {
     .nav-dropdown-menu button:hover {
       background-color: var(--cream-color) !important;
       color: var(--primary-color) !important;
+    }
+    .user-dropdown button:hover {
+      background-color: var(--cream-color) !important;
     }
   `;
   document.head.appendChild(styleSheet);

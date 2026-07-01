@@ -13,7 +13,7 @@ export default function Footer() {
   return (
     <footer style={styles.footer}>
       <div className="container" style={styles.container}>
-        <div style={styles.topRow} className="footer-top-row">
+        <div style={styles.topRow}>
           {/* Brand Info */}
           <div style={styles.columnLarge}>
             <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.footerLogo} />
@@ -29,9 +29,10 @@ export default function Footer() {
               <button onClick={() => handleNavClick('/')} style={styles.footerLink}>Home</button>
               <button onClick={() => handleNavClick('/about')} style={styles.footerLink}>About Us</button>
               <button onClick={() => handleNavClick('/shop')} style={styles.footerLink}>Shop Tea</button>
-              <button onClick={() => handleNavClick('/bulk-orders')} style={styles.footerLink}>Bulk Orders</button>
+              <button onClick={() => handleNavClick('/gift-collection')} style={styles.footerLink}>Gift Collection</button>
             </div>
           </div>
+
           {/* Links Column 2 */}
           <div style={styles.column}>
             <h4 style={styles.colTitle}>Flavours</h4>
@@ -43,27 +44,23 @@ export default function Footer() {
             </div>
           </div>
 
-
-
           {/* Newsletter */}
           <div style={styles.columnNewsletter}>
             <h4 style={styles.colTitle}>Newsletter</h4>
             <p style={styles.newsletterText}>Subscribe to receive editorial content, product launch updates, and private sales.</p>
-            <form style={styles.subscribeForm} className="subscribe-form-wrap" onSubmit={(e) => e.preventDefault()}>
+            <form style={styles.subscribeForm} onSubmit={(e) => e.preventDefault()}>
               <input type="email" placeholder="Your Email Address" style={styles.inputField} required />
               <button type="submit" style={styles.submitBtn}>Join</button>
             </form>
           </div>
         </div>
 
-        <div style={styles.bottomRow} className="footer-bottom-row">
+        <div style={styles.bottomRow}>
           <p style={styles.copyText}>&copy; {currentYear} MOVITEA. All Rights Reserved.</p>
-          <div style={styles.socials} className="footer-socials">
-            <a href="https://www.instagram.com/movitea" target="_blank" rel="noopener noreferrer" style={styles.socialLink} className="social-hover">Instagram</a>
-            <a href="https://www.facebook.com/share/1BiKDUADFX/" target="_blank" rel="noopener noreferrer" style={styles.socialLink} className="social-hover">Facebook</a>
-            <a href="https://x.com/Movitea26" target="_blank" rel="noopener noreferrer" style={styles.socialLink} className="social-hover">X (Twitter)</a>
-            <a href="https://www.threads.com/@movitea" target="_blank" rel="noopener noreferrer" style={styles.socialLink} className="social-hover">Threads</a>
-          </div>
+          <div style={styles.socials}>
+            <a href="#instagram" style={styles.socialLink}>Instagram</a>
+            <a href="#pinterest" style={styles.socialLink}>Pinterest</a>
+            <a href="#twitter" style={styles.socialLink}>Twitter</a>
           </div>
         </div>
       </div>
@@ -95,7 +92,7 @@ const styles = {
     gap: '1.5rem',
   },
   footerLogo: {
-    height: '140px',
+    height: '40px',
     alignSelf: 'flex-start',
     mixBlendMode: 'multiply',
   },
@@ -190,55 +187,17 @@ const styles = {
 // Add responsive media query support
 const styleSheetFooter = document.createElement('style');
 styleSheetFooter.innerText = `
-  footer .footer-top-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 2fr;
-    gap: 2.5rem;
-  }
-  footer .footer-bottom-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid var(--border-color);
-    padding-top: 2.5rem;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-  }
-  @media (max-width: 1024px) {
-    footer .footer-top-row {
+  @media (max-width: 900px) {
+    footer div[style*="gridTemplateColumns"] {
       grid-template-columns: 1fr 1fr !important;
       gap: 3rem !important;
     }
   }
-  @media (max-width: 768px) {
-    footer .footer-top-row {
+  @media (max-width: 600px) {
+    footer div[style*="gridTemplateColumns"] {
       grid-template-columns: 1fr !important;
       gap: 2.5rem !important;
-      text-align: center;
     }
-    footer .footer-top-row > div {
-      align-items: center !important;
-      text-align: center !important;
-    }
-    footer .footer-top-row > div[style*="alignItems: flex-start"] {
-      align-items: center !important;
-    }
-    footer .subscribe-form-wrap {
-      max-width: 100% !important;
-    }
-    footer .footer-bottom-row {
-      flex-direction: column;
-      text-align: center;
-    }
-    footer .footer-socials {
-      justify-content: center;
-    }
-  }
-  .social-hover {
-    transition: color 0.3s ease;
-  }
-  .social-hover:hover {
-    color: #D0853E !important;
   }
 `;
 document.head.appendChild(styleSheetFooter);

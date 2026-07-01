@@ -6,28 +6,28 @@ const REVIEWS = [
     role: 'Connoisseur',
     quote: 'Movitea has completely transformed my mornings. The Rose Flavour is subtle, pure, and absolutely divine. Worth every rupee.',
     rating: 5,
-    img: '/assets/avatar_aishwarya.png',
+    img: '/assets/review-1.jfif',
   },
   {
     name: 'Kabir S.',
     role: 'Tea Enthusiast',
     quote: 'The Toasted Butterscotch smells like a luxury Parisian patisserie. The creaminess without added sugar is wizardry.',
     rating: 5,
-    img: '/assets/avatar_kabir.png',
+    img: '/assets/review-1.jfif',
   },
   {
     name: 'Meera G.',
     role: 'Wellness Designer',
     quote: 'I love how clean it is. Just hot water and you get this rich, deep cacao chocolate tea that feels like pure indulgence.',
     rating: 5,
-    img: '/assets/avatar_meera.png',
+    img: '/assets/review-1.jfif',
   },
   {
     name: 'Rohan M.',
     role: 'Creative Director',
     quote: 'Beautiful brand, premium packaging, but most importantly: taste is 10/10. The vanilla pods add a silky texture that default teas lack.',
     rating: 5,
-    img: '/assets/avatar_rohan.png',
+    img: '/assets/review-1.jfif',
   },
 ];
 
@@ -39,7 +39,7 @@ export default function Reviews() {
     <section style={styles.reviewsSection}>
       <div className="container" style={styles.header}>
         <span style={styles.subtitle}>TESTIMONIALS</span>
-        <h2 style={styles.title} className="reviews-section-title">The Journal of Taste</h2>
+        <h2 style={styles.title}>The Journal of Taste</h2>
       </div>
 
       <div style={styles.marqueeContainer}>
@@ -175,25 +175,10 @@ styleSheetMarquee.innerText = `
   .marquee-track:hover {
     animation-play-state: paused;
   }
-  .reviews-section-title {
-    font-size: 3.5rem;
-  }
-  @media (max-width: 768px) {
-    .reviews-section-title {
-      font-size: 2.5rem !important;
-    }
+  @media (max-width: 600px) {
     .marquee-track > div {
       width: 320px !important;
       padding: 1.5rem !important;
-    }
-  }
-  @media (max-width: 480px) {
-    .reviews-section-title {
-      font-size: 2rem !important;
-    }
-    .marquee-track > div {
-      width: 280px !important;
-      padding: 1.25rem !important;
     }
   }
 `;

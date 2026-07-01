@@ -7,9 +7,9 @@ const SHOWCASE_PRODUCTS = [
     id: 'rose',
     name: 'Rose Atelier',
     subtitle: 'Atelier Blend No. 01',
-    img: '/images/New folder/rose jar.png',
-    price: 899,
-    mrp: 1099,
+    img: '/assets/rose.jpeg',
+    price: 219,
+    mrp: 269,
     savePercent: 18,
     bgColor: '#F4D3DC', // soft blush pink
     textColor: '#2B1A12',
@@ -20,10 +20,10 @@ const SHOWCASE_PRODUCTS = [
     id: 'chocolate',
     name: 'Cacao Reserve',
     subtitle: 'Atelier Blend No. 02',
-    img: '/images/New folder/choclate jar.png',
-    price: 849,
-    mrp: 1099,
-    savePercent: 23,
+    img: '/assets/chocolate.jpeg',
+    price: 199,
+    mrp: 269,
+    savePercent: 26,
     bgColor: '#2B1A12', // deep cocoa brown
     textColor: '#FAF7F2',
     accentColor: '#D0853E',
@@ -33,10 +33,10 @@ const SHOWCASE_PRODUCTS = [
     id: 'vanilla',
     name: 'Vanilla Orchid',
     subtitle: 'Atelier Blend No. 03',
-    img: '/images/New folder/vanila jar.png',
-    price: 849,
-    mrp: 1099,
-    savePercent: 23,
+    img: '/assets/vanilla.jpeg',
+    price: 199,
+    mrp: 269,
+    savePercent: 26,
     bgColor: '#FAF7F2', // creamy ivory
     textColor: '#2B1A12',
     accentColor: '#CBB296',
@@ -46,9 +46,9 @@ const SHOWCASE_PRODUCTS = [
     id: 'butterscotch',
     name: 'Toasted Butterscotch',
     subtitle: 'Atelier Blend No. 04',
-    img: '/images/New folder/buttercoth jar.png',
-    price: 899,
-    mrp: 1099,
+    img: '/assets/butterscotch.jpeg',
+    price: 219,
+    mrp: 269,
     savePercent: 18,
     bgColor: '#D0853E', // warm caramel
     textColor: '#FAF7F2',
@@ -201,7 +201,7 @@ export default function ProductShowcase({ onSelectProduct }) {
       {/* Intro Header */}
       <div style={styles.introHeader}>
         <span style={styles.headerSubtitle}>THE COLLECTION</span>
-        <h2 style={styles.headerTitle} className="showcase-header-title">The Atelier Series</h2>
+        <h2 style={styles.headerTitle}>The Atelier Series</h2>
       </div>
 
       {/* Slide Container (Viewport Bound) */}
@@ -214,7 +214,7 @@ export default function ProductShowcase({ onSelectProduct }) {
             className={`slide-item slide-${prod.id}`}
           >
             {/* Split Grid */}
-            <div style={styles.slideGrid} className="showcase-slide-grid">
+            <div style={styles.slideGrid}>
               {/* Left Column: Details */}
               <div className="slide-text-col" style={styles.leftCol}>
                 <span className="slide-subtitle" style={styles.cardSubtitle}>
@@ -380,7 +380,6 @@ const styles = {
     fontFamily: 'var(--font-serif)',
     lineHeight: '1.1',
     fontWeight: '300',
-    color: 'inherit',
   },
   cardDesc: {
     fontFamily: 'var(--font-story)',
@@ -388,7 +387,6 @@ const styles = {
     lineHeight: '1.7',
     fontWeight: '400',
     opacity: 0.9,
-    color: 'inherit',
   },
   priceRow: {
     display: 'flex',
@@ -478,55 +476,32 @@ styleSheetShowcase.innerText = `
     color: #D0853E !important;
   }
   
-  .showcase-slide-grid {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 4rem;
-    width: 100%;
-    max-width: var(--container-max-width);
-    margin: 0 auto;
-    padding: 0 2rem;
-    height: 100%;
-    align-items: center;
-  }
-
   @media (max-width: 900px) {
-    .showcase-slide-grid {
+    .slide-item h3 {
+      font-size: 2.8rem !important;
+    }
+    .slide-item p {
+      font-size: 1rem !important;
+    }
+    .slide-img-wrapper {
+      max-width: 320px !important;
+      height: 320px !important;
+    }
+  }
+  @media (max-width: 768px) {
+    .slide-item > div {
       grid-template-columns: 1fr !important;
       grid-template-rows: auto auto !important;
       gap: 2rem !important;
-      padding-top: 5rem !important;
-      padding-bottom: 4rem !important;
+      padding-top: 6rem !important;
     }
     .slide-text-col {
       align-items: center !important;
       text-align: center !important;
       max-width: 100% !important;
     }
-    .slide-item h3 {
-      font-size: 2.5rem !important;
-    }
-    .slide-item p {
-      font-size: 0.95rem !important;
-    }
     .slide-img-wrapper {
-      max-width: 280px !important;
-      height: 280px !important;
-    }
-    .showcase-header-title {
-      font-size: 2rem !important;
-    }
-  }
-  @media (max-width: 640px) {
-    .slide-item h3 {
-      font-size: 2rem !important;
-    }
-    .slide-img-wrapper {
-      max-width: 220px !important;
-      height: 220px !important;
-    }
-    .showcase-header-title {
-      font-size: 1.6rem !important;
+      height: 240px !important;
     }
   }
 `;
