@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PRICING, FEES } from '../utils/pricing';
-import { ShieldCheck, Truck, CreditCard, UploadCloud, ChevronLeft, ArrowRight, CheckCircle2, Lock } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+import { ShieldCheck, Truck, CreditCard, UploadCloud, ChevronLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ordersAPI, promosAPI } from '../utils/api';
 
-import api from '../api/client';
-
-export default function Checkout({ cartItems, setCartItems }) {
-  const navigate = useNavigate();
-  
+export default function Checkout({ cartItems, clearCart, user }) {
   React.useEffect(() => {
     document.title = "Checkout Secured | MOVITEA";
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -16,53 +12,30 @@ export default function Checkout({ cartItems, setCartItems }) {
       metaDesc.setAttribute("content", "Secure checkout page for your MOVITEA selection. Enter your details to complete the purchase of premium organic tea blends.");
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    // Fetch user profile and autofill
-    api.get('/auth/me').then(res => {
-      const user = res.data;
-      setFormData(prev => ({
-        ...prev,
-        name: user.name || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        address1: user.address1 || '',
-        address2: user.address2 || '',
-        city: user.city || '',
-        state: user.state || '',
-        pincode: user.pincode || ''
-      }));
-    }).catch(err => {
-      console.log('User fetch failed, redirecting to login', err);
-      navigate('/login');
-    });
-  }, [navigate]);
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address1: '',
-    address2: '',
-    city: '',
-    state: '',
-    pincode: '',
+    name: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    address1: user?.address1 || '',
+    address2: user?.address2 || '',
+    city: user?.city || '',
+    state: user?.state || '',
+    pincode: user?.pincode || '',
   });
 
   const [promoCode, setPromoCode] = useState('');
   const [promoDiscount, setPromoDiscount] = useState(0);
   const [promoApplied, setPromoApplied] = useState(false);
+  const [promoId, setPromoId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('upi');
+  const [screenshotFile, setScreenshotFile] = useState(null);
   const [screenshotUploaded, setScreenshotUploaded] = useState(false);
   const [screenshotName, setScreenshotName] = useState('');
-  const [screenshotFile, setScreenshotFile] = useState(null);
   const [orderStep, setOrderStep] = useState('form'); // 'form', 'payment', 'complete'
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const standardSubtotal = cartItems.reduce((acc, item) => {
     const price = PRICING[item.id]?.sale || item.price;
@@ -84,56 +57,72 @@ export default function Checkout({ cartItems, setCartItems }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const applyPromo = () => {
-    if (promoCode.toUpperCase() === 'TEA50') {
-      setPromoDiscount(50);
-      setPromoApplied(true);
-      alert('Promo Code TEA50 applied! Enjoy ₹50 off.');
-    } else {
-      alert('Invalid Promo Code. Try "TEA50".');
+  const applyPromo = async () => {
+    try {
+      const result = await promosAPI.validate(promoCode);
+      if (result.valid) {
+        setPromoDiscount(result.discountAmount);
+        setPromoApplied(true);
+        setPromoId(result.id);
+        alert(`Promo Code ${result.code} applied! Enjoy ₹${result.discountAmount} off.`);
+      }
+    } catch (error) {
+      alert(error.message || 'Invalid Promo Code');
     }
   };
 
   const handleScreenshotChange = (e) => {
     if (e.target.files && e.target.files[0]) {
+      setScreenshotFile(e.target.files[0]);
       setScreenshotUploaded(true);
       setScreenshotName(e.target.files[0].name);
-      setScreenshotFile(e.target.files[0]);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (orderStep === 'form') {
       setOrderStep('payment');
-    } else if (orderStep === 'payment') {
-      setIsSubmitting(true);
-      
+      return;
+    }
+
+    if (orderStep === 'payment') {
+      if (!screenshotUploaded && paymentMethod === 'upi') {
+        alert('Please upload a screenshot of your payment transfer for verification.');
+        return;
+      }
+
+      setLoading(true);
       try {
-        const payload = new FormData();
-        payload.append('items', JSON.stringify(cartItems));
-        payload.append('totalAmount', grandTotal);
-        payload.append('paymentMethod', paymentMethod.toUpperCase());
-        payload.append('address1', formData.address1);
-        payload.append('address2', formData.address2);
-        payload.append('city', formData.city);
-        payload.append('state', formData.state);
-        payload.append('pincode', formData.pincode);
+        // Create order items from cart
+        const items = cartItems.map(item => ({
+          productId: item.dbProductId || item.id,
+          name: item.name,
+          price: PRICING[item.id]?.firstOrder || (item.price * 0.5),
+          quantity: item.quantity
+        }));
 
-        await api.post('/orders', payload, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        const orderData = {
+          items,
+          totalAmount: grandTotal,
+          paymentMethod: paymentMethod.toUpperCase(),
+          address1: formData.address1,
+          address2: formData.address2,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pincode,
+          promoCodeId: promoId
+        };
 
+        await ordersAPI.create(orderData, screenshotFile);
         setOrderStep('complete');
-        // Clear cart
-        setCartItems([]);
+        clearCart();
       } catch (error) {
-        console.error('Order submission failed:', error);
+        console.error('Order creation failed:', error);
         alert('Failed to place order. Please try again.');
       } finally {
-        setIsSubmitting(false);
+        setLoading(false);
       }
     }
   };
@@ -168,24 +157,24 @@ export default function Checkout({ cartItems, setCartItems }) {
 
   return (
     <div style={styles.checkoutPage}>
-      <div className="container checkout-grid" style={styles.checkoutContainer}>
+      <div className="container" style={styles.checkoutContainer}>
         
         {/* Left Column: Form / Payment Details */}
-        <form onSubmit={handleSubmit} style={styles.checkoutForm} className="checkout-form">
+        <form onSubmit={handleSubmit} style={styles.checkoutForm}>
           {orderStep === 'payment' && (
             <button type="button" onClick={() => setOrderStep('form')} style={styles.backBtn}>
               <ChevronLeft size={16} /> Back to Details
             </button>
           )}
 
-          <h1 style={styles.pageTitle} className="checkout-title">
+          <h1 style={styles.pageTitle}>
             {orderStep === 'form' ? 'Delivery Details' : 'Payment Secure'}
           </h1>
 
           {orderStep === 'form' ? (
             <div style={styles.formSection}>
               <h3 style={styles.sectionHeader}>Customer Details</h3>
-              <div style={styles.formGrid} className="checkout-form-grid">
+              <div style={styles.formGrid}>
                 <div style={styles.inputGroupFull}>
                   <label style={styles.label}>Full Name *</label>
                   <input
@@ -225,7 +214,7 @@ export default function Checkout({ cartItems, setCartItems }) {
               </div>
 
               <h3 style={styles.sectionHeader}>Delivery Address</h3>
-              <div style={styles.formGrid} className="checkout-form-grid">
+              <div style={styles.formGrid}>
                 <div style={styles.inputGroupFull}>
                   <label style={styles.label}>Address Line 1 *</label>
                   <input
@@ -293,30 +282,93 @@ export default function Checkout({ cartItems, setCartItems }) {
             </div>
           ) : (
             <div style={styles.formSection}>
-              <h3 style={styles.sectionHeader}>Payment Details</h3>
-              <div style={styles.upiDetails}>
-                  <div style={styles.qrCard}>
-                    <div style={styles.secureBadgeWrapper}>
-                      <Lock size={12} color="#15803d" />
-                      <span style={styles.secureBadgeText}>Secure Payment</span>
-                    </div>
-                    <h4 style={styles.qrHeading}>Scan & Pay</h4>
-                    <div style={styles.qrCodeWrapper} className="qr-code-wrapper">
-                      <QRCodeSVG 
-                        value={`upi://pay?pa=vinitsharmatafs@okhdfcbank&pn=MOVITEA&am=${grandTotal}&cu=INR&tn=Order Payment`} 
-                        size={260} 
-                        bgColor="#ffffff"
-                        fgColor="#111111"
-                        level="Q"
-                      />
-                    </div>
-                    <div style={styles.qrAmountBox}>
-                      <span>₹{grandTotal}</span>
-                    </div>
-                    <p style={styles.qrFooterText}>Open any UPI app to pay</p>
+              <h3 style={styles.sectionHeader}>Select Payment Method</h3>
+              
+              <div style={styles.paymentSelector}>
+                <div
+                  onClick={() => setPaymentMethod('upi')}
+                  style={{
+                    ...styles.paymentOption,
+                    borderColor: paymentMethod === 'upi' ? 'var(--primary-color)' : 'var(--border-color)',
+                  }}
+                >
+                  <CreditCard size={18} />
+                  <span>UPI / Bank Transfer (Recommended)</span>
+                </div>
+                <div
+                  onClick={() => setPaymentMethod('cod')}
+                  style={{
+                    ...styles.paymentOption,
+                    borderColor: paymentMethod === 'cod' ? 'var(--primary-color)' : 'var(--border-color)',
+                  }}
+                >
+                  <Truck size={18} />
+                  <span>Cash on Delivery</span>
+                </div>
+              </div>
+
+              {paymentMethod === 'upi' ? (
+                <div style={styles.upiDetails}>
+                  <h4 style={styles.upiTitle}>UPI Transfer Info</h4>
+                  <p style={styles.upiDesc}>Please send the exact amount of <strong>₹{grandTotal}</strong> to our verified merchant ID:</p>
+                  <div style={styles.upiAddressBox}>
+                    <span>movitea@upi</span>
                   </div>
 
+                  {/* QR Code Display */}
+                  <div style={styles.qrContainer}>
+                    <div style={styles.qrPlaceholder}>
+                      <svg viewBox="0 0 100 100" style={styles.qrCode}>
+                        {/* Simple QR code representation */}
+                        <rect x="10" y="10" width="25" height="25" fill="#2B1A12"/>
+                        <rect x="65" y="10" width="25" height="25" fill="#2B1A12"/>
+                        <rect x="10" y="65" width="25" height="25" fill="#2B1A12"/>
+                        <rect x="15" y="15" width="15" height="15" fill="#FAF7F2"/>
+                        <rect x="70" y="15" width="15" height="15" fill="#FAF7F2"/>
+                        <rect x="15" y="70" width="15" height="15" fill="#FAF7F2"/>
+                        <rect x="18" y="18" width="9" height="9" fill="#2B1A12"/>
+                        <rect x="73" y="18" width="9" height="9" fill="#2B1A12"/>
+                        <rect x="18" y="73" width="9" height="9" fill="#2B1A12"/>
+                        <rect x="40" y="10" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="50" y="10" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="40" y="20" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="45" y="15" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="55" y="20" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="40" y="40" width="20" height="20" fill="#2B1A12"/>
+                        <rect x="45" y="45" width="10" height="10" fill="#FAF7F2"/>
+                        <rect x="48" y="48" width="4" height="4" fill="#2B1A12"/>
+                        <rect x="10" y="40" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="20" y="45" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="30" y="40" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="65" y="40" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="75" y="45" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="85" y="40" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="40" y="65" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="50" y="70" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="65" y="65" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="75" y="75" width="5" height="5" fill="#2B1A12"/>
+                        <rect x="85" y="85" width="5" height="5" fill="#2B1A12"/>
+                      </svg>
+                    </div>
+                    <p style={styles.qrText}>Scan to pay ₹{grandTotal}</p>
                   </div>
+
+                  <div style={styles.uploadBox}>
+                    <label style={styles.uploadLabel}>
+                      <UploadCloud size={24} color="var(--primary-color)" />
+                      <span>{screenshotUploaded ? `Uploaded: ${screenshotName}` : 'Upload Payment Screenshot'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleScreenshotChange}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              ) : (
+                <p style={styles.codDesc}>You will pay cash when the premium container arrives at your doorstep.</p>
+              )}
 
               <div style={styles.verificationAlert}>
                 <ShieldCheck size={18} />
@@ -328,15 +380,15 @@ export default function Checkout({ cartItems, setCartItems }) {
                 </div>
               </div>
 
-              <button type="submit" disabled={isSubmitting} className="luxury-btn" style={styles.submitBtn}>
-                {isSubmitting ? 'Processing...' : `Place Order \u2014 \u20B9${grandTotal}`}
+              <button type="submit" className="luxury-btn" style={styles.submitBtn} disabled={loading}>
+                {loading ? 'Processing...' : `Place Order — ₹${grandTotal}`}
               </button>
             </div>
           )}
         </form>
 
         {/* Right Column: Order Summary */}
-        <div style={styles.orderSummary} className="checkout-summary">
+        <div style={styles.orderSummary}>
           <h3 style={styles.summaryTitle}>Your Selection</h3>
           
           <div style={styles.itemsList}>
@@ -670,6 +722,32 @@ const styles = {
     color: 'var(--primary-color)',
     letterSpacing: '0.05em',
   },
+  qrContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '0.5rem',
+    padding: '1rem',
+    backgroundColor: '#FFFFFF',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
+  },
+  qrPlaceholder: {
+    width: '150px',
+    height: '150px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  qrCode: {
+    width: '100%',
+    height: '100%',
+  },
+  qrText: {
+    fontSize: '0.8rem',
+    color: '#8A7A6B',
+    margin: 0,
+  },
   uploadBox: {
     width: '100%',
     marginTop: '0.5rem',
@@ -759,111 +837,4 @@ const styles = {
     color: '#2B1A12',
     fontWeight: '600',
   },
-  qrCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: '16px',
-    padding: '24px',
-    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginBottom: '20px',
-    border: '1px solid rgba(0,0,0,0.05)',
-    position: 'relative'
-  },
-  secureBadgeWrapper: {
-    marginBottom: '12px',
-    backgroundColor: '#f0fdf4',
-    border: '1px solid #bbf7d0',
-    padding: '4px 8px',
-    borderRadius: '20px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px'
-  },
-  secureBadgeText: {
-    fontSize: '0.65rem',
-    fontWeight: '600',
-    color: '#15803d',
-    letterSpacing: '0.05em',
-    textTransform: 'uppercase'
-  },
-  qrHeading: {
-    fontSize: '1.25rem',
-    fontWeight: '600',
-    fontFamily: 'var(--font-serif)',
-    color: '#111111',
-    margin: '10px 0 20px 0'
-  },
-  qrCodeWrapper: {
-    padding: '10px',
-    backgroundColor: '#ffffff',
-    borderRadius: '12px',
-    border: '1px solid #eaeaea'
-  },
-  qrAmountBox: {
-    marginTop: '20px',
-    backgroundColor: '#FAF7F2',
-    padding: '10px 24px',
-    borderRadius: '30px',
-    fontSize: '1.4rem',
-    fontWeight: '700',
-    color: 'var(--primary-color)',
-    fontFamily: 'var(--font-serif)'
-  },
-  qrFooterText: {
-    fontSize: '0.8rem',
-    color: '#666',
-    marginTop: '15px',
-    marginBottom: '0'
-  }
 };
-
-// Add responsive styles for Checkout
-const styleSheetCheckout = document.createElement('style');
-styleSheetCheckout.innerText = `
-  .checkout-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 4rem;
-    align-items: start;
-  }
-  .checkout-form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.2rem;
-  }
-  @media (max-width: 900px) {
-    .checkout-grid {
-      grid-template-columns: 1fr !important;
-      gap: 2rem !important;
-    }
-    .checkout-form {
-      padding: 2rem !important;
-    }
-    .checkout-summary {
-      padding: 2rem !important;
-    }
-    .checkout-title {
-      font-size: 2rem !important;
-    }
-  }
-  @media (max-width: 640px) {
-    .checkout-form-grid {
-      grid-template-columns: 1fr !important;
-    }
-    .checkout-form {
-      padding: 1.5rem !important;
-    }
-    .checkout-summary {
-      padding: 1.5rem !important;
-    }
-    .checkout-title {
-      font-size: 1.6rem !important;
-    }
-    .qr-code-wrapper {
-      transform: scale(0.85);
-    }
-  }
-`;
-document.head.appendChild(styleSheetCheckout);

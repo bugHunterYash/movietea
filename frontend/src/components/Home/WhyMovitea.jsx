@@ -50,11 +50,11 @@ export default function WhyMovitea() {
         {/* Intro */}
         <div style={styles.intro}>
           <span style={styles.subtitle}>WHY MOVITEA</span>
-          <h2 style={styles.title} className="why-section-title">Reimagining the Tea Ritual</h2>
+          <h2 style={styles.title}>Reimagining the Tea Ritual</h2>
         </div>
 
         {/* Benefits Grid */}
-        <div style={styles.grid} className="why-grid">
+        <div style={styles.grid}>
           {BENEFITS.map((item, index) => {
             const Icon = item.icon;
             return (
@@ -177,27 +177,10 @@ const styles = {
 // Add responsive styles
 const styleSheetWhy = document.createElement('style');
 styleSheetWhy.innerText = `
-  .why-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 6rem;
-    row-gap: 4rem;
-  }
-  .why-section-title {
-    font-size: 3.5rem;
-  }
   @media (max-width: 850px) {
-    .why-grid {
+    section[style*="padding: 8rem 0"] div[style*="gridTemplateColumns"] {
       grid-template-columns: 1fr !important;
       row-gap: 3rem !important;
-    }
-    .why-section-title {
-      font-size: 2.5rem !important;
-    }
-  }
-  @media (max-width: 480px) {
-    .why-section-title {
-      font-size: 2rem !important;
     }
   }
 `;
