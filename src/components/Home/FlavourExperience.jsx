@@ -10,7 +10,7 @@ const FLAVOURS = [
     description: 'Steeped in organic rose petals and hand-picked buds, this blend offers a soothing aroma and soft pink notes that linger elegantly.',
     bg: '#F4D3DC', // soft blush pink
     textColor: '#2B1A12',
-    img: '/assets/rose.jpeg',
+    img: '/images/New folder/rose jar.png',
     floatingItems: [Leaf, Sparkles, Leaf, Sparkles, Leaf],
   },
   {
@@ -20,7 +20,7 @@ const FLAVOURS = [
     description: 'A decadent union of premium cocoa husks and single-origin black tea. Velvety smooth, dark chocolate aroma, and a warm body.',
     bg: '#2B1A12', // deep cocoa brown
     textColor: '#FAF7F2',
-    img: '/assets/chocolate.jpeg',
+    img: '/images/New folder/choclate jar.png',
     floatingItems: [Heart, Sparkles, Heart, Sparkles, Heart],
   },
   {
@@ -30,7 +30,7 @@ const FLAVOURS = [
     description: 'Infused with real Madagascar vanilla beans. Creamy, subtle sweetness, with a golden warmth that wraps you in pure comfort.',
     bg: '#FAF7F2', // creamy ivory
     textColor: '#2B1A12',
-    img: '/assets/vanilla.jpeg',
+    img: '/images/New folder/vanila jar.png',
     floatingItems: [Flower2, Sparkles, Flower2, Sparkles, Flower2],
   },
   {
@@ -40,7 +40,7 @@ const FLAVOURS = [
     description: 'Indulge in sweet toasted sugar notes, rich butteriness, and a smooth caramel glaze that transforms every sip into pure luxury.',
     bg: '#D0853E', // warm caramel
     textColor: '#FAF7F2',
-    img: '/assets/butterscotch.jpeg',
+    img: '/images/New folder/buttercoth jar.png',
     floatingItems: [Flame, Sparkles, Flame, Sparkles, Flame],
   },
 ];
