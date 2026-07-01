@@ -11,27 +11,32 @@ gsap.registerPlugin(ScrollTrigger);
 // Layout Components
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
-import CartDrawer from './components/CartDrawer';
 import ScrollProgress from './components/Layout/ScrollProgress';
 
-// Lazy load pages for optimal code splitting & speed
-const Home = lazy(() => import('./pages/Home'));
+// Eager load Home page so it appears instantly
+import Home from './pages/Home';
+
+// Lazy load other pages
 const About = lazy(() => import('./pages/About'));
 const Shop = lazy(() => import('./pages/Shop'));
 const ProductDetails = lazy(() => import('./pages/ProductDetails'));
 const BulkOrders = lazy(() => import('./pages/BulkOrders'));
 const Contact = lazy(() => import('./pages/Contact'));
-const Checkout = lazy(() => import('./pages/Checkout'));
 const Admin = lazy(() => import('./pages/Admin'));
 const Login = lazy(() => import('./pages/Login'));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
+
+// Background preloading function
+const preloadPages = () => {
+  import('./pages/About');
+  import('./pages/Shop');
+  import('./pages/ProductDetails');
+};
 
 export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState('butterscotch');
-  const [cartItems, setCartItems] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const isAdminRoute = location.pathname.startsWith('/admin');
 
@@ -62,65 +67,25 @@ export default function App() {
     };
   }, [isAdminRoute]);
 
-  // Fetch Cart if logged in
+  // Preload other pages in the background after initial render
   useEffect(() => {
-    const fetchCart = async () => {
-      if (!localStorage.getItem('token')) return;
-      try {
-        const cartRes = await api.get('/cart');
-        if (cartRes.data && cartRes.data.items) {
-           const mappedItems = cartRes.data.items.map(i => ({
-             ...i.product,
-             quantity: i.quantity
-           }));
-           setCartItems(mappedItems);
-        }
-      } catch (err) {
-        console.error('Failed to fetch cart', err);
-      }
-    };
-    fetchCart();
-  }, [location.pathname]);
-
-  // Cart operations
-  const handleAddToCart = (product) => {
-    setCartItems((prevItems) => {
-      const existing = prevItems.find((item) => item.id === product.id);
-      if (existing) {
-        return prevItems.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prevItems, { ...product, quantity: 1 }];
-    });
-    setIsCartOpen(true);
-  };
-
-  const handleUpdateQuantity = (productId, newQuantity) => {
-    if (newQuantity <= 0) {
-      handleRemoveItem(productId);
-      return;
-    }
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const handleRemoveItem = (productId) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== productId));
-  };
-
-  const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+    // Delay preloading slightly to prioritize main thread for initial render
+    const timer = setTimeout(() => {
+      preloadPages();
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div style={styles.appContainer}>
+    <motion.div 
+      style={styles.appContainer}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.2, ease: "easeInOut" }}
+    >
       {/* Conditionally render header, footer and cart for standard page layouts */}
       {!isAdminRoute && (
         <Header
-          cartCount={totalCartCount}
-          onOpenCart={() => setIsCartOpen(true)}
           setSelectedProduct={setSelectedProduct}
         />
       )}
@@ -139,11 +104,10 @@ export default function App() {
               <Routes location={location}>
                 <Route path="/" element={<Home setSelectedProduct={setSelectedProduct} />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} setSelectedProduct={setSelectedProduct} />} />
-                <Route path="/product/:id" element={<ProductDetails onAddToCart={handleAddToCart} />} />
+                <Route path="/shop" element={<Shop setSelectedProduct={setSelectedProduct} />} />
+                <Route path="/product/:id" element={<ProductDetails />} />
                 <Route path="/bulk-orders" element={<BulkOrders />} />
                 <Route path="/contact" element={<Contact />} />
-                <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/admin/*" element={<Admin />} />
@@ -155,19 +119,9 @@ export default function App() {
 
       {!isAdminRoute && <Footer />}
 
-      {!isAdminRoute && (
-        <CartDrawer
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-          cartItems={cartItems}
-          onUpdateQuantity={handleUpdateQuantity}
-          onRemoveItem={handleRemoveItem}
-        />
-      )}
-
       {!isAdminRoute && <ScrollProgress />}
       {!isAdminRoute && <LoginReminder />}
-    </div>
+    </motion.div>
   );
 }
 
@@ -179,7 +133,7 @@ function LoginReminder() {
     // Only show if user is NOT logged in and hasn't dismissed it this session
     const token = localStorage.getItem('token');
     const dismissed = sessionStorage.getItem('loginReminderDismissed');
-    
+
     if (!token && !dismissed) {
       const timer = setTimeout(() => setShow(true), 3000); // show after 3 seconds
       return () => clearTimeout(timer);
@@ -212,7 +166,7 @@ function LoginReminder() {
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h4 style={{ margin: 0, fontFamily: 'var(--font-serif)', color: '#2B1A12', fontSize: '1.1rem' }}>Welcome to MOVITEA</h4>
-          <button 
+          <button
             onClick={() => {
               setShow(false);
               sessionStorage.setItem('loginReminderDismissed', 'true');
@@ -225,7 +179,7 @@ function LoginReminder() {
         <p style={{ margin: 0, fontFamily: 'var(--font-sans)', color: '#8A7A6B', fontSize: '0.85rem', lineHeight: '1.4' }}>
           Sign in to access your saved cart, view order history, and unlock exclusive premium offers.
         </p>
-        <button 
+        <button
           onClick={() => {
             setShow(false);
             navigate('/login');

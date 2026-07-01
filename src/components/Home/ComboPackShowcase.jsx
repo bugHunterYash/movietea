@@ -29,7 +29,7 @@ export default function ComboPackShowcase({ onShopClick }) {
     // 1. Initial positions
     // Intro texts start visible
     gsap.set([introHeadline, introSubtext], { opacity: 1, y: 0 });
-    
+
     // Combo box centered
     gsap.set(box, { scale: 1, zIndex: 20 });
 
@@ -71,7 +71,7 @@ export default function ComboPackShowcase({ onShopClick }) {
     });
 
     // Timeline Sequence (Total duration: 7.4s)
-    
+
     // --- SECTION 1: Intro Fades Out ---
     tl.to([introHeadline, introSubtext], {
       opacity: 0,
@@ -80,17 +80,18 @@ export default function ComboPackShowcase({ onShopClick }) {
       duration: 1.0,
       ease: 'power2.inOut',
     }, 0)
-    .to(box, {
-      scale: 1.03,
-      duration: 1.0,
-      ease: 'power2.inOut',
-    }, 0);
+      .to(box, {
+        scale: 1.03,
+        duration: 1.0,
+        ease: 'power2.inOut',
+      }, 0);
 
     // --- SECTION 2: Flavors Discoverability (Slide Out and Return) ---
-    
-    // Rose slides left and returns
+
+    // Rose slides left-up and returns
     tl.to(rose, {
-      x: -260,
+      x: -320,
+      y: -120,
       rotate: -12,
       opacity: 1,
       scale: 1.05,
@@ -98,11 +99,13 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.out',
     }, 1.0)
     .to(rose, {
-      x: -260,
+      x: -320,
+      y: -120,
       duration: 0.2, // brief hold
     }, 1.8)
     .to(rose, {
       x: 0,
+      y: 0,
       rotate: 0,
       opacity: 0,
       scale: 0.8,
@@ -110,9 +113,10 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.in',
     }, 2.0);
 
-    // Chocolate slides right and returns
+    // Chocolate slides right-down and returns
     tl.to(chocolate, {
-      x: 260,
+      x: 320,
+      y: 150,
       rotate: 12,
       opacity: 1,
       scale: 1.05,
@@ -120,11 +124,13 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.out',
     }, 2.6)
     .to(chocolate, {
-      x: 260,
+      x: 320,
+      y: 150,
       duration: 0.2, // brief hold
     }, 3.4)
     .to(chocolate, {
       x: 0,
+      y: 0,
       rotate: 0,
       opacity: 0,
       scale: 0.8,
@@ -132,9 +138,10 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.in',
     }, 3.6);
 
-    // Vanilla slides up and returns
+    // Vanilla slides right-up and returns
     tl.to(vanilla, {
-      y: -240,
+      x: 320,
+      y: -120,
       rotate: -5,
       opacity: 1,
       scale: 1.05,
@@ -142,10 +149,12 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.out',
     }, 4.2)
     .to(vanilla, {
-      y: -240,
+      x: 320,
+      y: -120,
       duration: 0.2, // brief hold
     }, 5.0)
     .to(vanilla, {
+      x: 0,
       y: 0,
       rotate: 0,
       opacity: 0,
@@ -154,9 +163,10 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.in',
     }, 5.2);
 
-    // Butterscotch slides down and returns
+    // Butterscotch slides left-down and returns
     tl.to(butterscotch, {
-      y: 240,
+      x: -320,
+      y: 150,
       rotate: 5,
       opacity: 1,
       scale: 1.05,
@@ -164,10 +174,12 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'power2.out',
     }, 5.8)
     .to(butterscotch, {
-      y: 240,
+      x: -320,
+      y: 150,
       duration: 0.2, // brief hold
     }, 6.6)
     .to(butterscotch, {
+      x: 0,
       y: 0,
       rotate: 0,
       opacity: 0,
@@ -178,8 +190,8 @@ export default function ComboPackShowcase({ onShopClick }) {
 
     // --- SECTION 3: Final Composition Reveal (All 4 surround the box) ---
     tl.to(rose, {
-      x: -240,
-      y: 0,
+      x: -300,
+      y: -100,
       rotate: -8,
       opacity: 1,
       scale: 1,
@@ -187,8 +199,8 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'back.out(1.2)',
     }, 7.4)
     .to(chocolate, {
-      x: 240,
-      y: 0,
+      x: 300,
+      y: 150,
       rotate: 8,
       opacity: 1,
       scale: 1,
@@ -196,8 +208,8 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'back.out(1.2)',
     }, 7.4)
     .to(vanilla, {
-      x: 0,
-      y: -210,
+      x: 300,
+      y: -100,
       rotate: -3,
       opacity: 1,
       scale: 1,
@@ -205,23 +217,23 @@ export default function ComboPackShowcase({ onShopClick }) {
       ease: 'back.out(1.2)',
     }, 7.4)
     .to(butterscotch, {
-      x: 0,
-      y: 210,
+      x: -300,
+      y: 150,
       rotate: 3,
       opacity: 1,
       scale: 1,
       duration: 0.8,
       ease: 'back.out(1.2)',
     }, 7.4)
-    
-    // Reveal text benefits surrounding cards
-    .to([highlightRose, highlightChocolate, highlightVanilla, highlightButterscotch], {
-      opacity: 1,
-      y: 0,
-      stagger: 0.1,
-      duration: 0.6,
-      ease: 'power2.out',
-    }, 7.8);
+
+      // Reveal text benefits surrounding cards
+      .to([highlightRose, highlightChocolate, highlightVanilla, highlightButterscotch], {
+        opacity: 1,
+        y: 0,
+        stagger: 0.1,
+        duration: 0.6,
+        ease: 'power2.out',
+      }, 7.8);
 
     // --- SECTION 4: Reveal pricing (Shrink composition and slide up panel) ---
     tl.to(composition, {
@@ -230,25 +242,25 @@ export default function ComboPackShowcase({ onShopClick }) {
       duration: 0.8,
       ease: 'power2.inOut',
     }, 8.6)
-    .to([rose, chocolate, vanilla, butterscotch, highlightRose, highlightChocolate, highlightVanilla, highlightButterscotch], {
-      opacity: 0,
-      duration: 0.6,
-      ease: 'power2.inOut',
-    }, 8.6)
-    .to(pricingPanel, {
-      opacity: 1,
-      y: 0,
-      pointerEvents: 'auto',
-      duration: 0.8,
-      ease: 'power2.out',
-    }, 8.8);
+      .to([rose, chocolate, vanilla, butterscotch, highlightRose, highlightChocolate, highlightVanilla, highlightButterscotch], {
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power2.inOut',
+      }, 8.6)
+      .to(pricingPanel, {
+        opacity: 1,
+        y: 0,
+        pointerEvents: 'auto',
+        duration: 0.8,
+        ease: 'power2.out',
+      }, 8.8);
 
   }, { scope: containerRef });
 
   return (
     <div ref={containerRef} style={styles.outerContainer}>
       <div style={styles.stickyContainer}>
-        
+
         {/* SECTION 1: Intro Headline */}
         <div ref={introHeadlineRef} style={styles.introHeadline}>
           <span style={styles.subtitle}>THE ATELIER EXPERIENCE</span>
@@ -263,14 +275,14 @@ export default function ComboPackShowcase({ onShopClick }) {
 
         {/* Interactive Composition Area */}
         <div ref={compositionRef} style={styles.compositionArea}>
-          
+
           {/* Supporting flavor card components */}
           {/* Rose - Left */}
           <div className="sachet-card card-rose" style={{ ...styles.sachet, ...styles.roseSachet }}>
             <img src="/assets/rose.jpeg" alt="Rose Blend" style={styles.sachetImg} />
             <span style={styles.sachetName}>Rose Atelier</span>
           </div>
-          
+
           {/* Chocolate - Right */}
           <div className="sachet-card card-chocolate" style={{ ...styles.sachet, ...styles.chocolateSachet }}>
             <img src="/assets/chocolate.jpeg" alt="Cacao Blend" style={styles.sachetImg} />
@@ -328,7 +340,7 @@ export default function ComboPackShowcase({ onShopClick }) {
               <span style={styles.tag}>LIMITED EDITION</span>
               <h3 style={styles.pricingTitle}>Assorted Atelier Combo Box</h3>
             </div>
-            
+
             <div style={styles.priceContainer}>
               <div style={styles.mainPriceCol}>
                 <span style={styles.priceLabel}>First Order Price</span>
@@ -472,19 +484,21 @@ const styles = {
     objectFit: 'contain',
   },
   sachetName: {
-    fontSize: '0.72rem',
+    fontSize: '0.8rem',
     textTransform: 'uppercase',
-    letterSpacing: '0.08em',
-    fontWeight: '700',
+    letterSpacing: '0.1em',
+    fontWeight: '800',
     textAlign: 'center',
+    marginTop: '0.4rem',
   },
   roseSachet: {
     backgroundColor: '#F4D3DC',
     color: '#2B1A12',
   },
   chocolateSachet: {
-    backgroundColor: '#2B1A12',
-    color: '#FAF7F2',
+    backgroundColor: '#4A2B1D', // Lighter brown for contrast
+    color: '#FFFFFF',
+    border: '1px solid #D0853E',
   },
   vanillaSachet: {
     backgroundColor: '#FAF7F2',

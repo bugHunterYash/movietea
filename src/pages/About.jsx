@@ -272,6 +272,16 @@ export default function About() {
                 </p>
               </div>
             </div>
+
+            <div style={styles.ingredientBlock}>
+              <img src="/assets/butterscotch.jpeg" alt="Butterscotch" style={styles.ingImg} />
+              <div style={styles.ingText}>
+                <h3>Toasted Butterscotch</h3>
+                <p style={styles.ingDesc}>
+                  Rich, buttery caramel notes fused beautifully with premium tea leaves, offering a luxurious, dessert-like warmth without artificial syrups.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -517,8 +527,10 @@ const styles = {
   ingImg: {
     width: '100%',
     height: '240px',
-    objectFit: 'cover',
+    objectFit: 'contain',
     border: '1px solid var(--border-color)',
+    backgroundColor: '#FFFFFF',
+    padding: '1rem',
   },
   ingText: {
     display: 'flex',

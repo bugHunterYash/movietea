@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Coffee, 
-  ShoppingBag, 
-  Tag, 
-  Edit3, 
-  Trash2, 
-  Check, 
-  X, 
-  ArrowUp, 
-  ArrowDown
+import {
+  LayoutDashboard,
+  Coffee,
+  ShoppingBag,
+  Tag,
+  Edit3,
+  Trash2,
+  Check,
+  X,
+  ArrowUp,
+  ArrowDown,
+  ClipboardList
 } from 'lucide-react';
 import api from '../api/client';
 
@@ -21,11 +22,12 @@ export default function Admin() {
   React.useEffect(() => {
     document.title = "Operations Admin | MOVITEA";
   }, []);
-  
+
   // States
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [promos, setPromos] = useState([]);
+  const [preOrders, setPreOrders] = useState([]);
   const [stats, setStats] = useState(null);
 
   // Modal / Form States
@@ -42,13 +44,15 @@ export default function Admin() {
 
   // Determine current active subsection based on path
   const path = location.pathname;
-  const currentTab = path.includes('/products') 
-    ? 'products' 
-    : path.includes('/orders') 
-    ? 'orders' 
-    : path.includes('/promos') 
-    ? 'promos' 
-    : 'dashboard';
+  const currentTab = path.includes('/products')
+    ? 'products'
+    : path.includes('/orders')
+      ? 'orders'
+      : path.includes('/preorders')
+        ? 'preorders'
+        : path.includes('/promos')
+          ? 'promos'
+          : 'dashboard';
 
   // --- DATA FETCHING ---
   const fetchData = async () => {
@@ -65,6 +69,9 @@ export default function Admin() {
       } else if (currentTab === 'promos') {
         const res = await api.get('/promos');
         setPromos(res.data);
+      } else if (currentTab === 'preorders') {
+        const res = await api.get('/preorders');
+        setPreOrders(res.data);
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -96,7 +103,7 @@ export default function Admin() {
       } else {
         await api.post('/products', formData);
       }
-      
+
       setProductForm({ name: '', slug: '', price: 0, discountPrice: 0, stock: 0, orderNumber: products.length + 1, category: '10 Sachets', flavorType: '', image: '', active: true, featured: false, desc: '', shortDesc: '' });
       setProductImageFile(null);
       setSelectedProduct(null);
@@ -186,6 +193,42 @@ export default function Admin() {
     }
   };
 
+  // --- PRE-ORDER HANDLERS ---
+  const updatePreOrderStatus = async (id, status) => {
+    try {
+      await api.put(`/preorders/${id}/status`, { status });
+      fetchData();
+    } catch (err) {
+      alert('Failed to update status');
+    }
+  };
+
+  const deletePreOrder = async (id) => {
+    if (window.confirm('Delete this pre-order?')) {
+      try {
+        await api.delete(`/preorders/${id}`);
+        fetchData();
+      } catch (err) {
+        alert('Failed to delete pre-order');
+      }
+    }
+  };
+
+  const exportPreOrdersCSV = () => {
+    const headers = ['ID,Customer Name,Mobile Number,Product,Date,Status'];
+    const rows = preOrders.map(p =>
+      `${p.id},"${p.name}","${p.phone}","${p.product?.name || 'N/A'}","${new Date(p.createdAt).toLocaleDateString()}","${p.status}"`
+    );
+    const csvContent = "data:text/csv;charset=utf-8," + headers.concat(rows).join("\\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "pre_orders.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Render sub sections
   const renderContent = () => {
     switch (currentTab) {
@@ -201,61 +244,61 @@ export default function Admin() {
               {/* Product Form */}
               <form onSubmit={handleProductSubmit} style={styles.adminCard}>
                 <h3 style={styles.cardHeader}>{selectedProduct ? 'Update Product Details' : 'Add New Product'}</h3>
-                
+
                 <div style={styles.formGrid}>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Product Name</label>
-                    <input 
-                      type="text" required style={styles.input} 
-                      value={productForm.name} 
+                    <input
+                      type="text" required style={styles.input}
+                      value={productForm.name}
                       onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
                       placeholder="e.g. Lavender Rose"
                     />
                   </div>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Slug</label>
-                    <input 
-                      type="text" required style={styles.input} 
-                      value={productForm.slug} 
+                    <input
+                      type="text" required style={styles.input}
+                      value={productForm.slug}
                       onChange={(e) => setProductForm({ ...productForm, slug: e.target.value })}
                     />
                   </div>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Base Price (₹)</label>
-                    <input 
-                      type="number" required style={styles.input} 
-                      value={productForm.price || ''} 
+                    <input
+                      type="number" required style={styles.input}
+                      value={productForm.price || ''}
                       onChange={(e) => setProductForm({ ...productForm, price: parseInt(e.target.value) || 0 })}
                     />
                   </div>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Selling Price (₹)</label>
-                    <input 
-                      type="number" style={styles.input} 
-                      value={productForm.discountPrice || ''} 
+                    <input
+                      type="number" style={styles.input}
+                      value={productForm.discountPrice || ''}
                       onChange={(e) => setProductForm({ ...productForm, discountPrice: parseInt(e.target.value) || 0 })}
                     />
                   </div>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Stock Quantity</label>
-                    <input 
-                      type="number" required style={styles.input} 
-                      value={productForm.stock} 
+                    <input
+                      type="number" required style={styles.input}
+                      value={productForm.stock}
                       onChange={(e) => setProductForm({ ...productForm, stock: parseInt(e.target.value) })}
                     />
                   </div>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Order Number</label>
-                    <input 
-                      type="number" required style={styles.input} 
-                      value={productForm.orderNumber} 
+                    <input
+                      type="number" required style={styles.input}
+                      value={productForm.orderNumber}
                       onChange={(e) => setProductForm({ ...productForm, orderNumber: parseInt(e.target.value) })}
                     />
                   </div>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Category</label>
-                    <select 
-                      style={styles.select} 
+                    <select
+                      style={styles.select}
                       value={productForm.category}
                       onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
                     >
@@ -267,8 +310,8 @@ export default function Admin() {
                   </div>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Flavor Type</label>
-                    <input 
-                      type="text" style={styles.input} 
+                    <input
+                      type="text" style={styles.input}
                       value={productForm.flavorType || ''}
                       onChange={(e) => setProductForm({ ...productForm, flavorType: e.target.value })}
                     />
@@ -276,42 +319,42 @@ export default function Admin() {
                   {/* Type field removed as it's handled via Category/FlavorType */}
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Upload Image</label>
-                    <input 
-                      type="file" style={styles.input} 
+                    <input
+                      type="file" style={styles.input}
                       onChange={(e) => setProductImageFile(e.target.files[0])}
                     />
                   </div>
-                  
+
                   <div style={styles.inputGroupFull}>
                     <label style={styles.label}>Short Description</label>
-                    <input 
-                      type="text" style={styles.input} 
-                      value={productForm.shortDesc || ''} 
+                    <input
+                      type="text" style={styles.input}
+                      value={productForm.shortDesc || ''}
                       onChange={(e) => setProductForm({ ...productForm, shortDesc: e.target.value })}
                     />
                   </div>
 
                   <div style={styles.inputGroupFull}>
                     <label style={styles.label}>Detailed Description</label>
-                    <textarea 
-                      style={styles.textarea} 
-                      value={productForm.desc || ''} 
+                    <textarea
+                      style={styles.textarea}
+                      value={productForm.desc || ''}
                       onChange={(e) => setProductForm({ ...productForm, desc: e.target.value })}
                     />
                   </div>
 
                   <div style={styles.checkboxRow}>
                     <label style={styles.checkboxLabel}>
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         checked={productForm.featured}
                         onChange={(e) => setProductForm({ ...productForm, featured: e.target.checked })}
                       />
                       <span>Featured Product</span>
                     </label>
                     <label style={styles.checkboxLabel}>
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         checked={productForm.active}
                         onChange={(e) => setProductForm({ ...productForm, active: e.target.checked })}
                       />
@@ -338,7 +381,7 @@ export default function Admin() {
                   {products.length === 0 ? (
                     <p>No products yet.</p>
                   ) : (
-                    products.sort((a,b) => a.orderNumber - b.orderNumber).map((prod, index) => (
+                    products.sort((a, b) => a.orderNumber - b.orderNumber).map((prod, index) => (
                       <div key={prod.id} style={styles.productRow}>
                         <div style={styles.productRowLeft}>
                           <div>
@@ -346,7 +389,7 @@ export default function Admin() {
                             <span style={styles.productSub}>Order Pos: {prod.orderNumber} &bull; Price: ₹{prod.discountPrice || prod.price}</span>
                           </div>
                         </div>
-                        
+
                         <div style={styles.productRowActions}>
                           <button onClick={() => editProduct(prod)} style={styles.actionBtnEdit}>
                             <Edit3 size={16} />
@@ -390,15 +433,15 @@ export default function Admin() {
                   <tbody>
                     {orders.length === 0 ? (
                       <tr>
-                        <td colSpan="7" style={{textAlign: 'center', padding: '2rem', color: '#8A7A6B'}}>
-                          No orders yet.<br/>Orders placed by customers will appear here.
+                        <td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#8A7A6B' }}>
+                          No orders yet.<br />Orders placed by customers will appear here.
                         </td>
                       </tr>
                     ) : (
                       orders.map(order => (
                         <tr key={order.id} style={styles.tr}>
-                          <td style={styles.td}><strong>#{order.id}</strong><div style={{fontSize: '0.75rem', opacity: 0.6}}>{new Date(order.createdAt).toLocaleDateString()}</div></td>
-                          <td style={styles.td}>{order.user?.name || 'Guest'}<div style={{fontSize: '0.75rem', opacity: 0.6}}>{order.user?.email}</div></td>
+                          <td style={styles.td}><strong>#{order.id}</strong><div style={{ fontSize: '0.75rem', opacity: 0.6 }}>{new Date(order.createdAt).toLocaleDateString()}</div></td>
+                          <td style={styles.td}>{order.user?.name || 'Guest'}<div style={{ fontSize: '0.75rem', opacity: 0.6 }}>{order.user?.email}</div></td>
                           <td style={styles.td}>{order.items?.map(i => `${i.product?.name} x${i.quantity}`).join(', ')}</td>
                           <td style={styles.td}><strong>₹{order.totalAmount}</strong></td>
                           <td style={styles.td}>
@@ -411,8 +454,8 @@ export default function Admin() {
                             </span>
                           </td>
                           <td style={styles.td}>
-                            <select 
-                              value={order.orderStatus} 
+                            <select
+                              value={order.orderStatus}
                               onChange={(e) => updateOrderStatus(order.id, e.target.value)}
                               style={styles.tableSelect}
                             >
@@ -424,15 +467,15 @@ export default function Admin() {
                           </td>
                           <td style={styles.td}>
                             <div style={styles.tableActionRow}>
-                              <button 
-                                onClick={() => updateOrderVerification(order.id, 'APPROVED')} 
+                              <button
+                                onClick={() => updateOrderVerification(order.id, 'APPROVED')}
                                 disabled={order.verificationStatus === 'APPROVED'}
                                 style={styles.btnApprove}
                               >
                                 <Check size={14} /> Approve
                               </button>
-                              <button 
-                                onClick={() => updateOrderVerification(order.id, 'REJECTED')} 
+                              <button
+                                onClick={() => updateOrderVerification(order.id, 'REJECTED')}
                                 disabled={order.verificationStatus === 'REJECTED'}
                                 style={styles.btnReject}
                               >
@@ -461,44 +504,44 @@ export default function Admin() {
             <div style={styles.adminGrid}>
               <form onSubmit={handlePromoSubmit} style={styles.promoFormCard}>
                 <h3 style={{ ...styles.cardHeader, color: '#2B1A12' }}>{selectedPromo ? 'Modify Discount Code' : 'Create Promo Code'}</h3>
-                
+
                 <div style={styles.formGrid}>
                   <div style={styles.inputGroupFull}>
                     <label style={styles.label}>Promo Code Name</label>
-                    <input 
-                      type="text" required style={styles.inputPromo} 
-                      value={promoForm.code} 
+                    <input
+                      type="text" required style={styles.inputPromo}
+                      value={promoForm.code}
                       onChange={(e) => setPromoForm({ ...promoForm, code: e.target.value.toUpperCase() })}
                     />
                   </div>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Standard Price (₹)</label>
-                    <input 
-                      type="number" required style={styles.inputPromo} 
-                      value={promoForm.originalPrice} 
+                    <input
+                      type="number" required style={styles.inputPromo}
+                      value={promoForm.originalPrice}
                       onChange={(e) => setPromoForm({ ...promoForm, originalPrice: parseInt(e.target.value) })}
                     />
                   </div>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Discounted Price (₹)</label>
-                    <input 
-                      type="number" required style={styles.inputPromo} 
-                      value={promoForm.discountedPrice} 
+                    <input
+                      type="number" required style={styles.inputPromo}
+                      value={promoForm.discountedPrice}
                       onChange={(e) => setPromoForm({ ...promoForm, discountedPrice: parseInt(e.target.value) })}
                     />
                   </div>
                   <div style={styles.inputGroupFull}>
                     <label style={styles.label}>Validity Date</label>
-                    <input 
-                      type="date" required style={styles.inputPromo} 
-                      value={promoForm.validity} 
+                    <input
+                      type="date" required style={styles.inputPromo}
+                      value={promoForm.validity}
                       onChange={(e) => setPromoForm({ ...promoForm, validity: e.target.value })}
                     />
                   </div>
-                  
+
                   <label style={styles.checkboxLabel}>
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={promoForm.active}
                       onChange={(e) => setPromoForm({ ...promoForm, active: e.target.checked })}
                     />
@@ -531,7 +574,7 @@ export default function Admin() {
                             Original: ₹{promo.originalPrice} &bull; Discount: ₹{promo.discountedPrice}
                           </p>
                         </div>
-                        
+
                         <div style={styles.productRowActions}>
                           <button onClick={() => editPromo(promo)} style={styles.actionBtnEdit}>
                             <Edit3 size={16} />
@@ -549,10 +592,77 @@ export default function Admin() {
           </div>
         );
 
+      case 'preorders':
+        return (
+          <div style={styles.sectionContainer}>
+            <div style={styles.sectionHeader}>
+              <h2 style={styles.sectionTitle}>Pre-Orders</h2>
+              <span style={styles.sectionSubtitle}>Manage early access product registrations</span>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+              <button onClick={exportPreOrdersCSV} style={styles.submitPromoBtn}>
+                Export CSV
+              </button>
+            </div>
+
+            <div style={styles.adminCardFull}>
+              <h3 style={styles.cardHeader}>Customer Pre-Orders</h3>
+              <div style={styles.tableWrapper}>
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={styles.th}>Customer Name</th>
+                      <th style={styles.th}>Mobile Number</th>
+                      <th style={styles.th}>Product</th>
+                      <th style={styles.th}>Date</th>
+                      <th style={styles.th}>Status</th>
+                      <th style={styles.th}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {preOrders.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" style={{ textAlign: 'center', padding: '2rem', color: '#8A7A6B' }}>
+                          No pre-orders yet.
+                        </td>
+                      </tr>
+                    ) : (
+                      preOrders.map(pre => (
+                        <tr key={pre.id} style={styles.tr}>
+                          <td style={styles.td}><strong>{pre.name}</strong></td>
+                          <td style={styles.td}>{pre.phone}</td>
+                          <td style={styles.td}>{pre.product?.name || pre.productId}</td>
+                          <td style={styles.td}>{new Date(pre.createdAt).toLocaleDateString()}</td>
+                          <td style={styles.td}>
+                            <select
+                              value={pre.status}
+                              onChange={(e) => updatePreOrderStatus(pre.id, e.target.value)}
+                              style={styles.tableSelect}
+                            >
+                              <option value="New">New</option>
+                              <option value="Contacted">Contacted</option>
+                            </select>
+                          </td>
+                          <td style={styles.td}>
+                            <button onClick={() => deletePreOrder(pre.id)} style={styles.actionBtnDelete}>
+                              <Trash2 size={16} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+
       case 'dashboard':
       default:
         if (!stats) return <p>Loading data...</p>;
-        
+
         return (
           <div style={styles.sectionContainer}>
             <div style={styles.sectionHeader}>
@@ -586,14 +696,14 @@ export default function Admin() {
 
             {/* Main Dashboard Layout (Graph + Orders) */}
             <div style={styles.dashboardLayout}>
-              
+
               <div style={styles.adminCard}>
                 <h3 style={styles.cardHeader}>Revenue History</h3>
                 <div style={styles.chartArea}>
                   {Object.keys(stats.revenueByMonth || {}).length === 0 ? (
-                    <p style={{color: '#8A7A6B'}}>No sales data available.</p>
+                    <p style={{ color: '#8A7A6B' }}>No sales data available.</p>
                   ) : (
-                    <p style={{color: '#8A7A6B'}}>[Graph Data Available in JSON: {JSON.stringify(stats.revenueByMonth)}]</p>
+                    <p style={{ color: '#8A7A6B' }}>[Graph Data Available in JSON: {JSON.stringify(stats.revenueByMonth)}]</p>
                   )}
                 </div>
               </div>
@@ -602,7 +712,7 @@ export default function Admin() {
                 <h3 style={styles.cardHeader}>Recent Order logs</h3>
                 <div style={styles.simpleList}>
                   {(!stats.recentOrders || stats.recentOrders.length === 0) ? (
-                    <p style={{color: '#8A7A6B'}}>No recent orders.</p>
+                    <p style={{ color: '#8A7A6B' }}>No recent orders.</p>
                   ) : (
                     stats.recentOrders.map(o => (
                       <div key={o.id} style={styles.orderListItem}>
@@ -625,7 +735,7 @@ export default function Admin() {
 
   return (
     <div style={styles.adminLayout}>
-      
+
       {/* Sidebar Panel */}
       <aside style={styles.sidebar}>
         <div style={styles.logoSection}>
@@ -634,8 +744,8 @@ export default function Admin() {
         </div>
 
         <nav style={styles.sideNav}>
-          <button 
-            onClick={() => navigate('/admin')} 
+          <button
+            onClick={() => navigate('/admin')}
             style={{
               ...styles.navBtn,
               backgroundColor: currentTab === 'dashboard' ? 'var(--cream-color)' : 'transparent',
@@ -644,9 +754,9 @@ export default function Admin() {
           >
             <LayoutDashboard size={18} /> Dashboard
           </button>
-          
-          <button 
-            onClick={() => navigate('/admin/products')} 
+
+          <button
+            onClick={() => navigate('/admin/products')}
             style={{
               ...styles.navBtn,
               backgroundColor: currentTab === 'products' ? 'var(--cream-color)' : 'transparent',
@@ -656,8 +766,8 @@ export default function Admin() {
             <Coffee size={18} /> Products
           </button>
 
-          <button 
-            onClick={() => navigate('/admin/orders')} 
+          <button
+            onClick={() => navigate('/admin/orders')}
             style={{
               ...styles.navBtn,
               backgroundColor: currentTab === 'orders' ? 'var(--cream-color)' : 'transparent',
@@ -667,8 +777,19 @@ export default function Admin() {
             <ShoppingBag size={18} /> Orders
           </button>
 
-          <button 
-            onClick={() => navigate('/admin/promos')} 
+          <button
+            onClick={() => navigate('/admin/preorders')}
+            style={{
+              ...styles.navBtn,
+              backgroundColor: currentTab === 'preorders' ? 'var(--cream-color)' : 'transparent',
+              color: currentTab === 'preorders' ? 'var(--primary-color)' : 'var(--dark-color)',
+            }}
+          >
+            <ClipboardList size={18} /> Pre-Orders
+          </button>
+
+          <button
+            onClick={() => navigate('/admin/promos')}
             style={{
               ...styles.navBtn,
               backgroundColor: currentTab === 'promos' ? 'var(--cream-color)' : 'transparent',
@@ -775,7 +896,7 @@ const styles = {
     flex: 1,
     padding: '3rem',
     marginLeft: '280px', // Matches sidebar width
-    minWidth: 0, 
+    minWidth: 0,
   },
   sectionContainer: {
     display: 'flex',

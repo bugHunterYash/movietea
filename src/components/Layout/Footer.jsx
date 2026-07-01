@@ -32,7 +32,6 @@ export default function Footer() {
               <button onClick={() => handleNavClick('/bulk-orders')} style={styles.footerLink}>Bulk Orders</button>
             </div>
           </div>
-
           {/* Links Column 2 */}
           <div style={styles.column}>
             <h4 style={styles.colTitle}>Flavours</h4>
@@ -43,6 +42,8 @@ export default function Footer() {
               <button onClick={() => handleNavClick('/product/chocolate')} style={styles.footerLink}>Chocolate Tea</button>
             </div>
           </div>
+
+
 
           {/* Newsletter */}
           <div style={styles.columnNewsletter}>
@@ -58,9 +59,10 @@ export default function Footer() {
         <div style={styles.bottomRow}>
           <p style={styles.copyText}>&copy; {currentYear} MOVITEA. All Rights Reserved.</p>
           <div style={styles.socials}>
-            <a href="#instagram" style={styles.socialLink}>Instagram</a>
-            <a href="#pinterest" style={styles.socialLink}>Pinterest</a>
-            <a href="#twitter" style={styles.socialLink}>Twitter</a>
+            <a href="https://www.instagram.com/movitea" target="_blank" rel="noopener noreferrer" style={styles.socialLink} className="social-hover">Instagram</a>
+            <a href="https://www.facebook.com/share/1BiKDUADFX/" target="_blank" rel="noopener noreferrer" style={styles.socialLink} className="social-hover">Facebook</a>
+            <a href="https://x.com/Movitea26" target="_blank" rel="noopener noreferrer" style={styles.socialLink} className="social-hover">X (Twitter)</a>
+            <a href="https://www.threads.com/@movitea" target="_blank" rel="noopener noreferrer" style={styles.socialLink} className="social-hover">Threads</a>
           </div>
         </div>
       </div>
@@ -92,7 +94,7 @@ const styles = {
     gap: '1.5rem',
   },
   footerLogo: {
-    height: '40px',
+    height: '140px',
     alignSelf: 'flex-start',
     mixBlendMode: 'multiply',
   },
@@ -198,6 +200,12 @@ styleSheetFooter.innerText = `
       grid-template-columns: 1fr !important;
       gap: 2.5rem !important;
     }
+  }
+  .social-hover {
+    transition: color 0.3s ease;
+  }
+  .social-hover:hover {
+    color: #D0853E !important;
   }
 `;
 document.head.appendChild(styleSheetFooter);

@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '../api/client';
+import PreOrderModal from '../components/PreOrderModal';
 
-export default function Shop({ onAddToCart, setSelectedProduct }) {
+export default function Shop({ setSelectedProduct }) {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isPreOrderModalOpen, setIsPreOrderModalOpen] = useState(false);
+  const [preOrderProduct, setPreOrderProduct] = useState(null);
 
   useEffect(() => {
     document.title = "Shop Premium Blends | MOVITEA";
@@ -129,17 +132,12 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            onAddToCart({
-                              id: prod.id,
-                              name: prod.name,
-                              price: activePrice,
-                              img: prod.image,
-                              desc: prod.desc
-                            });
+                            setPreOrderProduct({ id: prod.id, name: prod.name });
+                            setIsPreOrderModalOpen(true);
                           }}
                           style={isCombo ? { ...styles.addBtn, ...styles.comboAddBtn } : styles.addBtn}
                         >
-                          Add to Cart
+                          PRE-ORDER
                         </button>
                       </div>
                     </div>
@@ -150,6 +148,12 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
           </motion.div>
         )}
       </div>
+
+      <PreOrderModal 
+        isOpen={isPreOrderModalOpen}
+        onClose={() => setIsPreOrderModalOpen(false)}
+        product={preOrderProduct}
+      />
     </div>
   );
 }

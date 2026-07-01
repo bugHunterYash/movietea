@@ -6,13 +6,13 @@ import api from '../api/client';
 export default function Login() {
   const navigate = useNavigate();
   const [isLoginMode, setIsLoginMode] = useState(true);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: ''
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -35,12 +35,12 @@ export default function Login() {
 
     try {
       const endpoint = isLoginMode ? '/auth/login' : '/auth/register';
-      const payload = isLoginMode 
+      const payload = isLoginMode
         ? { email: formData.email, password: formData.password }
         : { name: formData.name, email: formData.email, password: formData.password };
-        
+
       const res = await api.post(endpoint, payload);
-      
+
       if (res.data.token) {
         localStorage.setItem('token', res.data.token);
         navigate('/');
@@ -54,7 +54,7 @@ export default function Login() {
 
   return (
     <div style={styles.container}>
-      <motion.div 
+      <motion.div
         style={styles.card}
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -63,16 +63,16 @@ export default function Login() {
         <div style={styles.logoContainer}>
           <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.logo} />
         </div>
-        
+
         <div style={styles.toggleContainer}>
-          <button 
-            style={{...styles.toggleBtn, ...(isLoginMode ? styles.activeToggle : {})}}
+          <button
+            style={{ ...styles.toggleBtn, ...(isLoginMode ? styles.activeToggle : {}) }}
             onClick={() => setIsLoginMode(true)}
           >
             Sign In
           </button>
-          <button 
-            style={{...styles.toggleBtn, ...(!isLoginMode ? styles.activeToggle : {})}}
+          <button
+            style={{ ...styles.toggleBtn, ...(!isLoginMode ? styles.activeToggle : {}) }}
             onClick={() => setIsLoginMode(false)}
           >
             Create Account
@@ -81,15 +81,15 @@ export default function Login() {
 
         <h1 style={styles.title}>{isLoginMode ? 'Welcome Back' : 'Join the Atelier'}</h1>
         <p style={styles.subtitle}>
-          {isLoginMode 
-            ? 'Sign in to access your premium tea collection.' 
+          {isLoginMode
+            ? 'Sign in to access your premium tea collection.'
             : 'Create an account to track orders and save your favorites.'}
         </p>
-        
+
         <form onSubmit={handleSubmit} style={styles.form}>
           <AnimatePresence mode="wait">
             {!isLoginMode && (
-              <motion.div 
+              <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
@@ -107,7 +107,7 @@ export default function Login() {
               </motion.div>
             )}
           </AnimatePresence>
-          
+
           <input
             type="email"
             name="email"
@@ -117,7 +117,7 @@ export default function Login() {
             style={styles.input}
             required
           />
-          
+
           <input
             type="password"
             name="password"

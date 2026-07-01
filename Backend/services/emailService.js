@@ -124,7 +124,38 @@ const sendOrderConfirmationEmail = async (order, userEmail) => {
   }
 };
 
+const sendPreOrderEmail = async (name, email, productName) => {
+  try {
+    const data = await resend.emails.send({
+      from: EMAIL_FROM,
+      to: email,
+      subject: 'Your MOVITEA Pre-Order is Confirmed ☕',
+      html: `
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #FAF7F2; border: 1px solid #EAEAEA;">
+          <div style="text-align: center; padding: 40px 20px;">
+            <h1 style="color: #2B1A12; font-size: 26px; font-weight: 300; margin-bottom: 20px;">Pre-Order Confirmed</h1>
+            <p style="color: #8A7A6B; font-size: 16px; line-height: 1.6; text-align: left; padding: 0 20px;">
+              Hi ${name},<br/><br/>
+              Thank you for pre-ordering <strong>${productName}</strong>.<br/><br/>
+              We have received your request.<br/><br/>
+              We'll notify you first when this product becomes available.<br/><br/>
+              Thank you for being one of our earliest customers.<br/><br/>
+              — Team MOVITEA
+            </p>
+          </div>
+        </div>
+      `
+    });
+    console.log('Pre-order email sent via Resend:', data);
+    return data;
+  } catch (error) {
+    console.error('Failed to send pre-order email via Resend:', error);
+    return null;
+  }
+};
+
 module.exports = {
   sendWelcomeEmail,
-  sendOrderConfirmationEmail
+  sendOrderConfirmationEmail,
+  sendPreOrderEmail
 };
