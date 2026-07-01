@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let rawUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+let rawUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_BASE_URL || 'https://movietea.onrender.com';
 if (rawUrl.endsWith('/')) rawUrl = rawUrl.slice(0, -1);
 if (!rawUrl.endsWith('/api')) rawUrl += '/api';
 
