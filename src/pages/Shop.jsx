@@ -68,7 +68,6 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
         ) : products.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '4rem', fontSize: '1.2rem' }}>No products found. Please check back later.</div>
         ) : (
-          {/* Continuous Product Grid */}
           <motion.div 
             className="shop-product-grid"
             style={styles.productGrid}
