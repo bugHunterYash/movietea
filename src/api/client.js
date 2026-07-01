@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+let rawUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+if (rawUrl.endsWith('/')) rawUrl = rawUrl.slice(0, -1);
+if (!rawUrl.endsWith('/api')) rawUrl += '/api';
+
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api`,
+  baseURL: rawUrl,
   withCredentials: true
 });
 
