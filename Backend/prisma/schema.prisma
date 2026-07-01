@@ -21,9 +21,10 @@ model User {
   id        String   @id @default(cuid())
   name      String?
   email     String?  @unique
+  password  String?
   image     String?
   googleId  String?  @unique
-  role String @default("CUSTOMER")
+  role      String   @default("CUSTOMER")
   phone     String?
   address1  String?
   address2  String?
@@ -141,4 +142,23 @@ model CartItem {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
+}
+
+model BulkInquiry {
+  id                 String   @id @default(cuid())
+  companyName        String
+  contactPerson      String
+  email              String
+  phone              String
+  gstNumber          String?
+  city               String
+  state              String
+  pincode            String
+  businessType       String
+  interestedProducts String
+  estimatedQuantity  String
+  message            String?
+  status             String   @default("PENDING")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }

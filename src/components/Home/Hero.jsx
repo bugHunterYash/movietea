@@ -1,32 +1,39 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { getProducts } from '../../utils/db';
+import api from '../../api/client';
 
 export default function Hero({ onShopClick }) {
   const containerRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-  const allProducts = getProducts();
-  const heroProducts = [
-    allProducts.find(p => p.id === 'hero_combo'),
-    allProducts.find(p => p.id === 'choc_100'),
-    allProducts.find(p => p.id === 'van_jar'),
-    allProducts.find(p => p.id === 'combo_10'),
-    allProducts.find(p => p.id === 'rose_10'),
-    allProducts.find(p => p.id === 'combo_jar'),
-  ].filter(Boolean);
+  const [heroProducts, setHeroProducts] = useState([]);
+  
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const res = await api.get('/products');
+        const featured = res.data.filter(p => p.featured);
+        if (featured.length > 0) {
+          setHeroProducts(featured);
+        }
+      } catch (err) {}
+    };
+    fetchFeatured();
+  }, []);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    if (heroProducts.length === 0) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % heroProducts.length);
     }, 4000);
     return () => clearInterval(interval);
   }, [heroProducts.length]);
 
-  const currentProduct = heroProducts[currentIndex] || heroProducts[0];
-
+  const currentProduct = heroProducts[currentIndex];
+  const activePrice = currentProduct ? (currentProduct.discountPrice || currentProduct.price) : 0;
+  
   // Monitor scroll progress of the hero section
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -64,6 +71,8 @@ export default function Hero({ onShopClick }) {
 
   const rotateX = -mousePos.y * 12;
   const rotateY = mousePos.x * 12;
+
+  if (!currentProduct) return <div style={styles.heroSection}></div>;
 
   return (
     <section ref={containerRef} style={styles.heroSection} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
@@ -188,7 +197,7 @@ export default function Hero({ onShopClick }) {
                   exit={{ opacity: 0 }}
                   style={{ ...styles.priceReal, display: 'inline-block' }}
                 >
-                  ₹{currentProduct.sellingPrice}
+                  ₹{activePrice}
                 </motion.span>
               </AnimatePresence>
               <AnimatePresence mode="wait">
@@ -199,7 +208,7 @@ export default function Hero({ onShopClick }) {
                   exit={{ opacity: 0 }}
                   style={{ ...styles.priceMrp, display: 'inline-block' }}
                 >
-                  ₹{currentProduct.basePrice}
+                  ₹{currentProduct.price}
                 </motion.span>
               </AnimatePresence>
               <AnimatePresence mode="wait">
@@ -210,7 +219,7 @@ export default function Hero({ onShopClick }) {
                   exit={{ opacity: 0 }}
                   style={{ ...styles.saveBadge, display: 'inline-block' }}
                 >
-                  Save ₹{currentProduct.basePrice - currentProduct.sellingPrice}
+                  Save ₹{currentProduct.price - activePrice}
                 </motion.span>
               </AnimatePresence>
             </div>
@@ -224,7 +233,7 @@ export default function Hero({ onShopClick }) {
                   exit={{ opacity: 0 }}
                   style={{ ...styles.firstOrderPrice, display: 'inline-block' }}
                 >
-                  ₹{Math.floor(currentProduct.sellingPrice * 0.7)}
+                  ₹{Math.floor(activePrice * 0.7)}
                 </motion.span>
               </AnimatePresence>
               <span style={styles.percentOffBadge}>30% OFF Applied</span>
@@ -610,4 +619,3 @@ if (typeof document !== 'undefined') {
   `;
   document.head.appendChild(styleSheetHero);
 }
-

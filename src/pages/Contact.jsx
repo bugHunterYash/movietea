@@ -23,14 +23,14 @@ export default function Contact() {
           <div style={styles.detailsBlock}>
             <div style={styles.detailItem}>
               <h4>Concierge Support</h4>
-              <p>support@movitea.com</p>
-              <p>+91 98765 43210</p>
+              <p>Movitea8@gmail.com</p>
+              <p>+91 9818501302</p>
             </div>
             
             <div style={styles.detailItem}>
               <h4>Atelier Location</h4>
-              <p>12, Luxury Row, Jubilee Hills</p>
-              <p>Hyderabad, TS, India</p>
+              <p>Rzg 405A Rajnagar 2 palam</p>
+              <p>Delhi 110077</p>
             </div>
 
             <div style={styles.detailItem}>

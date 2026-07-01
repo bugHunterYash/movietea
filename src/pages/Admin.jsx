@@ -1,39 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Coffee, 
   ShoppingBag, 
   Tag, 
-  Users, 
-  Settings as SettingsIcon, 
-  Plus, 
-  Trash2, 
   Edit3, 
+  Trash2, 
   Check, 
   X, 
   ArrowUp, 
-  ArrowDown, 
-  Mail, 
-  Truck,
-  Sparkles,
-  Info
+  ArrowDown
 } from 'lucide-react';
-import { getProducts, saveProducts } from '../utils/db';
-
-
-// Mock initial orders
-const INITIAL_ORDERS = [
-  { id: 'MOV-8910', customerName: 'Aishwarya R.', phone: '9876543210', products: 'Rose Atelier x2', amount: 445, paymentStatus: 'Paid', verificationStatus: 'Pending', orderStatus: 'Placed', date: '2026-06-23' },
-  { id: 'MOV-8911', customerName: 'Kabir S.', phone: '9123456780', products: 'Cacao Reserve x1, Vanilla Orchid x1', amount: 365, paymentStatus: 'Paid', verificationStatus: 'Approved', orderStatus: 'Shipped', date: '2026-06-22' },
-  { id: 'MOV-8912', customerName: 'Meera G.', phone: '8877665544', products: 'Toasted Butterscotch x3', amount: 664, paymentStatus: 'Unpaid', verificationStatus: 'Rejected', orderStatus: 'Cancelled', date: '2026-06-21' }
-];
-
-// Mock initial promo codes
-const INITIAL_PROMOS = [
-  { id: 1, code: 'TEA50', originalPrice: 349, discountedPrice: 299, validity: '2026-12-31', active: true },
-  { id: 2, code: 'WELCOME100', originalPrice: 1899, discountedPrice: 1799, validity: '2026-08-15', active: true }
-];
+import api from '../api/client';
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -41,22 +20,20 @@ export default function Admin() {
 
   React.useEffect(() => {
     document.title = "Operations Admin | MOVITEA";
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute("content", "Internal Operations Admin Panel for MOVITEA brand management, order verification, and promo code desks.");
-    }
   }, []);
   
   // States
-  const [products, setProducts] = useState(() => getProducts());
-  const [orders, setOrders] = useState(INITIAL_ORDERS);
-  const [promos, setPromos] = useState(INITIAL_PROMOS);
+  const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [promos, setPromos] = useState([]);
+  const [stats, setStats] = useState(null);
 
   // Modal / Form States
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [productForm, setProductForm] = useState({
-    name: '', slug: '', basePrice: 0, sellingPrice: 0, stock: 0, orderNumber: 0, category: '10 Sachets', flavour: '', type: 'flavour', image: '', active: true, featured: false, desc: '', shortDesc: ''
+    name: '', slug: '', price: 0, discountPrice: 0, stock: 0, orderNumber: 0, category: '10 Sachets', flavorType: '', image: '', active: true, featured: false, desc: '', shortDesc: ''
   });
+  const [productImageFile, setProductImageFile] = useState(null);
 
   const [selectedPromo, setSelectedPromo] = useState(null);
   const [promoForm, setPromoForm] = useState({
@@ -73,30 +50,61 @@ export default function Admin() {
     ? 'promos' 
     : 'dashboard';
 
-  // --- PRODUCT CRUD ---
-  const handleProductSubmit = (e) => {
-    e.preventDefault();
-    let updatedProducts;
-    if (selectedProduct) {
-      // Update
-      updatedProducts = products.map(p => p.id === selectedProduct.id ? { ...p, ...productForm } : p);
-      setProducts(updatedProducts);
-      setSelectedProduct(null);
-    } else {
-      // Add
-      const newProduct = {
-        id: `prod_${Date.now()}`,
-        ...productForm
-      };
-      updatedProducts = [...products, newProduct];
-      setProducts(updatedProducts);
+  // --- DATA FETCHING ---
+  const fetchData = async () => {
+    try {
+      if (currentTab === 'dashboard') {
+        const res = await api.get('/admin/stats');
+        setStats(res.data);
+      } else if (currentTab === 'products') {
+        const res = await api.get('/products/admin');
+        setProducts(res.data);
+      } else if (currentTab === 'orders') {
+        const res = await api.get('/orders/admin');
+        setOrders(res.data);
+      } else if (currentTab === 'promos') {
+        const res = await api.get('/promos');
+        setPromos(res.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        alert('Unauthorized access. Please login as Admin.');
+        navigate('/login');
+      }
     }
-    saveProducts(updatedProducts);
-    
-    // reset form
-    setProductForm({
-      name: '', slug: '', basePrice: 0, sellingPrice: 0, stock: 0, orderNumber: updatedProducts.length + 1, category: '10 Sachets', flavour: '', type: 'flavour', image: '', active: true, featured: false, desc: '', shortDesc: ''
-    });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [currentTab]);
+
+  // --- PRODUCT CRUD ---
+  const handleProductSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      Object.keys(productForm).forEach(key => {
+        formData.append(key, productForm[key]);
+      });
+      if (productImageFile) {
+        formData.append('image', productImageFile);
+      }
+
+      if (selectedProduct) {
+        await api.put(`/products/${selectedProduct.id}`, formData);
+      } else {
+        await api.post('/products', formData);
+      }
+      
+      setProductForm({ name: '', slug: '', price: 0, discountPrice: 0, stock: 0, orderNumber: products.length + 1, category: '10 Sachets', flavorType: '', image: '', active: true, featured: false, desc: '', shortDesc: '' });
+      setProductImageFile(null);
+      setSelectedProduct(null);
+      fetchData();
+    } catch (err) {
+      console.error('Failed to save product', err);
+      alert('Failed to save product');
+    }
   };
 
   const editProduct = (prod) => {
@@ -104,72 +112,77 @@ export default function Admin() {
     setProductForm({ ...prod });
   };
 
-  const deleteProduct = (id) => {
-    if (confirm('Delete this product?')) {
-      const updatedProducts = products.filter(p => p.id !== id);
-      setProducts(updatedProducts);
-      saveProducts(updatedProducts);
+  const deleteProduct = async (id) => {
+    if (window.confirm('Delete this product?')) {
+      try {
+        await api.delete(`/products/${id}`);
+        fetchData();
+      } catch (err) {
+        alert('Failed to delete product');
+      }
     }
   };
 
-  // Reordering products
-  const moveProduct = (index, direction) => {
-    const updated = [...products].sort((a, b) => a.orderNumber - b.orderNumber);
-    if (direction === 'up' && index > 0) {
-      const temp = updated[index].orderNumber;
-      updated[index].orderNumber = updated[index - 1].orderNumber;
-      updated[index - 1].orderNumber = temp;
-    } else if (direction === 'down' && index < updated.length - 1) {
-      const temp = updated[index].orderNumber;
-      updated[index].orderNumber = updated[index + 1].orderNumber;
-      updated[index + 1].orderNumber = temp;
-    }
-    const finalProducts = updated.sort((a, b) => a.orderNumber - b.orderNumber);
-    setProducts(finalProducts);
-    saveProducts(finalProducts);
+  const moveProduct = async (index, direction) => {
+    // Only implemented locally for demo or rely on backend reorder endpoint
+    // Assuming backend handles it, but let's just do a basic swap if we have an endpoint
+    alert("Reordering requires a bulk update endpoint which may not be fully implemented. For now, edit the Order Placement Number manually.");
   };
 
   // --- ORDER HANDLERS ---
-  const updateOrderVerification = (orderId, status) => {
-    setOrders(orders.map(o => {
-      if (o.id === orderId) {
-        if (status === 'Approved') {
-          alert('Order Confirmation Email Will Be Sent to the customer.');
-        }
-        return { ...o, verificationStatus: status };
+  const updateOrderVerification = async (orderId, status) => {
+    try {
+      await api.put(`/orders/${orderId}/verify`, { verificationStatus: status });
+      if (status === 'APPROVED') {
+        alert('Order Confirmation Email Will Be Sent to the customer.');
+      } else if (status === 'REJECTED') {
+        alert('Order Rejected Email Will Be Sent.');
       }
-      return o;
-    }));
+      fetchData();
+    } catch (err) {
+      alert('Failed to update verification status');
+    }
   };
 
-  const updateOrderStatus = (orderId, status) => {
-    setOrders(orders.map(o => o.id === orderId ? { ...o, orderStatus: status } : o));
+  const updateOrderStatus = async (orderId, status) => {
+    try {
+      await api.put(`/orders/${orderId}/status`, { orderStatus: status });
+      fetchData();
+    } catch (err) {
+      alert('Failed to update order status');
+    }
   };
 
   // --- PROMO CRUD ---
-  const handlePromoSubmit = (e) => {
+  const handlePromoSubmit = async (e) => {
     e.preventDefault();
-    if (selectedPromo) {
-      setPromos(promos.map(p => p.id === selectedPromo.id ? { ...p, ...promoForm } : p));
+    try {
+      if (selectedPromo) {
+        await api.put(`/promos/${selectedPromo.id}`, promoForm);
+      } else {
+        await api.post('/promos', promoForm);
+      }
       setSelectedPromo(null);
-    } else {
-      const newPromo = {
-        id: Date.now(),
-        ...promoForm
-      };
-      setPromos([...promos, newPromo]);
+      setPromoForm({ code: '', originalPrice: 0, discountedPrice: 0, validity: '', active: true });
+      fetchData();
+    } catch (err) {
+      alert('Failed to save promo');
     }
-    setPromoForm({ code: '', originalPrice: 0, discountedPrice: 0, validity: '', active: true });
   };
 
   const editPromo = (promo) => {
     setSelectedPromo(promo);
-    setPromoForm({ ...promo });
+    setPromoForm({ ...promo, validity: promo.validity ? promo.validity.split('T')[0] : '' });
   };
 
-  const deletePromo = (id) => {
-    if (confirm('Delete this promo code?')) {
-      setPromos(promos.filter(p => p.id !== id));
+  const deletePromo = async (id) => {
+    if (window.confirm('Delete this promo code?')) {
+      try {
+        await api.delete(`/promos/${id}`);
+        fetchData();
+      } catch (err) {
+        alert('Failed to delete promo');
+      }
     }
   };
 
@@ -205,23 +218,22 @@ export default function Admin() {
                       type="text" required style={styles.input} 
                       value={productForm.slug} 
                       onChange={(e) => setProductForm({ ...productForm, slug: e.target.value })}
-                      placeholder="e.g. lavender-rose"
                     />
                   </div>
                   <div style={styles.inputGroup}>
-                    <label style={styles.label}>Base Price / MRP (₹)</label>
+                    <label style={styles.label}>Base Price (₹)</label>
                     <input 
                       type="number" required style={styles.input} 
-                      value={productForm.basePrice} 
-                      onChange={(e) => setProductForm({ ...productForm, basePrice: parseInt(e.target.value) })}
+                      value={productForm.price || ''} 
+                      onChange={(e) => setProductForm({ ...productForm, price: parseInt(e.target.value) || 0 })}
                     />
                   </div>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Selling Price (₹)</label>
                     <input 
                       type="number" style={styles.input} 
-                      value={productForm.sellingPrice} 
-                      onChange={(e) => setProductForm({ ...productForm, sellingPrice: parseInt(e.target.value) })}
+                      value={productForm.discountPrice || ''} 
+                      onChange={(e) => setProductForm({ ...productForm, discountPrice: parseInt(e.target.value) || 0 })}
                     />
                   </div>
                   <div style={styles.inputGroup}>
@@ -233,7 +245,7 @@ export default function Admin() {
                     />
                   </div>
                   <div style={styles.inputGroup}>
-                    <label style={styles.label}>Order Placement Number</label>
+                    <label style={styles.label}>Order Number</label>
                     <input 
                       type="number" required style={styles.input} 
                       value={productForm.orderNumber} 
@@ -247,38 +259,26 @@ export default function Admin() {
                       value={productForm.category}
                       onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
                     >
+                      <option value="Hero">Hero</option>
                       <option value="10 Sachets">10 Sachets</option>
                       <option value="100gm Packs">100gm Packs</option>
                       <option value="Premium Jars">Premium Jars</option>
                     </select>
                   </div>
                   <div style={styles.inputGroup}>
-                    <label style={styles.label}>Flavour (e.g. Chocolate, Vanilla)</label>
+                    <label style={styles.label}>Flavor Type</label>
                     <input 
                       type="text" style={styles.input} 
-                      value={productForm.flavour}
-                      onChange={(e) => setProductForm({ ...productForm, flavour: e.target.value })}
-                      placeholder="e.g. Rose / Mixed"
+                      value={productForm.flavorType || ''}
+                      onChange={(e) => setProductForm({ ...productForm, flavorType: e.target.value })}
                     />
                   </div>
+                  {/* Type field removed as it's handled via Category/FlavorType */}
                   <div style={styles.inputGroup}>
-                    <label style={styles.label}>Type (flavour/combo)</label>
-                    <select 
-                      style={styles.select} 
-                      value={productForm.type}
-                      onChange={(e) => setProductForm({ ...productForm, type: e.target.value })}
-                    >
-                      <option value="flavour">Flavour</option>
-                      <option value="combo">Combo</option>
-                    </select>
-                  </div>
-                  <div style={styles.inputGroup}>
-                    <label style={styles.label}>Image Path</label>
+                    <label style={styles.label}>Upload Image</label>
                     <input 
-                      type="text" style={styles.input} 
-                      value={productForm.image}
-                      onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-                      placeholder="/images/New folder/choclate jar.png"
+                      type="file" style={styles.input} 
+                      onChange={(e) => setProductImageFile(e.target.files[0])}
                     />
                   </div>
                   
@@ -286,9 +286,8 @@ export default function Admin() {
                     <label style={styles.label}>Short Description</label>
                     <input 
                       type="text" style={styles.input} 
-                      value={productForm.shortDesc} 
+                      value={productForm.shortDesc || ''} 
                       onChange={(e) => setProductForm({ ...productForm, shortDesc: e.target.value })}
-                      placeholder="Sensory micro-description"
                     />
                   </div>
 
@@ -296,9 +295,8 @@ export default function Admin() {
                     <label style={styles.label}>Detailed Description</label>
                     <textarea 
                       style={styles.textarea} 
-                      value={productForm.desc} 
+                      value={productForm.desc || ''} 
                       onChange={(e) => setProductForm({ ...productForm, desc: e.target.value })}
-                      placeholder="Detailed tasting notes and ingredient composition..."
                     />
                   </div>
 
@@ -326,44 +324,40 @@ export default function Admin() {
                   {selectedProduct && (
                     <button type="button" onClick={() => {
                       setSelectedProduct(null);
-                      setProductForm({ name: '', slug: '', basePrice: 0, sellingPrice: 0, stock: 0, orderNumber: products.length + 1, category: '10 Sachets', flavour: '', type: 'flavour', image: '', active: true, featured: false, desc: '', shortDesc: '' });
+                      setProductForm({ name: '', slug: '', price: 0, discountPrice: 0, stock: 0, orderNumber: products.length + 1, category: '10 Sachets', flavorType: '', image: '', active: true, featured: false, desc: '', shortDesc: '' });
                     }} style={styles.cancelBtn}>Cancel</button>
                   )}
                   <button type="submit" style={styles.submitBtn}>{selectedProduct ? 'Update Product' : 'Add Product'}</button>
                 </div>
               </form>
 
-              {/* Product List & Ordering */}
+              {/* Product List */}
               <div style={styles.adminCard}>
                 <h3 style={styles.cardHeader}>Atelier Products list</h3>
                 <div style={styles.productList}>
-                  {products.sort((a,b) => a.orderNumber - b.orderNumber).map((prod, index) => (
-                    <div key={prod.id} style={styles.productRow}>
-                      <div style={styles.productRowLeft}>
-                        <div style={styles.reorderButtons}>
-                          <button onClick={() => moveProduct(index, 'up')} disabled={index === 0} style={styles.orderBtn}>
-                            <ArrowUp size={14} />
+                  {products.length === 0 ? (
+                    <p>No products yet.</p>
+                  ) : (
+                    products.sort((a,b) => a.orderNumber - b.orderNumber).map((prod, index) => (
+                      <div key={prod.id} style={styles.productRow}>
+                        <div style={styles.productRowLeft}>
+                          <div>
+                            <h4 style={styles.productTitle}>{prod.name}</h4>
+                            <span style={styles.productSub}>Order Pos: {prod.orderNumber} &bull; Price: ₹{prod.discountPrice || prod.price}</span>
+                          </div>
+                        </div>
+                        
+                        <div style={styles.productRowActions}>
+                          <button onClick={() => editProduct(prod)} style={styles.actionBtnEdit}>
+                            <Edit3 size={16} />
                           </button>
-                          <button onClick={() => moveProduct(index, 'down')} disabled={index === products.length - 1} style={styles.orderBtn}>
-                            <ArrowDown size={14} />
+                          <button onClick={() => deleteProduct(prod.id)} style={styles.actionBtnDelete}>
+                            <Trash2 size={16} />
                           </button>
                         </div>
-                        <div>
-                          <h4 style={styles.productTitle}>{prod.name}</h4>
-                          <span style={styles.productSub}>Order Pos: {prod.orderNumber} &bull; Price: ₹{prod.sellingPrice}</span>
-                        </div>
                       </div>
-                      
-                      <div style={styles.productRowActions}>
-                        <button onClick={() => editProduct(prod)} style={styles.actionBtnEdit} aria-label="Edit">
-                          <Edit3 size={16} />
-                        </button>
-                        <button onClick={() => deleteProduct(prod.id)} style={styles.actionBtnDelete} aria-label="Delete">
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -394,55 +388,61 @@ export default function Admin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.map(order => (
-                      <tr key={order.id} style={styles.tr}>
-                        <td style={styles.td}><strong>{order.id}</strong><div style={{fontSize: '0.75rem', opacity: 0.6}}>{order.date}</div></td>
-                        <td style={styles.td}>{order.customerName}<div style={{fontSize: '0.75rem', opacity: 0.6}}>{order.phone}</div></td>
-                        <td style={styles.td}>{order.products}</td>
-                        <td style={styles.td}><strong>₹{order.amount}</strong></td>
-                        <td style={styles.td}>
-                          <span style={{
-                            ...styles.badge,
-                            backgroundColor: order.verificationStatus === 'Approved' ? '#D4EDDA' : order.verificationStatus === 'Rejected' ? '#F8D7DA' : '#FFF3CD',
-                            color: order.verificationStatus === 'Approved' ? '#155724' : order.verificationStatus === 'Rejected' ? '#721C24' : '#856404'
-                          }}>
-                            {order.verificationStatus}
-                          </span>
-                        </td>
-                        <td style={styles.td}>
-                          <select 
-                            value={order.orderStatus} 
-                            onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                            style={styles.tableSelect}
-                          >
-                            <option value="Placed">Placed</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
-                          </select>
-                        </td>
-                        <td style={styles.td}>
-                          <div style={styles.tableActionRow}>
-                            <button 
-                              onClick={() => updateOrderVerification(order.id, 'Approved')} 
-                              disabled={order.verificationStatus === 'Approved'}
-                              style={styles.btnApprove} 
-                              title="Approve Transaction"
-                            >
-                              <Check size={14} /> Approve
-                            </button>
-                            <button 
-                              onClick={() => updateOrderVerification(order.id, 'Rejected')} 
-                              disabled={order.verificationStatus === 'Rejected'}
-                              style={styles.btnReject} 
-                              title="Reject Transaction"
-                            >
-                              <X size={14} /> Reject
-                            </button>
-                          </div>
+                    {orders.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" style={{textAlign: 'center', padding: '2rem', color: '#8A7A6B'}}>
+                          No orders yet.<br/>Orders placed by customers will appear here.
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      orders.map(order => (
+                        <tr key={order.id} style={styles.tr}>
+                          <td style={styles.td}><strong>#{order.id}</strong><div style={{fontSize: '0.75rem', opacity: 0.6}}>{new Date(order.createdAt).toLocaleDateString()}</div></td>
+                          <td style={styles.td}>{order.user?.name || 'Guest'}<div style={{fontSize: '0.75rem', opacity: 0.6}}>{order.user?.email}</div></td>
+                          <td style={styles.td}>{order.items?.map(i => `${i.product?.name} x${i.quantity}`).join(', ')}</td>
+                          <td style={styles.td}><strong>₹{order.totalAmount}</strong></td>
+                          <td style={styles.td}>
+                            <span style={{
+                              ...styles.badge,
+                              backgroundColor: order.verificationStatus === 'APPROVED' ? '#D4EDDA' : order.verificationStatus === 'REJECTED' ? '#F8D7DA' : '#FFF3CD',
+                              color: order.verificationStatus === 'APPROVED' ? '#155724' : order.verificationStatus === 'REJECTED' ? '#721C24' : '#856404'
+                            }}>
+                              {order.verificationStatus}
+                            </span>
+                          </td>
+                          <td style={styles.td}>
+                            <select 
+                              value={order.orderStatus} 
+                              onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                              style={styles.tableSelect}
+                            >
+                              <option value="PLACED">Placed</option>
+                              <option value="SHIPPED">Shipped</option>
+                              <option value="DELIVERED">Delivered</option>
+                              <option value="CANCELLED">Cancelled</option>
+                            </select>
+                          </td>
+                          <td style={styles.td}>
+                            <div style={styles.tableActionRow}>
+                              <button 
+                                onClick={() => updateOrderVerification(order.id, 'APPROVED')} 
+                                disabled={order.verificationStatus === 'APPROVED'}
+                                style={styles.btnApprove}
+                              >
+                                <Check size={14} /> Approve
+                              </button>
+                              <button 
+                                onClick={() => updateOrderVerification(order.id, 'REJECTED')} 
+                                disabled={order.verificationStatus === 'REJECTED'}
+                                style={styles.btnReject}
+                              >
+                                <X size={14} /> Reject
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -459,7 +459,6 @@ export default function Admin() {
             </div>
 
             <div style={styles.adminGrid}>
-              {/* Promo Creator */}
               <form onSubmit={handlePromoSubmit} style={styles.promoFormCard}>
                 <h3 style={{ ...styles.cardHeader, color: '#2B1A12' }}>{selectedPromo ? 'Modify Discount Code' : 'Create Promo Code'}</h3>
                 
@@ -470,7 +469,6 @@ export default function Admin() {
                       type="text" required style={styles.inputPromo} 
                       value={promoForm.code} 
                       onChange={(e) => setPromoForm({ ...promoForm, code: e.target.value.toUpperCase() })}
-                      placeholder="e.g. FESTIVE15"
                     />
                   </div>
                   <div style={styles.inputGroup}>
@@ -519,30 +517,32 @@ export default function Admin() {
                 </div>
               </form>
 
-              {/* Promo List */}
               <div style={styles.promoListCard}>
                 <h3 style={{ ...styles.cardHeader, color: '#2B1A12' }}>Active Promotional Codes</h3>
                 <div style={styles.productList}>
-                  {promos.map(promo => (
-                    <div key={promo.id} style={styles.promoItemRow}>
-                      <div>
-                        <h4 style={{ ...styles.productTitle, color: '#2B1A12' }}>{promo.code}</h4>
-                        <p style={{ fontSize: '0.8rem', color: '#5c4b37', margin: 0 }}>
-                          Original: ₹{promo.originalPrice} &bull; Discount: ₹{promo.discountedPrice}
-                        </p>
-                        <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>Valid until: {promo.validity}</span>
+                  {promos.length === 0 ? (
+                    <p>No promo codes yet.</p>
+                  ) : (
+                    promos.map(promo => (
+                      <div key={promo.id} style={styles.promoItemRow}>
+                        <div>
+                          <h4 style={{ ...styles.productTitle, color: '#2B1A12' }}>{promo.code}</h4>
+                          <p style={{ fontSize: '0.8rem', color: '#5c4b37', margin: 0 }}>
+                            Original: ₹{promo.originalPrice} &bull; Discount: ₹{promo.discountedPrice}
+                          </p>
+                        </div>
+                        
+                        <div style={styles.productRowActions}>
+                          <button onClick={() => editPromo(promo)} style={styles.actionBtnEdit}>
+                            <Edit3 size={16} />
+                          </button>
+                          <button onClick={() => deletePromo(promo.id)} style={styles.actionBtnDelete}>
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </div>
-                      
-                      <div style={styles.productRowActions}>
-                        <button onClick={() => editPromo(promo)} style={styles.actionBtnEdit} aria-label="Edit">
-                          <Edit3 size={16} />
-                        </button>
-                        <button onClick={() => deletePromo(promo.id)} style={styles.actionBtnDelete} aria-label="Delete">
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -551,6 +551,8 @@ export default function Admin() {
 
       case 'dashboard':
       default:
+        if (!stats) return <p>Loading data...</p>;
+        
         return (
           <div style={styles.sectionContainer}>
             <div style={styles.sectionHeader}>
@@ -562,69 +564,56 @@ export default function Admin() {
             <div style={styles.statsGrid}>
               <div style={styles.statCard}>
                 <span style={styles.statLabel}>Total Revenue</span>
-                <span style={styles.statVal}>₹86,450</span>
+                <span style={styles.statVal}>₹{stats.totalRevenue || 0}</span>
               </div>
               <div style={styles.statCard}>
                 <span style={styles.statLabel}>Total Orders</span>
-                <span style={styles.statVal}>28</span>
+                <span style={styles.statVal}>{stats.totalOrders || 0}</span>
               </div>
               <div style={styles.statCard}>
                 <span style={styles.statLabel}>Pending Verification</span>
-                <span style={{ ...styles.statVal, color: 'var(--primary-color)' }}>6</span>
+                <span style={{ ...styles.statVal, color: 'var(--primary-color)' }}>{stats.pendingVerification || 0}</span>
               </div>
               <div style={styles.statCard}>
                 <span style={styles.statLabel}>Completed Shipments</span>
-                <span style={styles.statVal}>21</span>
+                <span style={styles.statVal}>{stats.completedShipments || 0}</span>
               </div>
               <div style={styles.statCard}>
                 <span style={styles.statLabel}>Active Blends Listed</span>
-                <span style={styles.statVal}>{products.length}</span>
+                <span style={styles.statVal}>{stats.activeProducts || 0}</span>
               </div>
             </div>
 
             {/* Main Dashboard Layout (Graph + Orders) */}
             <div style={styles.dashboardLayout}>
               
-              {/* Graphic Chart Placeholder */}
               <div style={styles.adminCard}>
                 <h3 style={styles.cardHeader}>Revenue History</h3>
                 <div style={styles.chartArea}>
-                  {/* Clean SVG Line chart representation */}
-                  <svg viewBox="0 0 500 200" style={{ width: '100%', height: '100%' }}>
-                    <path
-                      d="M 20 180 L 100 140 L 180 160 L 260 90 L 340 120 L 420 50 L 480 30"
-                      fill="none"
-                      stroke="var(--primary-color)"
-                      strokeWidth="3"
-                    />
-                    <circle cx="20" cy="180" r="4" fill="var(--primary-color)" />
-                    <circle cx="100" cy="140" r="4" fill="var(--primary-color)" />
-                    <circle cx="180" cy="160" r="4" fill="var(--primary-color)" />
-                    <circle cx="260" cy="90" r="4" fill="var(--primary-color)" />
-                    <circle cx="340" cy="120" r="4" fill="var(--primary-color)" />
-                    <circle cx="420" cy="50" r="4" fill="var(--primary-color)" />
-                    <circle cx="480" cy="30" r="4" fill="var(--primary-color)" />
-                    
-                    {/* Grid lines */}
-                    <line x1="20" y1="180" x2="480" y2="180" stroke="rgba(43,26,18,0.08)" />
-                    <line x1="20" y1="100" x2="480" y2="100" stroke="rgba(43,26,18,0.04)" />
-                  </svg>
+                  {Object.keys(stats.revenueByMonth || {}).length === 0 ? (
+                    <p style={{color: '#8A7A6B'}}>No sales data available.</p>
+                  ) : (
+                    <p style={{color: '#8A7A6B'}}>[Graph Data Available in JSON: {JSON.stringify(stats.revenueByMonth)}]</p>
+                  )}
                 </div>
               </div>
 
-              {/* Recent Orders table */}
               <div style={styles.adminCard}>
                 <h3 style={styles.cardHeader}>Recent Order logs</h3>
                 <div style={styles.simpleList}>
-                  {orders.map(o => (
-                    <div key={o.id} style={styles.orderListItem}>
-                      <div>
-                        <strong>{o.id}</strong> &bull; {o.customerName}
-                        <div style={{ fontSize: '0.8rem', opacity: 0.6 }}>{o.products}</div>
+                  {(!stats.recentOrders || stats.recentOrders.length === 0) ? (
+                    <p style={{color: '#8A7A6B'}}>No recent orders.</p>
+                  ) : (
+                    stats.recentOrders.map(o => (
+                      <div key={o.id} style={styles.orderListItem}>
+                        <div>
+                          <strong>#{o.id}</strong> &bull; {o.user?.name || 'Guest'}
+                          <div style={{ fontSize: '0.8rem', opacity: 0.6 }}>{o.items?.length || 0} items</div>
+                        </div>
+                        <span style={{ fontWeight: '700' }}>₹{o.totalAmount}</span>
                       </div>
-                      <span style={{ fontWeight: '700' }}>₹{o.amount}</span>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
 
@@ -763,6 +752,7 @@ const styles = {
     transition: 'all 0.3s ease',
     width: '100%',
     cursor: 'pointer',
+    border: 'none',
   },
   sidebarFooter: {
     marginTop: 'auto',
@@ -779,13 +769,13 @@ const styles = {
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
     cursor: 'pointer',
-    transition: 'var(--transition-fast)',
+    backgroundColor: 'transparent',
   },
   mainContent: {
     flex: 1,
     padding: '3rem',
     marginLeft: '280px', // Matches sidebar width
-    minWidth: 0, // prevents flex blowout
+    minWidth: 0, 
   },
   sectionContainer: {
     display: 'flex',
@@ -802,6 +792,7 @@ const styles = {
     fontFamily: 'var(--font-serif)',
     fontWeight: '300',
     color: '#2B1A12',
+    margin: 0,
   },
   sectionSubtitle: {
     fontSize: '0.9rem',
@@ -864,6 +855,7 @@ const styles = {
     color: 'var(--primary-color)',
     borderBottom: '1px solid var(--border-color)',
     paddingBottom: '0.6rem',
+    margin: 0,
   },
   chartArea: {
     height: '240px',
@@ -995,27 +987,11 @@ const styles = {
     alignItems: 'center',
     gap: '1rem',
   },
-  reorderButtons: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.2rem',
-  },
-  orderBtn: {
-    padding: '0.2rem',
-    border: '1px solid var(--border-color)',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    opacity: 0.6,
-    '&:hover': {
-      opacity: 1,
-    },
-  },
   productTitle: {
     fontSize: '1rem',
     fontWeight: '600',
     color: '#2B1A12',
+    margin: 0,
   },
   productSub: {
     fontSize: '0.78rem',
@@ -1029,11 +1005,15 @@ const styles = {
     padding: '0.4rem',
     color: 'var(--primary-color)',
     cursor: 'pointer',
+    background: 'none',
+    border: 'none',
   },
   actionBtnDelete: {
     padding: '0.4rem',
     color: '#C0392B',
     cursor: 'pointer',
+    background: 'none',
+    border: 'none',
   },
   tableWrapper: {
     width: '100%',
@@ -1103,7 +1083,6 @@ const styles = {
     cursor: 'pointer',
   },
 
-  // Promo management specific styles (Brand desk styles: Cream, Chocolate, Caramel/Orange)
   promoFormCard: {
     backgroundColor: '#FAF7F2',
     border: '2px solid rgba(197, 107, 31, 0.25)',
@@ -1130,12 +1109,9 @@ const styles = {
     outline: 'none',
     backgroundColor: '#FFFFFF',
     color: '#2B1A12',
-    '&:focus': {
-      borderColor: 'var(--primary-color)',
-    }
   },
   submitPromoBtn: {
-    backgroundColor: 'var(--primary-color)', // Caramel / Orange accent
+    backgroundColor: 'var(--primary-color)',
     color: '#FFFFFF',
     border: 'none',
     padding: '0.85rem 1.8rem',

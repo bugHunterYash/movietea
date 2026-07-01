@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingBag } from 'lucide-react';
+import { Menu, X, ShoppingBag, User, LogOut } from 'lucide-react';
 
 export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const isLoggedIn = !!localStorage.getItem('token');
+  
+  const handleAuthAction = () => {
+    if (isLoggedIn) {
+      localStorage.removeItem('token');
+      window.location.reload();
+    } else {
+      navigate('/login');
+    }
+  };
 
   const navItems = [
     { id: 'home', label: 'Home', path: '/' },
@@ -133,6 +144,10 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct }
               );
             })}
           </nav>
+
+          <button onClick={handleAuthAction} style={styles.cartBtn} aria-label={isLoggedIn ? 'Sign out' : 'Sign in'}>
+            {isLoggedIn ? <LogOut size={20} strokeWidth={1.5} color="var(--dark-color)" /> : <User size={20} strokeWidth={1.5} color="var(--dark-color)" />}
+          </button>
 
           <button onClick={onOpenCart} style={styles.cartBtn} aria-label="Open cart">
             <ShoppingBag size={20} strokeWidth={1.5} color="var(--dark-color)" />

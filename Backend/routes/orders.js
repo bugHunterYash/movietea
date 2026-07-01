@@ -41,6 +41,8 @@ const generateOrderNumber = async () => {
   return `MOV-${lastNum + 1}`;
 };
 
+const { sendOrderConfirmationEmail } = require('../services/emailService');
+
 // Create order (authenticated user)
 router.post('/', authenticateToken, upload.single('screenshot'), async (req, res) => {
   try {
@@ -56,36 +58,63 @@ router.post('/', authenticateToken, upload.single('screenshot'), async (req, res
     // Generate order number
     const orderNumber = await generateOrderNumber();
 
-    // Create order with items
-    const order = await prisma.order.create({
-      data: {
-        orderNumber,
-        userId: user.id,
-        customerName: user.name || 'Customer',
-        customerEmail: user.email,
-        customerPhone: user.phone,
-        totalAmount: parseInt(totalAmount),
-        paymentMethod: paymentMethod || 'UPI',
-        address1,
-        address2,
-        city,
-        state,
-        pincode,
-        screenshotUrl: req.file ? `/uploads/${req.file.filename}` : null,
-        promoCodeId: promoCodeId || null,
-        items: {
-          create: items.map(item => ({
-            productId: item.productId,
-            name: item.name,
-            price: parseInt(item.price),
-            quantity: parseInt(item.quantity)
-          }))
+    // Create order with items in a transaction to ensure atomic saves
+    const order = await prisma.$transaction(async (tx) => {
+      const newOrder = await tx.order.create({
+        data: {
+          orderNumber,
+          userId: user.id,
+          customerName: user.name || 'Customer',
+          customerEmail: user.email,
+          customerPhone: user.phone,
+          totalAmount: parseInt(totalAmount),
+          paymentMethod: paymentMethod || 'UPI',
+          address1,
+          address2,
+          city,
+          state,
+          pincode,
+          screenshotUrl: req.file ? `/uploads/${req.file.filename}` : null,
+          promoCodeId: promoCodeId || null,
+          items: {
+            create: items.map(item => ({
+              productId: item.id || item.productId,
+              name: item.name,
+              price: parseInt(item.price),
+              quantity: parseInt(item.quantity)
+            }))
+          }
+        },
+        include: {
+          items: true,
+          user: true
         }
-      },
-      include: {
-        items: true
+      });
+
+      // Create Payment Record (Task item from checkout flow)
+      await tx.payment.create({
+        data: {
+          orderId: newOrder.id,
+          amount: newOrder.totalAmount,
+          method: newOrder.paymentMethod,
+          status: 'UNPAID', // Pending verification
+          screenshotUrl: newOrder.screenshotUrl
+        }
+      });
+
+      // Reduce stock (Task item)
+      for (const item of items) {
+        await tx.product.update({
+          where: { id: item.id || item.productId },
+          data: { stock: { decrement: parseInt(item.quantity) } }
+        });
       }
+
+      return newOrder;
     });
+
+    // Send order confirmation email asynchronously (do not await to block response)
+    sendOrderConfirmationEmail(order, order.user?.email).catch(console.error);
 
     res.status(201).json(order);
   } catch (error) {

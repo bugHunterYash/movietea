@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { getProducts, getSortedProducts } from '../utils/db';
+import api from '../api/client';
 
 export default function Shop({ onAddToCart, setSelectedProduct }) {
   const navigate = useNavigate();
@@ -9,9 +9,15 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
 
   useEffect(() => {
     document.title = "Shop Premium Blends | MOVITEA";
-    const allProducts = getProducts();
-    const activeProducts = allProducts.filter(p => p.active !== false);
-    setProducts(getSortedProducts(activeProducts));
+    const fetchProducts = async () => {
+      try {
+        const res = await api.get('/products');
+        setProducts(res.data);
+      } catch (err) {
+        console.error('Failed to fetch products', err);
+      }
+    };
+    fetchProducts();
   }, []);
 
   const handleProductSelect = (product) => {
@@ -62,7 +68,8 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
             const cardStyle = isCombo ? { ...styles.card, ...styles.comboCard } : styles.card;
             const tagText = isCombo ? prod.shortDesc : prod.shortDesc || prod.tag;
             const tagStyle = isCombo ? { ...styles.cardTag, ...styles.comboTag } : styles.cardTag;
-            const savings = getSavingsPercent(prod.basePrice, prod.sellingPrice);
+            const activePrice = prod.discountPrice || prod.price;
+            const savings = getSavingsPercent(prod.price, prod.discountPrice || prod.price);
 
             return (
               <motion.div 
@@ -84,13 +91,13 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
                   >
                     {prod.name}
                   </h3>
-                  <p style={styles.productDesc}>{prod.description}</p>
+                  <p style={styles.productDesc}>{prod.desc}</p>
                   
                   <div style={styles.priceRow}>
                     <div style={styles.priceContainer}>
-                      <span style={styles.price}>₹{prod.sellingPrice}</span>
-                      {prod.basePrice && prod.basePrice > prod.sellingPrice && (
-                        <span style={styles.mrp}>₹{prod.basePrice}</span>
+                      <span style={styles.price}>₹{activePrice}</span>
+                      {prod.discountPrice && prod.price > prod.discountPrice && (
+                        <span style={styles.mrp}>₹{prod.price}</span>
                       )}
                       {savings > 0 && (
                         <span style={isCombo ? { ...styles.saveBadge, ...styles.comboSaveBadge } : styles.saveBadge}>
@@ -112,9 +119,9 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
                           onAddToCart({
                             id: prod.id,
                             name: prod.name,
-                            price: prod.sellingPrice,
+                            price: activePrice,
                             img: prod.image,
-                            desc: prod.description
+                            desc: prod.desc
                           });
                         }}
                         style={isCombo ? { ...styles.addBtn, ...styles.comboAddBtn } : styles.addBtn}
