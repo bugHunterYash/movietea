@@ -14,7 +14,7 @@ const { sendWelcomeEmail } = require('../services/emailService');
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/auth/google/callback`
+  callbackURL: `${process.env.BACKEND_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:5000'}/api/auth/google/callback`
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     let user = await prisma.user.findUnique({
