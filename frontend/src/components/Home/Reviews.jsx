@@ -39,7 +39,7 @@ export default function Reviews() {
     <section style={styles.reviewsSection}>
       <div className="container" style={styles.header}>
         <span style={styles.subtitle}>TESTIMONIALS</span>
-        <h2 style={styles.title} className="reviews-section-title">The Journal of Taste</h2>
+        <h2 style={styles.title}>The Journal of Taste</h2>
       </div>
 
       <div style={styles.marqueeContainer}>
@@ -175,25 +175,10 @@ styleSheetMarquee.innerText = `
   .marquee-track:hover {
     animation-play-state: paused;
   }
-  .reviews-section-title {
-    font-size: 3.5rem;
-  }
-  @media (max-width: 768px) {
-    .reviews-section-title {
-      font-size: 2.5rem !important;
-    }
+  @media (max-width: 600px) {
     .marquee-track > div {
       width: 320px !important;
       padding: 1.5rem !important;
-    }
-  }
-  @media (max-width: 480px) {
-    .reviews-section-title {
-      font-size: 2rem !important;
-    }
-    .marquee-track > div {
-      width: 280px !important;
-      padding: 1.25rem !important;
     }
   }
 `;

@@ -1,39 +1,28 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import api from '../../api/client';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 export default function Hero({ onShopClick }) {
   const containerRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-  const [heroProducts, setHeroProducts] = useState([]);
-  
+  const productImages = [
+    '/assets/combo-pack.jpeg',
+    '/assets/rose.jpeg',
+    '/assets/chocolate.jpeg',
+    '/assets/vanilla.jpeg',
+    '/assets/butterscotch.jpeg',
+    '/assets/combo-individual.jfif'
+  ];
+
+  const [currentImgIndex, setCurrentImgIndex] = useState(0);
+
   useEffect(() => {
-    const fetchFeatured = async () => {
-      try {
-        const res = await api.get('/products');
-        const featured = res.data.filter(p => p.featured);
-        if (featured.length > 0) {
-          setHeroProducts(featured);
-        }
-      } catch (err) {}
-    };
-    fetchFeatured();
+    const interval = setInterval(() => {
+      setCurrentImgIndex((prev) => (prev + 1) % productImages.length);
+    }, 3000);
+    return () => clearInterval(interval);
   }, []);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    if (heroProducts.length === 0) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % heroProducts.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [heroProducts.length]);
-
-  const currentProduct = heroProducts[currentIndex];
-  const activePrice = currentProduct ? (currentProduct.discountPrice || currentProduct.price) : 0;
-  
   // Monitor scroll progress of the hero section
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -56,7 +45,7 @@ export default function Hero({ onShopClick }) {
   const butterscotchRotate = useTransform(scrollYProgress, [0, 0.8], [0, 15]);
 
   const sachetOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8], [0, 1, 1]);
-  
+
   const handleMouseMove = (e) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -72,10 +61,8 @@ export default function Hero({ onShopClick }) {
   const rotateX = -mousePos.y * 12;
   const rotateY = mousePos.x * 12;
 
-  if (!currentProduct) return <div style={styles.heroSection}></div>;
-
   return (
-    <section ref={containerRef} style={styles.heroSection} className="hero-section" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+    <section ref={containerRef} style={styles.heroSection} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
       {/* Background Subtle Gradient & Steam */}
       <div style={styles.heroBg} />
       
@@ -115,13 +102,12 @@ export default function Hero({ onShopClick }) {
         </svg>
       </div>
 
-      <div className="container hero-grid" style={styles.container}>
+      <div className="container" style={styles.container}>
         {/* Left: Typography */}
-        <div style={styles.leftCol} className="hero-left-col">
+        <div style={styles.leftCol}>
           <div style={styles.titleContainer}>
             <motion.div
               style={styles.badge}
-              className="hero-badge"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
@@ -164,7 +150,6 @@ export default function Hero({ onShopClick }) {
 
           <motion.p
             style={styles.desc}
-            className="hero-desc"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
@@ -174,72 +159,20 @@ export default function Hero({ onShopClick }) {
 
           <motion.div
             style={styles.priceContainer}
-            className="hero-price-container"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
-            <div style={styles.priceRow} className="hero-price-row">
-              <AnimatePresence mode="wait">
-                <motion.span 
-                  key={`name-${currentIndex}`} 
-                  initial={{ opacity: 0, y: -5 }} 
-                  animate={{ opacity: 1, y: 0 }} 
-                  exit={{ opacity: 0, y: 5 }} 
-                  transition={{ duration: 0.3 }}
-                  style={{ ...styles.priceLabel, display: 'inline-block' }}
-                >
-                  {currentProduct.name}
-                </motion.span>
-              </AnimatePresence>
-              <AnimatePresence mode="wait">
-                <motion.span 
-                  key={`sell-${currentIndex}`} 
-                  initial={{ opacity: 0 }} 
-                  animate={{ opacity: 1 }} 
-                  exit={{ opacity: 0 }}
-                  style={{ ...styles.priceReal, display: 'inline-block' }}
-                >
-                  ₹{activePrice}
-                </motion.span>
-              </AnimatePresence>
-              <AnimatePresence mode="wait">
-                <motion.span 
-                  key={`base-${currentIndex}`} 
-                  initial={{ opacity: 0 }} 
-                  animate={{ opacity: 1 }} 
-                  exit={{ opacity: 0 }}
-                  style={{ ...styles.priceMrp, display: 'inline-block' }}
-                >
-                  ₹{currentProduct.price}
-                </motion.span>
-              </AnimatePresence>
-              <AnimatePresence mode="wait">
-                <motion.span 
-                  key={`save-${currentIndex}`} 
-                  initial={{ opacity: 0 }} 
-                  animate={{ opacity: 1 }} 
-                  exit={{ opacity: 0 }}
-                  style={{ ...styles.saveBadge, display: 'inline-block' }}
-                >
-                  Save ₹{currentProduct.price - activePrice}
-                </motion.span>
-              </AnimatePresence>
+            <div style={styles.priceRow}>
+              <span style={styles.priceLabel}>Combo Pack (20 Sachets)</span>
+              <span style={styles.priceReal}>₹349</span>
+              <span style={styles.priceMrp}>₹429</span>
+              <span style={styles.saveBadge}>Save ₹80</span>
             </div>
             <div style={styles.firstOrderOfferRow}>
               <span style={styles.firstOrderOfferLabel}>First Order Price:</span>
-              <AnimatePresence mode="wait">
-                <motion.span 
-                  key={`first-${currentIndex}`} 
-                  initial={{ opacity: 0 }} 
-                  animate={{ opacity: 1 }} 
-                  exit={{ opacity: 0 }}
-                  style={{ ...styles.firstOrderPrice, display: 'inline-block' }}
-                >
-                  ₹{Math.floor(activePrice * 0.7)}
-                </motion.span>
-              </AnimatePresence>
-              <span style={styles.percentOffBadge}>30% OFF Applied</span>
+              <span style={styles.firstOrderPrice}>₹219</span>
+              <span style={styles.percentOffBadge}>50% OFF Applied</span>
             </div>
           </motion.div>
 
@@ -255,13 +188,12 @@ export default function Hero({ onShopClick }) {
         </div>
 
         {/* Right: Interactive Product Pack & Emerging Sachets */}
-        <div style={styles.rightCol} className="hero-right-col">
+        <div style={styles.rightCol}>
           <div
             style={{
               ...styles.interactiveGroup,
               transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
             }}
-            className="hero-interactive-group"
           >
             {/* Main Box - rotating product images */}
             <motion.div
@@ -271,24 +203,20 @@ export default function Hero({ onShopClick }) {
               transition={{ duration: 1.2, cubicBezier: [0.16, 1, 0.3, 1], delay: 0.4 }}
             >
               <div style={styles.productShadow} />
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={`img-${currentIndex}`}
-                  src={currentProduct.image}
-                  alt={currentProduct.name}
-                  style={{ ...styles.boxImg, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }}
-                  initial={{ opacity: 0, filter: 'blur(10px)', scale: 0.9 }}
-                  animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
-                  exit={{ opacity: 0, filter: 'blur(10px)', scale: 1.1 }}
-                  transition={{ duration: 0.6 }}
-                />
-              </AnimatePresence>
+              <motion.img
+                key={currentImgIndex}
+                src={productImages[currentImgIndex]}
+                alt="MOVITEA Products"
+                style={styles.boxImg}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+              />
             </motion.div>
 
             {/* Emerging Flavours */}
             {/* Rose sachet - emerges left/up */}
             <motion.div
-              className="hero-sachet"
               style={{
                 ...styles.sachet,
                 x: roseX,
@@ -298,12 +226,11 @@ export default function Hero({ onShopClick }) {
               }}
             >
               <img src="/assets/rose.jpeg" alt="Rose" style={styles.sachetImg} />
-              <span style={styles.sachetLabel} className="hero-sachet-label">Rose</span>
+              <span style={styles.sachetLabel}>Rose</span>
             </motion.div>
 
             {/* Chocolate sachet - emerges right/down */}
             <motion.div
-              className="hero-sachet"
               style={{
                 ...styles.sachet,
                 x: chocolateX,
@@ -313,12 +240,11 @@ export default function Hero({ onShopClick }) {
               }}
             >
               <img src="/assets/chocolate.jpeg" alt="Chocolate" style={styles.sachetImg} />
-              <span style={styles.sachetLabel} className="hero-sachet-label">Chocolate</span>
+              <span style={styles.sachetLabel}>Chocolate</span>
             </motion.div>
 
             {/* Vanilla sachet - emerges up */}
             <motion.div
-              className="hero-sachet"
               style={{
                 ...styles.sachet,
                 y: vanillaY,
@@ -327,12 +253,11 @@ export default function Hero({ onShopClick }) {
               }}
             >
               <img src="/assets/vanilla.jpeg" alt="Vanilla" style={styles.sachetImg} />
-              <span style={styles.sachetLabel} className="hero-sachet-label">Vanilla</span>
+              <span style={styles.sachetLabel}>Vanilla</span>
             </motion.div>
 
             {/* Butterscotch sachet - emerges down */}
             <motion.div
-              className="hero-sachet"
               style={{
                 ...styles.sachet,
                 y: butterscotchY,
@@ -341,12 +266,11 @@ export default function Hero({ onShopClick }) {
               }}
             >
               <img src="/assets/butterscotch.jpeg" alt="Butterscotch" style={styles.sachetImg} />
-              <span style={styles.sachetLabel} className="hero-sachet-label">Butterscotch</span>
+              <span style={styles.sachetLabel}>Butterscotch</span>
             </motion.div>
           </div>
         </div>
       </div>
-
     </section>
   );
 }
@@ -574,88 +498,57 @@ const styles = {
 if (typeof document !== 'undefined') {
   const styleSheetHero = document.createElement('style');
   styleSheetHero.innerText = `
-    .hero-section {
-      min-height: 120vh;
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      align-items: center;
-      gap: 3rem;
-    }
-    .hero-right-col {
-      height: 750px;
-    }
-    .hero-interactive-group {
-      width: 640px;
-      height: 640px;
-    }
-    .hero-sachet {
-      width: 320px;
-      height: 320px;
-    }
     @media (max-width: 1024px) {
-      .hero-section {
+      section {
         min-height: auto !important;
-        padding-bottom: 4rem !important;
+        padding-bottom: 6rem !important;
       }
-      .hero-grid {
+      section > div[style*="gridTemplateColumns"] {
         grid-template-columns: 1fr !important;
-        text-align: center;
-        padding-top: 2rem;
-        gap: 3rem;
+        text-align: center !important;
+        padding-top: 3rem !important;
+        gap: 4rem !important;
       }
-      .hero-left-col {
-        align-items: center;
-        order: 1;
+      section h1[style*="fontSize"] {
+        font-size: 3.5rem !important;
       }
-      .hero-right-col {
-        height: 420px !important;
-        order: 2;
+      section div[style*="leftCol"] {
+        align-items: center !important;
       }
-      .hero-interactive-group {
+      section p[style*="desc"] {
+        text-align: center !important;
+      }
+      section div[style*="rightCol"] {
+        height: 480px !important;
+      }
+      section div[style*="interactiveGroup"] {
         width: 320px !important;
         height: 320px !important;
       }
-      .hero-sachet {
+      section div[style*="sachet"] {
         width: 160px !important;
         height: 160px !important;
         top: 25% !important;
         left: 25% !important;
       }
-      .hero-sachet-label {
+      section span[style*="sachetLabel"] {
         font-size: 0.85rem !important;
       }
-      .hero-title {
-        font-size: 3.5rem !important;
-      }
-      .hero-desc {
-        text-align: center;
-      }
-      .hero-price-container {
-        max-width: 100%;
-      }
-      .hero-badge {
-        align-self: center;
-      }
     }
-    @media (max-width: 640px) {
-      .hero-title {
+    @media (max-width: 480px) {
+      section h1[style*="fontSize"] {
         font-size: 2.8rem !important;
       }
-      .hero-interactive-group {
+      section div[style*="interactiveGroup"] {
         width: 260px !important;
         height: 260px !important;
       }
-      .hero-sachet {
+      section div[style*="sachet"] {
         width: 130px !important;
         height: 130px !important;
-      }
-      .hero-price-row {
-        flex-wrap: wrap;
-        gap: 0.5rem;
       }
     }
   `;
   document.head.appendChild(styleSheetHero);
 }
+

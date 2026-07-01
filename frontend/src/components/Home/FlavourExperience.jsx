@@ -10,7 +10,7 @@ const FLAVOURS = [
     description: 'Steeped in organic rose petals and hand-picked buds, this blend offers a soothing aroma and soft pink notes that linger elegantly.',
     bg: '#F4D3DC', // soft blush pink
     textColor: '#2B1A12',
-    img: '/images/New folder/rose jar.png',
+    img: '/assets/rose.jpeg',
     floatingItems: [Leaf, Sparkles, Leaf, Sparkles, Leaf],
   },
   {
@@ -20,7 +20,7 @@ const FLAVOURS = [
     description: 'A decadent union of premium cocoa husks and single-origin black tea. Velvety smooth, dark chocolate aroma, and a warm body.',
     bg: '#2B1A12', // deep cocoa brown
     textColor: '#FAF7F2',
-    img: '/images/New folder/choclate jar.png',
+    img: '/assets/chocolate.jpeg',
     floatingItems: [Heart, Sparkles, Heart, Sparkles, Heart],
   },
   {
@@ -30,7 +30,7 @@ const FLAVOURS = [
     description: 'Infused with real Madagascar vanilla beans. Creamy, subtle sweetness, with a golden warmth that wraps you in pure comfort.',
     bg: '#FAF7F2', // creamy ivory
     textColor: '#2B1A12',
-    img: '/images/New folder/vanila jar.png',
+    img: '/assets/vanilla.jpeg',
     floatingItems: [Flower2, Sparkles, Flower2, Sparkles, Flower2],
   },
   {
@@ -40,7 +40,7 @@ const FLAVOURS = [
     description: 'Indulge in sweet toasted sugar notes, rich butteriness, and a smooth caramel glaze that transforms every sip into pure luxury.',
     bg: '#D0853E', // warm caramel
     textColor: '#FAF7F2',
-    img: '/images/New folder/buttercoth jar.png',
+    img: '/assets/butterscotch.jpeg',
     floatingItems: [Flame, Sparkles, Flame, Sparkles, Flame],
   },
 ];
@@ -50,7 +50,7 @@ export default function FlavourExperience({ onSelectProduct }) {
     <section style={styles.experienceContainer}>
       <div style={styles.sectionHeader}>
         <span style={styles.sectionSubtitle}>SENSORY EXPERIENCE</span>
-        <h2 style={styles.sectionTitle} className="flavour-section-title">The Flavour Atelier</h2>
+        <h2 style={styles.sectionTitle}>The Flavour Atelier</h2>
         <p style={styles.sectionDesc}>
           Crafted with the precision of luxury perfumery, each blend is designed to engage all five senses.
         </p>
@@ -83,7 +83,7 @@ function FlavourSlide({ flavor, index, onSelectProduct }) {
   const imageY = useTransform(scrollYProgress, [0, 1], [-50, 50]);
 
   return (
-    <div ref={slideRef} style={{ ...styles.slide, backgroundColor: flavor.bg, color: flavor.textColor }} className="flavour-slide">
+    <div ref={slideRef} style={{ ...styles.slide, backgroundColor: flavor.bg, color: flavor.textColor }}>
       {/* Floating elements animation */}
       <div style={styles.floatingContainer}>
         {flavor.floatingItems.map((IconComponent, i) => (
@@ -111,13 +111,13 @@ function FlavourSlide({ flavor, index, onSelectProduct }) {
       </div>
 
       <motion.div style={{ ...styles.slideInner, opacity, scale }}>
-        <div className="container flavour-grid" style={styles.gridContainer}>
+        <div className="container" style={styles.gridContainer}>
           {/* Text Content */}
-          <div style={styles.textSide} className="flavour-text-side">
+          <div style={styles.textSide}>
             <span style={{ ...styles.tagline, color: flavor.textColor === '#FAF7F2' ? 'rgba(250, 247, 242, 0.7)' : 'rgba(43, 26, 18, 0.7)' }}>
               {flavor.tagline}
             </span>
-            <h3 style={{ ...styles.flavorName, color: flavor.textColor }} className="flavour-name">{flavor.name}</h3>
+            <h3 style={{ ...styles.flavorName, color: flavor.textColor }}>{flavor.name}</h3>
             <p style={{ ...styles.flavorDesc, color: flavor.textColor === '#FAF7F2' ? 'rgba(250, 247, 242, 0.85)' : 'rgba(43, 26, 18, 0.85)' }}>
               {flavor.description}
             </p>
@@ -135,7 +135,7 @@ function FlavourSlide({ flavor, index, onSelectProduct }) {
 
           {/* Product Image Side */}
           <div style={styles.imageSide}>
-            <div style={styles.imageWrapper} className="flavour-image-wrapper">
+            <div style={styles.imageWrapper}>
               <motion.img
                 src={flavor.img}
                 alt={flavor.name}
@@ -270,46 +270,21 @@ const styles = {
 // Add responsive styles for Flavour Slide
 const styleSheetFlavour = document.createElement('style');
 styleSheetFlavour.innerText = `
-  .flavour-grid {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    align-items: center;
-    gap: 4rem;
-  }
   @media (max-width: 900px) {
-    .flavour-grid {
+    div[style*="minHeight"] div[style*="gridTemplateColumns"] {
       grid-template-columns: 1fr !important;
       text-align: center !important;
       gap: 3rem !important;
     }
-    .flavour-text-side {
+    div[style*="minHeight"] div[style*="textSide"] {
       align-items: center !important;
     }
-    .flavour-name {
+    div[style*="minHeight"] h3[style*="flavorName"] {
       font-size: 3rem !important;
     }
-    .flavour-image-wrapper {
+    div[style*="minHeight"] div[style*="imageWrapper"] {
       max-width: 260px !important;
       height: 260px !important;
-    }
-    .flavour-slide {
-      min-height: 70vh !important;
-      padding: 3rem 0 !important;
-    }
-    .flavour-section-title {
-      font-size: 2.5rem !important;
-    }
-  }
-  @media (max-width: 480px) {
-    .flavour-name {
-      font-size: 2.2rem !important;
-    }
-    .flavour-image-wrapper {
-      max-width: 200px !important;
-      height: 200px !important;
-    }
-    .flavour-slide {
-      min-height: 60vh !important;
     }
   }
 `;

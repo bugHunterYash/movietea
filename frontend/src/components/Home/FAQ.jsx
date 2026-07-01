@@ -33,11 +33,11 @@ export default function FAQ() {
   };
 
   return (
-    <section style={styles.section} className="faq-section">
+    <section style={styles.section}>
       <div className="container" style={styles.innerContainer}>
         <div style={styles.header}>
           <span style={styles.subtitle}>QUESTIONS & ANSWERS</span>
-          <h2 style={styles.title} className="faq-title">Frequently Asked</h2>
+          <h2 style={styles.title}>Frequently Asked</h2>
         </div>
 
         <div style={styles.faqList}>
@@ -46,7 +46,7 @@ export default function FAQ() {
             return (
               <div key={index} style={styles.faqItem}>
                 <button onClick={() => toggleFaq(index)} style={styles.questionBtn}>
-                  <span style={styles.questionText} className="faq-question-text">{faq.question}</span>
+                  <span style={styles.questionText}>{faq.question}</span>
                   <motion.div
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
@@ -141,34 +141,3 @@ const styles = {
     paddingBottom: '0.5rem',
   },
 };
-
-// Add responsive styles for FAQ
-const styleSheetFAQ = document.createElement('style');
-styleSheetFAQ.innerText = `
-  .faq-title {
-    font-size: 3.5rem;
-  }
-  .faq-question-text {
-    font-size: 1.35rem;
-  }
-  @media (max-width: 768px) {
-    .faq-title {
-      font-size: 2.5rem !important;
-    }
-    .faq-question-text {
-      font-size: 1.1rem !important;
-    }
-    .faq-section {
-      padding: 5rem 0 !important;
-    }
-  }
-  @media (max-width: 480px) {
-    .faq-title {
-      font-size: 2rem !important;
-    }
-    .faq-question-text {
-      font-size: 1rem !important;
-    }
-  }
-`;
-document.head.appendChild(styleSheetFAQ);

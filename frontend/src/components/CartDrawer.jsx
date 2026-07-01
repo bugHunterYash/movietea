@@ -148,7 +148,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
                 </div>
 
                 {/* Trust Badges */}
-                <div style={styles.trustRow} className="cart-trust-row">
+                <div style={styles.trustRow}>
                   <span style={styles.trustItem}><Truck size={14} /> Free delivery above ₹499</span>
                   <span style={styles.trustItem}><ShieldCheck size={14} /> Secure Checkout</span>
                   <span style={styles.trustItem}><Gift size={14} /> Premium Packaging</span>
@@ -387,15 +387,3 @@ const styles = {
     width: '100%',
   },
 };
-
-// Add responsive styles for CartDrawer
-const styleSheetCart = document.createElement('style');
-styleSheetCart.innerText = `
-  @media (max-width: 480px) {
-    .cart-trust-row {
-      grid-template-columns: 1fr !important;
-      gap: 0.3rem !important;
-    }
-  }
-`;
-document.head.appendChild(styleSheetCart);

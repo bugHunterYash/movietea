@@ -59,7 +59,7 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
       <div className="container">
         {/* Header */}
         <div style={styles.shopHeader}>
-          <h1 style={styles.title}>The Tea Shop</h1>
+          <h1 style={styles.title} className="shop-title">The Tea Shop</h1>
           <p style={styles.desc}>Pure ingredients, zero added sugar, premium flavor curation.</p>
         </div>
 
@@ -331,14 +331,29 @@ styleSheetShop.innerText = `
   .shop-product-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   }
+  .shop-title {
+    font-size: 4rem;
+  }
   @media (max-width: 1024px) {
     .shop-product-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    .shop-title {
+      font-size: 3rem !important;
     }
   }
   @media (max-width: 640px) {
     .shop-product-grid {
       grid-template-columns: 1fr !important;
+    }
+    .shop-title {
+      font-size: 2.2rem !important;
+    }
+    .shop-product-card {
+      padding: 1.5rem !important;
+    }
+    .shop-product-card .action-buttons {
+      flex-direction: column;
     }
   }
 

@@ -56,12 +56,13 @@ export default function Login() {
     <div style={styles.container}>
       <motion.div 
         style={styles.card}
+        className="login-card"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <div style={styles.logoContainer}>
-          <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.logo} />
+          <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.logo} className="login-logo" />
         </div>
         
         <div style={styles.toggleContainer}>
@@ -79,7 +80,7 @@ export default function Login() {
           </button>
         </div>
 
-        <h1 style={styles.title}>{isLoginMode ? 'Welcome Back' : 'Join the Atelier'}</h1>
+        <h1 style={styles.title} className="login-title">{isLoginMode ? 'Welcome Back' : 'Join the Atelier'}</h1>
         <p style={styles.subtitle}>
           {isLoginMode 
             ? 'Sign in to access your premium tea collection.' 
@@ -304,3 +305,27 @@ const styles = {
     color: '#A0968C',
   }
 };
+
+// Add responsive styles for Login
+const styleSheetLogin = document.createElement('style');
+styleSheetLogin.innerText = `
+  .login-card {
+    padding: 3rem 3rem;
+  }
+  .login-title {
+    font-size: 2.2rem;
+  }
+  @media (max-width: 640px) {
+    .login-card {
+      padding: 2rem 1.5rem !important;
+      margin: 1rem;
+    }
+    .login-title {
+      font-size: 1.8rem !important;
+    }
+    .login-logo {
+      height: 50px !important;
+    }
+  }
+`;
+document.head.appendChild(styleSheetLogin);
