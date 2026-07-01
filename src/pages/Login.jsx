@@ -17,8 +17,10 @@ export default function Login() {
   const [error, setError] = useState('');
 
   const handleGoogleLogin = () => {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-    window.location.href = `${backendUrl}/api/auth/google`;
+    let rawUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    if (rawUrl.endsWith('/')) rawUrl = rawUrl.slice(0, -1);
+    if (!rawUrl.endsWith('/api')) rawUrl += '/api';
+    window.location.href = `${rawUrl}/auth/google`;
   };
 
   const handleChange = (e) => {
