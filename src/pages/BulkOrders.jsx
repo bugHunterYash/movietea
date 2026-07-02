@@ -319,7 +319,7 @@ export default function BulkOrders() {
         <div className="container" style={styles.stripGrid}>
           <div style={styles.stripItem}>
             <span style={styles.stripLabel}>Email</span>
-            <span style={styles.stripValue}>bulk@movitea.com</span>
+            <span style={styles.stripValue}>movitea8@gmail.com</span>
           </div>
           <div style={styles.stripItem}>
             <span style={styles.stripLabel}>CALL US</span>
