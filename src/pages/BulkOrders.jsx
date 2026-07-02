@@ -322,8 +322,8 @@ export default function BulkOrders() {
             <span style={styles.stripValue}>bulk@movitea.com</span>
           </div>
           <div style={styles.stripItem}>
-            <span style={styles.stripLabel}>Phone</span>
-            <span style={styles.stripValue}>+91 98765 43210</span>
+            <span style={styles.stripLabel}>CALL US</span>
+            <span style={styles.stripValue}>+91 9818501302</span>
           </div>
           <div style={styles.stripItem}>
             <span style={styles.stripLabel}>Business Hours</span>

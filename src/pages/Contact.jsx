@@ -28,15 +28,16 @@ export default function Contact() {
             </div>
             
             <div style={styles.detailItem}>
-              <h4>Atelier Location</h4>
+              <h4>Office Address</h4>
+              <p>MOVITEA</p>
               <p>Rzg 405A Rajnagar 2 palam</p>
               <p>Delhi 110077</p>
             </div>
 
             <div style={styles.detailItem}>
-              <h4>Working Hours</h4>
+              <h4>Business Hours</h4>
               <p>Monday &mdash; Saturday</p>
-              <p>10:00 AM &mdash; 7:00 PM IST</p>
+              <p>10:00 AM &mdash; 6:00 PM</p>
             </div>
           </div>
         </div>

@@ -26,6 +26,14 @@ const Admin = lazy(() => import('./pages/Admin'));
 const Login = lazy(() => import('./pages/Login'));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 
+// Legal Pages
+const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy'));
+const TermsConditions = lazy(() => import('./pages/legal/TermsConditions'));
+const ReturnRefund = lazy(() => import('./pages/legal/ReturnRefund'));
+const ShippingPolicy = lazy(() => import('./pages/legal/ShippingPolicy'));
+const CancellationPolicy = lazy(() => import('./pages/legal/CancellationPolicy'));
+const GrievanceOfficer = lazy(() => import('./pages/legal/GrievanceOfficer'));
+
 // Background preloading function
 const preloadPages = () => {
   import('./pages/About');
@@ -110,6 +118,15 @@ export default function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
+                
+                {/* Legal Routes */}
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-conditions" element={<TermsConditions />} />
+                <Route path="/return-refund-policy" element={<ReturnRefund />} />
+                <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                <Route path="/cancellation-policy" element={<CancellationPolicy />} />
+                <Route path="/grievance-officer" element={<GrievanceOfficer />} />
+
                 <Route path="/admin/*" element={<Admin />} />
               </Routes>
             </Suspense>

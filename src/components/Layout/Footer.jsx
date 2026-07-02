@@ -43,8 +43,19 @@ export default function Footer() {
             </div>
           </div>
 
-
-
+          {/* Links Column 3: Legal */}
+          <div style={styles.column}>
+            <h4 style={styles.colTitle}>Legal</h4>
+            <div style={styles.linksList}>
+              <button onClick={() => handleNavClick('/privacy-policy')} style={styles.footerLink}>Privacy Policy</button>
+              <button onClick={() => handleNavClick('/terms-conditions')} style={styles.footerLink}>Terms & Conditions</button>
+              <button onClick={() => handleNavClick('/return-refund-policy')} style={styles.footerLink}>Return & Refund</button>
+              <button onClick={() => handleNavClick('/shipping-policy')} style={styles.footerLink}>Shipping Policy</button>
+              <button onClick={() => handleNavClick('/cancellation-policy')} style={styles.footerLink}>Cancellation</button>
+              <button onClick={() => handleNavClick('/grievance-officer')} style={styles.footerLink}>Grievance Officer</button>
+              <button onClick={() => handleNavClick('/contact')} style={styles.footerLink}>Contact Us</button>
+            </div>
+          </div>
           {/* Newsletter */}
           <div style={styles.columnNewsletter}>
             <h4 style={styles.colTitle}>Newsletter</h4>
@@ -85,7 +96,7 @@ const styles = {
   },
   topRow: {
     display: 'grid',
-    gridTemplateColumns: '2fr 1fr 1fr 2fr',
+    gridTemplateColumns: '2fr 1fr 1fr 1fr 2fr',
     gap: '2.5rem',
   },
   columnLarge: {
@@ -191,7 +202,7 @@ const styleSheetFooter = document.createElement('style');
 styleSheetFooter.innerText = `
   footer .footer-top-row {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 2fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
     gap: 2.5rem;
   }
   footer .footer-bottom-row {
