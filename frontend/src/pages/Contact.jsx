@@ -23,8 +23,8 @@ export default function Contact() {
           <div style={styles.detailsBlock}>
             <div style={styles.detailItem}>
               <h4>Concierge Support</h4>
-              <p>support@movitea.com</p>
-              <p>+91 98765 43210</p>
+              <p>Movitea8@gmail.com</p>
+              <p>+91 9818501302</p>
             </div>
             
             <div style={styles.detailItem}>

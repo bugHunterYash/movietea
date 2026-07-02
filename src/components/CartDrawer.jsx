@@ -69,7 +69,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
                   const pricingInfo = PRICING[item.id];
                   const originalPrice = pricingInfo?.sale || item.price;
                   const discountedPrice = pricingInfo?.firstOrder || (item.price * 0.5);
-                  
+
                   return (
                     <div key={item.id} style={styles.itemRow}>
                       <img src={item.img} alt={item.name} style={styles.itemImg} />
@@ -79,7 +79,7 @@ export default function CartDrawer({ isOpen, onClose, cartItems, onUpdateQuantit
                           <span style={styles.itemDiscountPrice}>₹{discountedPrice}</span>
                           <span style={styles.itemOriginalPrice}>₹{originalPrice}</span>
                         </div>
-                        
+
                         {/* Quantity Selector */}
                         <div style={styles.quantityContainer}>
                           <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)} style={styles.qtyBtn}>

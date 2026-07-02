@@ -307,6 +307,49 @@ export default function ProductDetails() {
         </div>
       </section>
 
+      {/* Section 5: Compliance Information */}
+      <section style={styles.complianceSection}>
+        <div className="container">
+          <span style={styles.sectionSubtitle}>PRODUCT INFORMATION</span>
+          <h2 style={styles.sectionTitle} className="details-section-title">Compliance & Details</h2>
+          
+          <div style={styles.complianceGrid} className="details-compliance-grid">
+            <div style={styles.complianceItem}>
+              <strong>Country of Origin</strong>
+              <span>India 🇮🇳</span>
+            </div>
+            <div style={styles.complianceItem}>
+              <strong>Manufacturer</strong>
+              <span>MOVITEA</span>
+            </div>
+            <div style={styles.complianceItem}>
+              <strong>FSSAI License Number</strong>
+              <span>XXXXXXXXXXXXXXX</span>
+            </div>
+            <div style={styles.complianceItem}>
+              <strong>GSTIN</strong>
+              <span>XXXXXXXXXXXXXXX</span>
+            </div>
+            <div style={styles.complianceItem}>
+              <strong>Net Weight</strong>
+              <span>{product.netWeight || '100g (varies by pack)'}</span>
+            </div>
+            <div style={styles.complianceItem}>
+              <strong>Shelf Life</strong>
+              <span>{product.shelfLife || '12 Months'}</span>
+            </div>
+            <div style={styles.complianceItem}>
+              <strong>Storage Instructions</strong>
+              <span>Store in a cool, dry place away from direct sunlight.</span>
+            </div>
+            <div style={styles.complianceItem}>
+              <strong>Best Before</strong>
+              <span>{product.bestBefore || 'Refer to packaging'}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Internal SEO Linking */}
       <section style={styles.internalLinksSection}>
         <div className="container" style={styles.internalLinksContainer}>
@@ -703,6 +746,36 @@ const styles = {
     flexDirection: 'column',
     gap: '0.5rem',
   },
+  complianceSection: {
+    padding: '6rem 0',
+    backgroundColor: '#FAF7F2',
+    color: 'var(--dark-color)',
+    borderTop: '1px solid rgba(43,26,18,0.1)',
+  },
+  complianceGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '2rem',
+    maxWidth: '800px',
+    margin: '0 auto',
+  },
+  complianceItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.4rem',
+    borderBottom: '1px solid rgba(43,26,18,0.1)',
+    paddingBottom: '1rem',
+    fontFamily: 'var(--font-sans)',
+    strong: {
+      textTransform: 'uppercase',
+      fontSize: '0.8rem',
+      letterSpacing: '0.05em',
+      color: 'var(--primary-color)',
+    },
+    span: {
+      fontSize: '1.05rem',
+    }
+  },
 };
 
 // Add responsive styles and hover effects
@@ -735,6 +808,11 @@ styleSheetDetails.innerText = `
   }
   .details-section-title {
     font-size: 3.5rem;
+  }
+  .details-compliance-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
   }
 
   @media (max-width: 950px) {
@@ -770,6 +848,9 @@ styleSheetDetails.innerText = `
     div[style*="breadcrumbs"] {
       justify-content: flex-start !important;
       align-self: flex-start;
+    }
+    .details-compliance-grid {
+      grid-template-columns: 1fr !important;
     }
   }
   .breadcrumb-link:hover {
