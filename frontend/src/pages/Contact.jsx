@@ -1,44 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { contactAPI } from '../utils/api';
 
-export default function Contact({ user }) {
-  const [formData, setFormData] = useState({ 
-    name: user?.name || '', 
-    email: user?.email || '', 
-    message: '' 
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [statusMessage, setStatusMessage] = useState('');
+export default function Contact() {
+  const [formData, setFormData] = React.useState({ name: '', email: '', message: '' });
+  const [status, setStatus] = React.useState(null); // 'sending' | 'success' | 'error'
+  const [errorMsg, setErrorMsg] = React.useState('');
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setStatusMessage('');
-    try {
-      const response = await fetch('https://formspree.io/f/mykrnpbb', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      if (response.ok) {
-        setStatusMessage('Thank you. Our concierge team will connect with you shortly.');
-        setFormData({ name: user?.name || '', email: user?.email || '', message: '' });
-      } else {
-        setStatusMessage('Failed to send message. Please try again later.');
-      }
-    } catch (error) {
-      console.error('Failed to send message:', error);
-      setStatusMessage('Failed to send message. Please try again later.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
   React.useEffect(() => {
     document.title = "Contact Concierge | MOVITEA";
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -48,11 +15,24 @@ export default function Contact({ user }) {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
-  React.useEffect(() => {
-    if (user) {
-      setFormData(prev => ({ ...prev, name: user.name, email: user.email }));
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('sending');
+    setErrorMsg('');
+    try {
+      await contactAPI.submit(formData);
+      setStatus('success');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err) {
+      setStatus('error');
+      setErrorMsg(err.message || 'Something went wrong. Please try again.');
     }
-  }, [user]);
+  };
+
   return (
     <div style={styles.page}>
       <div className="container" style={styles.grid}>
@@ -73,8 +53,8 @@ export default function Contact({ user }) {
             
             <div style={styles.detailItem}>
               <h4>Atelier Location</h4>
-              <p>Rzg 405A Rajnagar 2</p>
-              <p>Palam, Delhi 110077</p>
+              <p>12, Luxury Row, Jubilee Hills</p>
+              <p>Hyderabad, TS, India</p>
             </div>
 
             <div style={styles.detailItem}>
@@ -92,28 +72,12 @@ export default function Contact({ user }) {
             
             <div style={styles.field}>
               <label style={styles.label}>Full Name</label>
-              <input 
-                type="text" 
-                name="name" 
-                value={formData.name} 
-                onChange={handleChange} 
-                style={{...styles.input, backgroundColor: user ? 'transparent' : 'transparent', opacity: user ? 0.6 : 1}} 
-                required 
-                readOnly={!!user} 
-              />
+              <input type="text" name="name" value={formData.name} onChange={handleChange} style={styles.input} required />
             </div>
 
             <div style={styles.field}>
               <label style={styles.label}>Email Address</label>
-              <input 
-                type="email" 
-                name="email" 
-                value={formData.email} 
-                onChange={handleChange} 
-                style={{...styles.input, backgroundColor: user ? 'transparent' : 'transparent', opacity: user ? 0.6 : 1}} 
-                required 
-                readOnly={!!user} 
-              />
+              <input type="email" name="email" value={formData.email} onChange={handleChange} style={styles.input} required />
             </div>
 
             <div style={styles.field}>
@@ -121,10 +85,16 @@ export default function Contact({ user }) {
               <textarea name="message" value={formData.message} onChange={handleChange} style={styles.textarea} rows="6" required></textarea>
             </div>
 
-            <button type="submit" className="luxury-btn" style={styles.submitBtn} disabled={isSubmitting}>
-              {isSubmitting ? 'Sending...' : 'Send Message'}
+            {status === 'success' && (
+              <p style={styles.successMsg}>Thank you! Our concierge team will connect with you shortly.</p>
+            )}
+            {status === 'error' && (
+              <p style={styles.errorMsg}>{errorMsg}</p>
+            )}
+
+            <button type="submit" className="luxury-btn" style={styles.submitBtn} disabled={status === 'sending'}>
+              {status === 'sending' ? 'Sending...' : 'Send Message'}
             </button>
-            {statusMessage && <p style={{ marginTop: '1rem', color: statusMessage.includes('Failed') ? 'red' : 'green', fontSize: '0.9rem' }}>{statusMessage}</p>}
           </form>
         </div>
       </div>
@@ -242,6 +212,18 @@ const styles = {
   submitBtn: {
     width: '100%',
     marginTop: '1rem',
+  },
+  successMsg: {
+    color: '#2e7d32',
+    fontSize: '0.95rem',
+    textAlign: 'center',
+    margin: 0,
+  },
+  errorMsg: {
+    color: '#c62828',
+    fontSize: '0.95rem',
+    textAlign: 'center',
+    margin: 0,
   },
 };
 

@@ -199,6 +199,14 @@ export const cartAPI = {
   clearUserCart: (userId) => apiFetch(`/cart/user/${userId}`, { method: 'DELETE' }),
 };
 
+// Contact API
+export const contactAPI = {
+  submit: (data) => apiFetch('/contact', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+};
+
 // Google OAuth
 export const getGoogleAuthURL = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
