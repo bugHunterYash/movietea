@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import api from '../api/client';
+import api, { getImageUrl } from '../api/client';
 import PreOrderModal from '../components/PreOrderModal';
 
 export default function Shop({ setSelectedProduct }) {
@@ -97,7 +97,7 @@ export default function Shop({ setSelectedProduct }) {
                   {tagText && <span style={tagStyle}>{tagText}</span>}
                   
                   <div style={styles.imgContainer} onClick={() => handleProductSelect(prod)}>
-                    <img src={prod.image || '/assets/rose.jpeg'} alt={prod.name || 'Product'} style={styles.productImg} />
+                    <img src={getImageUrl(prod.image) || '/assets/rose.jpeg'} alt={prod.name || 'Product'} style={styles.productImg} />
                   </div>
 
                   <div style={styles.info}>
