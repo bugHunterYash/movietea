@@ -89,7 +89,7 @@ export default function BulkOrders() {
 
   return (
     <div style={styles.page}>
-      <SEO 
+      <SEO
         title="Bulk Tea Orders | MOVITEA"
         description="Order premium flavoured tea in bulk from MOVITEA. Corporate gifting, cafés, hotels, offices, distributors and wholesale tea orders across India."
       />
@@ -103,8 +103,8 @@ export default function BulkOrders() {
             <p style={styles.heroSubtitle}>
               Whether you're ordering for your office, café, corporate event, wedding, hotel, or retail business, MOVITEA offers premium flavoured tea solutions tailored to your needs.
             </p>
-            <button 
-              style={styles.ctaBtn} 
+            <button
+              style={styles.ctaBtn}
               onClick={() => document.getElementById('quote-form').scrollIntoView({ behavior: 'smooth' })}
             >
               Request a Quote
@@ -119,12 +119,12 @@ export default function BulkOrders() {
           <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={fadeUp} style={styles.sectionHeader}>
             <h2 style={styles.sectionTitle}>Why Choose MOVITEA for Bulk Orders</h2>
           </motion.div>
-          
-          <motion.div 
-            className="feature-cards-grid" 
-            initial="hidden" 
-            whileInView="show" 
-            viewport={{ once: true, margin: "-50px" }} 
+
+          <motion.div
+            className="feature-cards-grid"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-50px" }}
             variants={staggerFadeUp}
           >
             {[
@@ -148,12 +148,12 @@ export default function BulkOrders() {
           <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={fadeUp} style={styles.sectionHeader}>
             <h2 style={styles.sectionTitle}>Who Can Order?</h2>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             style={styles.iconGrid}
-            initial="hidden" 
-            whileInView="show" 
-            viewport={{ once: true, margin: "-50px" }} 
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-50px" }}
             variants={staggerFadeUp}
           >
             {whoCanOrder.map((item, i) => (
@@ -176,7 +176,7 @@ export default function BulkOrders() {
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} style={styles.form}>
-              
+
               <div style={styles.formGrid}>
                 {/* Company & Contact */}
                 <div style={styles.inputGroup}>
@@ -287,8 +287,8 @@ export default function BulkOrders() {
             <div style={styles.accordionContainer}>
               {faqs.map((faq, index) => (
                 <div key={index} style={styles.accordionItem}>
-                  <button 
-                    style={styles.accordionHeader} 
+                  <button
+                    style={styles.accordionHeader}
                     onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
                   >
                     <span style={styles.accordionQ}>{faq.q}</span>
@@ -319,7 +319,7 @@ export default function BulkOrders() {
         <div className="container" style={styles.stripGrid}>
           <div style={styles.stripItem}>
             <span style={styles.stripLabel}>Email</span>
-            <span style={styles.stripValue}>bulk@movitea.com</span>
+            <span style={styles.stripValue}>movitea8@gmail.com</span>
           </div>
           <div style={styles.stripItem}>
             <span style={styles.stripLabel}>CALL US</span>
@@ -327,7 +327,7 @@ export default function BulkOrders() {
           </div>
           <div style={styles.stripItem}>
             <span style={styles.stripLabel}>Business Hours</span>
-            <span style={styles.stripValue}>Monday – Saturday<br/>10 AM – 7 PM</span>
+            <span style={styles.stripValue}>Monday – Saturday<br />10 AM – 7 PM</span>
           </div>
         </div>
       </section>
@@ -336,7 +336,7 @@ export default function BulkOrders() {
       <AnimatePresence>
         {isSuccessModalOpen && (
           <div style={styles.modalOverlay}>
-            <motion.div 
+            <motion.div
               style={styles.modalContent}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -354,7 +354,7 @@ export default function BulkOrders() {
           </div>
         )}
       </AnimatePresence>
-      
+
     </div>
   );
 }
