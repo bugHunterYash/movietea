@@ -18,3 +18,10 @@ api.interceptors.request.use((config) => {
 });
 
 export default api;
+
+export const getImageUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  if (path.startsWith('/uploads')) return `${rawUrl.replace('/api', '')}${path}`;
+  return path;
+};
