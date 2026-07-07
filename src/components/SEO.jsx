@@ -6,7 +6,7 @@ const SEO = ({
   title, 
   description, 
   type = 'website',
-  image = '/assets/combo-pack.jpeg', // Default Open Graph image
+  image = '/images/combo_new.png', // Default Open Graph image
   structuredData = null 
 }) => {
   const location = useLocation();

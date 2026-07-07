@@ -303,7 +303,7 @@ export default function ComboPackShowcase({ onShopClick }) {
           {/* Center Box Hero */}
           <div className="combo-box-hero" style={styles.boxHero}>
             <img
-              src="/assets/combo-pack.jpeg"
+              src="/images/combo_new.png"
               alt="MOVITEA Assorted Box"
               style={styles.boxImg}
             />
