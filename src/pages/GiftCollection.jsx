@@ -7,7 +7,7 @@ const GIFTS = [
     name: 'The Grand Assorted Pack',
     subtitle: 'Sensory Celebration',
     price: '₹1,899',
-    img: '/assets/combo-pack.jpeg',
+    img: '/images/combo_new.png',
     features: ['Contains all 4 signature flavours', 'Custom gold leaf packaging', 'Includes signature wooden tea scoop'],
   },
   {
@@ -23,7 +23,7 @@ const GIFTS = [
     name: 'Atelier Corporate Chest',
     subtitle: 'Ultimate Executive Luxury',
     price: '₹4,500',
-    img: '/assets/combo-pack.jpeg',
+    img: '/images/combo_new.png',
     features: ['Premium walnut wood presentation box', 'Stainless steel micro-infuser', 'Luxury collection catalog card'],
   },
 ];

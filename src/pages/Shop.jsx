@@ -97,7 +97,7 @@ export default function Shop({ setSelectedProduct }) {
                   {tagText && <span style={tagStyle}>{tagText}</span>}
                   
                   <div style={styles.imgContainer} onClick={() => handleProductSelect(prod)}>
-                    <img src={getImageUrl(prod.image) || '/assets/rose.jpeg'} alt={prod.name || 'Product'} style={styles.productImg} />
+                    <img src={prod.slug === '20-sachets-combo' ? '/images/combo_new.png' : getImageUrl(prod.image) || '/assets/rose.jpeg'} alt={prod.name || 'Product'} style={styles.productImg} />
                   </div>
 
                   <div style={styles.info}>

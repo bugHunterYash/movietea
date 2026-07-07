@@ -141,7 +141,7 @@ export default function ProductDetails() {
       <SEO
         title={`${product.name} | MOVITEA Premium Flavoured Tea`}
         description={`Experience rich ${product.name} by MOVITEA. ${product.desc} Premium ingredients, no added sugar and ready in 60 seconds.`}
-        image={getImageUrl(product.image)}
+        image={product.slug === '20-sachets-combo' ? '/images/combo_new.png' : getImageUrl(product.image)}
         structuredData={structuredData}
       />
       {/* Section 1: Hero Showcase */}
@@ -155,7 +155,7 @@ export default function ProductDetails() {
               style={styles.imgWrapper}
             >
               <div style={styles.imageGlow} />
-              <img src={getImageUrl(product.image)} alt={product.name} style={styles.mainImg} className="product-float" />
+              <img src={product.slug === '20-sachets-combo' ? '/images/combo_new.png' : getImageUrl(product.image)} alt={product.name} style={styles.mainImg} className="product-float" />
             </motion.div>
           </div>
 

@@ -53,7 +53,7 @@ export default function About() {
                 />
               </svg>
             </div>
-            <img src="/assets/combo-pack.jpeg" alt="MOVITEA Collection" style={styles.aboutHeroImg} />
+            <img src="/images/combo_new.png" alt="MOVITEA Collection" style={styles.aboutHeroImg} />
           </div>
         </div>
       </section>
