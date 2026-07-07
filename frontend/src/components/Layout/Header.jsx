@@ -139,7 +139,7 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
           <div style={styles.authSection}>
             {user ? (
               <div style={styles.userMenuContainer}>
-                <button 
+                <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   style={styles.userBtn}
                 >
@@ -157,7 +157,7 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
                       <span style={styles.userRole}>{user.role}</span>
                     </div>
                     {user.role === 'ADMIN' && (
-                      <button 
+                      <button
                         onClick={() => {
                           navigate('/admin');
                           setShowUserMenu(false);
@@ -167,7 +167,7 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
                         <LayoutDashboard size={16} /> Admin Dashboard
                       </button>
                     )}
-                    <button 
+                    <button
                       onClick={() => {
                         onLogout();
                         setShowUserMenu(false);
@@ -180,7 +180,7 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
                 )}
               </div>
             ) : (
-              <button 
+              <button
                 onClick={() => navigate('/login')}
                 style={styles.loginBtn}
               >
