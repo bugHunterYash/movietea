@@ -310,7 +310,7 @@ const styles = {
     transition: 'background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), color 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
   },
   introHeader: {
-    paddingLeft: 'max(2rem, calc((100vw - var(--container-max-width)) / 2 + 2rem))',
+    paddingLeft: 'max(2rem, calc((100% - var(--container-max-width)) / 2 + 2rem))',
     zIndex: 20,
     pointerEvents: 'none',
   },

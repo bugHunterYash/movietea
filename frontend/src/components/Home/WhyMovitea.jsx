@@ -1,97 +1,79 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Droplet, Leaf, Compass, Zap, Heart } from 'lucide-react';
+import { Leaf, ShieldCheck, Coffee, MapPin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const BENEFITS = [
   {
-    icon: Sparkles,
-    title: 'Zero Added Sugar',
-    desc: 'Sweetened naturally and subtly by flavor botanicals, never artificial sugars.',
-  },
-  {
-    icon: Droplet,
-    title: 'Just Add Hot Water',
-    desc: 'The ultimate luxury convenience. Stir and watch the premium blend dissolve.',
-  },
-  {
     icon: Leaf,
-    title: 'Premium Ingredients',
-    desc: 'Single-origin tea leaves, authentic spice extracts, real flowers and cocoa.',
+    title: 'ZERO ADDED SUGAR',
+    desc: 'Sweetened naturally by flavor botanicals, never artificial sugars.',
   },
   {
-    icon: Compass,
-    title: 'Unique Flavours',
-    desc: 'Bespoke recipes: Rose, Vanilla, Toasted Butterscotch, and Cocoa Reserve.',
+    icon: ShieldCheck,
+    title: 'PREMIUM INGREDIENTS',
+    desc: 'Single-origin tea leaves, authentic spice extracts and real flowers.',
   },
   {
-    icon: Zap,
-    title: 'Quick Preparation',
-    desc: 'Instant indulgence. Brews perfectly in 30 seconds for a flawless experience.',
+    icon: Coffee,
+    title: 'BREWS IN 30 SECONDS',
+    desc: 'The ultimate luxury convenience. Just add hot water and stir.',
   },
   {
-    icon: Heart,
-    title: 'Comfort Experience',
-    desc: 'A sensory ritual crafted to soothe the mind, excite the palate, and heal.',
-  },
+    icon: MapPin,
+    title: 'MADE IN INDIA',
+    desc: 'Crafted for Indian tastebuds, with natural goodness at heart.',
+  }
 ];
 
 export default function WhyMovitea() {
-  const lineVariants = {
-    hidden: { pathLength: 0 },
-    visible: {
-      pathLength: 1,
-      transition: { duration: 1.5, ease: 'easeInOut' },
-    },
-  };
+  const navigate = useNavigate();
 
   return (
     <section style={styles.section}>
-      <div className="container">
-        {/* Intro */}
+      <div className="container" style={styles.container}>
+        
+        {/* Intro Headline */}
         <div style={styles.intro}>
-          <span style={styles.subtitle}>WHY MOVITEA</span>
-          <h2 style={styles.title}>Reimagining the Tea Ritual</h2>
+          <h2 style={styles.headline}>
+            WHY<br/>
+            <span style={styles.headlineHighlight}>MOVITEA!</span>
+          </h2>
         </div>
 
-        {/* Benefits Grid */}
-        <div style={styles.grid}>
+        {/* 4-Column Grid */}
+        <div style={styles.gridContainer}>
           {BENEFITS.map((item, index) => {
             const Icon = item.icon;
             return (
               <motion.div
                 key={index}
-                style={styles.item}
-                initial={{ opacity: 0, y: 30 }}
+                style={styles.card}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.6, delay: index * 0.15 }}
               >
-                <div style={styles.iconContainer}>
-                  <Icon size={24} strokeWidth={1.5} color="var(--primary-color)" />
+                <div style={styles.iconWrapper}>
+                  <Icon size={56} strokeWidth={2} color="#1A120E" />
                 </div>
-                <div style={styles.textContainer}>
-                  <h3 style={styles.itemTitle}>{item.title}</h3>
-                  <p style={styles.itemDesc}>{item.desc}</p>
-                </div>
-
-                {/* SVG Line to draw itself underneath */}
-                <div style={styles.lineWrapper}>
-                  <svg width="100%" height="2" fill="none" style={styles.lineSvg}>
-                    <motion.path
-                      d="M 0 1 L 500 1"
-                      stroke="rgba(197, 107, 31, 0.25)"
-                      strokeWidth="1"
-                      variants={lineVariants}
-                      initial="hidden"
-                      whileInView="visible"
-                      viewport={{ once: true }}
-                    />
-                  </svg>
-                </div>
+                <h3 style={styles.itemTitle}>{item.title}</h3>
+                <p style={styles.itemDesc}>{item.desc}</p>
               </motion.div>
             );
           })}
         </div>
+
+        {/* CTA Button */}
+        <motion.button 
+          style={styles.ctaBtn}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/shop')}
+        >
+          DEEP DIVE INTO MOVITEA!
+        </motion.button>
+
       </div>
     </section>
   );
@@ -99,89 +81,116 @@ export default function WhyMovitea() {
 
 const styles = {
   section: {
-    backgroundColor: '#FAF7F2',
-    padding: '8rem 0',
-    borderTop: '1px solid var(--border-color)',
+    backgroundColor: '#FFDF40', // Vibrant Too Yumm Yellow
+    padding: '6rem 0 8rem 0',
+    width: '100%',
     position: 'relative',
-    overflow: 'hidden',
+  },
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '0 2rem',
   },
   intro: {
     textAlign: 'center',
     marginBottom: '5rem',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '0.8rem',
   },
-  subtitle: {
-    fontSize: '0.85rem',
-    letterSpacing: '0.15em',
-    color: 'var(--primary-color)',
-    fontWeight: '600',
+  headline: {
+    fontFamily: "'Anton', var(--font-heading)",
+    fontSize: '5.5rem',
+    fontWeight: '900',
+    color: '#FFDF40', // Same as bg to make it look hollow, or use white
+    lineHeight: '1.1',
+    letterSpacing: '0.02em',
+    textTransform: 'uppercase',
+    /* 3D Outline Effect */
+    WebkitTextStroke: '3px #1A120E',
+    textShadow: '6px 6px 0px #1A120E',
   },
-  title: {
-    fontSize: '3.5rem',
+  headlineHighlight: {
+    color: '#FFFFFF',
+    WebkitTextStroke: '3px #1A120E',
+    textShadow: '6px 6px 0px #1A120E',
   },
-  grid: {
+  gridContainer: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    columnGap: '6rem',
-    rowGap: '4rem',
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gap: '3rem',
+    width: '100%',
+    marginBottom: '4rem',
   },
-  item: {
-    display: 'flex',
-    gap: '1.5rem',
-    position: 'relative',
-    paddingBottom: '2rem',
-  },
-  iconContainer: {
-    width: '48px',
-    height: '48px',
-    borderRadius: '50%',
-    backgroundColor: 'var(--cream-color)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-  },
-  textContainer: {
+  card: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.6rem',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  iconWrapper: {
+    marginBottom: '1.5rem',
   },
   itemTitle: {
-    fontSize: '1.8rem',
-    fontFamily: 'var(--font-serif)',
-    color: 'var(--dark-color)',
-    fontWeight: '400',
+    fontFamily: 'var(--font-heading)',
+    fontSize: '1.5rem',
+    fontWeight: '900',
+    color: '#1A120E',
+    marginBottom: '1rem',
+    lineHeight: '1.2',
+    letterSpacing: '-0.01em',
   },
   itemDesc: {
-    fontFamily: 'var(--font-story)',
-    fontSize: '1.05rem',
-    lineHeight: '1.7',
-    color: 'var(--text-light)',
+    fontFamily: 'var(--font-body)',
+    fontSize: '1rem',
+    fontWeight: '500',
+    color: '#3E2723',
+    lineHeight: '1.5',
   },
-  lineWrapper: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    height: '2px',
-  },
-  lineSvg: {
-    width: '100%',
-    height: '100%',
-  },
+  ctaBtn: {
+    backgroundColor: '#1A120E',
+    color: '#FFFFFF',
+    fontFamily: 'var(--font-heading)',
+    fontWeight: '700',
+    fontSize: '1rem',
+    letterSpacing: '0.05em',
+    padding: '1.2rem 2.5rem',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    textTransform: 'uppercase',
+    boxShadow: '0 10px 25px rgba(26, 18, 14, 0.2)',
+  }
 };
 
-// Add responsive styles
-const styleSheetWhy = document.createElement('style');
-styleSheetWhy.innerText = `
-  @media (max-width: 850px) {
-    section[style*="padding: 8rem 0"] div[style*="gridTemplateColumns"] {
-      grid-template-columns: 1fr !important;
-      row-gap: 3rem !important;
+// Add responsive layout adjustments and Anton font
+if (typeof document !== 'undefined') {
+  // Import Anton font for the headline
+  const fontLink = document.createElement('link');
+  fontLink.href = 'https://fonts.googleapis.com/css2?family=Anton&display=swap';
+  fontLink.rel = 'stylesheet';
+  document.head.appendChild(fontLink);
+
+  const styleSheet = document.createElement('style');
+  styleSheet.innerText = `
+    @media (max-width: 1024px) {
+      div[style*="gridTemplateColumns: repeat(4"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+        row-gap: 4rem !important;
+      }
+      h2[style*="font-size: 5rem"] {
+        font-size: 4rem !important;
+      }
     }
-  }
-`;
-document.head.appendChild(styleSheetWhy);
+    @media (max-width: 600px) {
+      div[style*="gridTemplateColumns: repeat(2"] {
+        grid-template-columns: 1fr !important;
+      }
+      h2[style*="font-size: 5rem"], h2[style*="font-size: 4rem"] {
+        font-size: 3rem !important;
+      }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+}
+

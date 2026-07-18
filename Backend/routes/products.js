@@ -41,7 +41,8 @@ router.get('/', async (req, res) => {
     });
     res.json(products);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch products' });
+    console.error('Fetch products error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -53,7 +54,8 @@ router.get('/admin', authenticateToken, requireAdmin, async (req, res) => {
     });
     res.json(products);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch products' });
+    console.error('Fetch products error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -68,7 +70,8 @@ router.get('/:slug', async (req, res) => {
     }
     res.json(product);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch product' });
+    console.error('Fetch product error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -104,7 +107,7 @@ router.post('/', authenticateToken, requireAdmin, upload.single('image'), async 
     res.status(201).json(product);
   } catch (error) {
     console.error('Create product error:', error);
-    res.status(500).json({ error: 'Failed to create product' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -140,7 +143,7 @@ router.put('/:id', authenticateToken, requireAdmin, upload.single('image'), asyn
     res.json(product);
   } catch (error) {
     console.error('Update product error:', error);
-    res.status(500).json({ error: 'Failed to update product' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -152,7 +155,8 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     });
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete product' });
+    console.error('Delete product error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -166,7 +170,8 @@ router.put('/:id/reorder', authenticateToken, requireAdmin, async (req, res) => 
     });
     res.json(product);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to update product order' });
+    console.error('Update product order error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

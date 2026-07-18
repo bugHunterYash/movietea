@@ -842,7 +842,7 @@ export default function Admin({ user }) {
       {/* Sidebar Panel */}
       <aside style={styles.sidebar}>
         <div style={styles.logoSection}>
-          <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.logoImg} />
+          <img src="/images/Final.png" alt="MOVITEA" style={styles.logoImg} />
           <span style={styles.logoSub}>Atelier Operations</span>
         </div>
 

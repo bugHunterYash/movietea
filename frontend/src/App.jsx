@@ -12,6 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
 import CartDrawer from './components/CartDrawer';
+import SiteLoader from './components/SiteLoader';
 
 // Lazy load pages for optimal code splitting & speed
 const Home = lazy(() => import('./pages/Home'));
@@ -32,7 +33,8 @@ export default function App() {
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingAuth, setLoadingAuth] = useState(true);
+  const [isSiteLoaded, setIsSiteLoaded] = useState(false);
 
   const isAdminRoute = location.pathname.startsWith('/admin');
 
@@ -67,7 +69,7 @@ export default function App() {
         dbProductId: item.productId,
         name: item.product.name,
         price: item.product.discountPrice || item.product.price,
-        img: item.product.image || '/assets/logo.jfif',
+        img: item.product.image || '/images/Final.png',
         quantity: item.quantity,
         slug: item.product.slug,
         stock: item.product.stock,
@@ -95,7 +97,7 @@ export default function App() {
       } else {
         loadLocalCart();
       }
-      setLoading(false);
+      setLoadingAuth(false);
     };
     checkAuth();
   }, []);
@@ -138,7 +140,7 @@ export default function App() {
           dbProductId: result.productId,
           name: result.product?.name || product.name,
           price: result.product?.discountPrice || result.product?.price || product.price,
-          img: result.product?.image || product.img || '/assets/logo.jfif',
+          img: result.product?.image || product.img || '/images/Final.png',
           quantity: result.quantity,
           slug: result.product?.slug || product.slug,
           stock: result.product?.stock || product.stock,
@@ -242,71 +244,80 @@ export default function App() {
     navigate('/');
   };
 
-  if (loading) {
+  // Prevent rendering main layout until auth check is complete, 
+  // but let SiteLoader handle the visual block.
+  if (loadingAuth) {
     return (
-      <div style={styles.loaderContainer}>
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-          style={styles.spinner}
-        />
-      </div>
+      <AnimatePresence>
+        {!isSiteLoaded && <SiteLoader onLoadingComplete={() => setIsSiteLoaded(true)} />}
+      </AnimatePresence>
     );
   }
 
   return (
-    <div style={styles.appContainer}>
-      {/* Conditionally render header, footer and cart for standard page layouts */}
-      {!isAdminRoute && (
-        <Header
-          cartCount={totalCartCount}
-          onOpenCart={() => setIsCartOpen(true)}
-          setSelectedProduct={setSelectedProduct}
-          user={user}
-          onLogout={handleLogout}
-        />
-      )}
+    <>
+      <AnimatePresence>
+        {!isSiteLoaded && <SiteLoader onLoadingComplete={() => setIsSiteLoaded(true)} />}
+      </AnimatePresence>
 
-      {/* Page Content with transition animations */}
-      <div style={isAdminRoute ? styles.adminPageContent : styles.pageContent}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={location.pathname}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <Suspense fallback={<PageLoader />}>
-              <Routes location={location}>
-                <Route path="/" element={<Home setSelectedProduct={setSelectedProduct} />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} setSelectedProduct={setSelectedProduct} />} />
-                <Route path="/product/:id" element={<ProductDetails onAddToCart={handleAddToCart} />} />
-                <Route path="/gift-collection" element={<GiftCollection onAddToCart={handleAddToCart} />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/checkout" element={<Checkout cartItems={cartItems} clearCart={clearCart} user={user} />} />
-                <Route path="/admin/*" element={<Admin user={user} />} />
-                <Route path="/auth/callback" element={<AuthCallback setUser={setUser} />} />
-                <Route path="/login" element={<Login />} />
-              </Routes>
-            </Suspense>
-          </motion.div>
-        </AnimatePresence>
-      </div>
+      <motion.div 
+        style={styles.appContainer}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isSiteLoaded ? 1 : 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        {/* Conditionally render header, footer and cart for standard page layouts */}
+        {!isAdminRoute && (
+          <Header
+            cartCount={totalCartCount}
+            onOpenCart={() => setIsCartOpen(true)}
+            setSelectedProduct={setSelectedProduct}
+            user={user}
+            onLogout={handleLogout}
+          />
+        )}
 
-      {!isAdminRoute && <Footer />}
+        {/* Page Content with transition animations */}
+        <div style={isAdminRoute ? styles.adminPageContent : styles.pageContent}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Suspense fallback={<PageLoader />}>
+                <Routes location={location}>
+                  <Route path="/" element={<Home setSelectedProduct={setSelectedProduct} />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} setSelectedProduct={setSelectedProduct} />} />
+                  <Route path="/product/:id" element={<ProductDetails onAddToCart={handleAddToCart} />} />
+                  <Route path="/gift-collection" element={<GiftCollection onAddToCart={handleAddToCart} />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/checkout" element={<Checkout cartItems={cartItems} clearCart={clearCart} user={user} />} />
+                  <Route path="/admin/*" element={<Admin user={user} />} />
+                  <Route path="/auth/callback" element={<AuthCallback setUser={setUser} />} />
+                  <Route path="/login" element={<Login />} />
+                </Routes>
+              </Suspense>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-      {!isAdminRoute && (
-        <CartDrawer
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-          cartItems={cartItems}
-          onUpdateQuantity={handleUpdateQuantity}
-          onRemoveItem={handleRemoveItem}
-        />
-      )}
-    </div>
+        {!isAdminRoute && <Footer />}
+
+        {!isAdminRoute && (
+          <CartDrawer
+            isOpen={isCartOpen}
+            onClose={() => setIsCartOpen(false)}
+            cartItems={cartItems}
+            onUpdateQuantity={handleUpdateQuantity}
+            onRemoveItem={handleRemoveItem}
+          />
+        )}
+      </motion.div>
+    </>
   );
 }
 

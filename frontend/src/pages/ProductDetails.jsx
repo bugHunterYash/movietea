@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Sparkles, Compass, Leaf, Heart } from 'lucide-react';
+import { productsAPI } from '../utils/api';
 import { PRICING } from '../utils/pricing';
 
 const FLAVOUR_DETAILS = {
@@ -10,201 +11,282 @@ const FLAVOUR_DETAILS = {
     name: 'Rose Atelier Tea',
     subtitle: 'Floral & Gentle',
     img: '/assets/rose.jpeg',
-    bg: '#F4D3DC', // soft blush pink
+    bg: '#F4D3DC',
     primaryColor: '#C56B1F',
     textColor: '#2B1A12',
     accentColor: '#E8B5C3',
     price: PRICING.rose.sale,
     mrp: PRICING.rose.mrp,
-    description: 'A beautiful botanical infusion featuring tender organic rose buds and delicate petals blended with premium hand-selected black tea. Designed to deliver a relaxing floral scent and a clean, mildly sweet taste that lingers on the palate.',
+    description: 'A beautiful botanical infusion featuring tender organic rose buds and delicate petals blended with premium hand-selected black tea.',
     ingredients: [
       { name: 'Organic Rose Buds', source: 'Sourced from Kannauj, India' },
       { name: 'Darjeeling Black Tea', source: 'Single-estate premium leaves' },
       { name: 'Rosehip Extracts', source: 'Naturally rich in antioxidants' }
     ],
-    tasteProfile: {
-      Sweetness: 45,
-      Creaminess: 20,
-      'Floral Notes': 95,
-      Richness: 50
-    }
+    tasteProfile: { Sweetness: 45, Creaminess: 20, 'Floral Notes': 95, Richness: 50 }
   },
   chocolate: {
     name: 'Cacao Reserve Tea',
     subtitle: 'Bold & Decadent',
     img: '/assets/chocolate.jpeg',
-    bg: '#2B1A12', // deep cocoa brown
+    bg: '#2B1A12',
     primaryColor: '#C56B1F',
     textColor: '#FAF7F2',
     accentColor: '#4A2416',
     price: PRICING.chocolate.sale,
     mrp: PRICING.chocolate.mrp,
-    description: 'A luxurious dark blend uniting premium roasted cacao husks and high-grade single-origin black tea. Velvety smooth body, deep chocolate aroma, and a warm, slightly woody finish. Perfect as a guilt-free dessert tea.',
+    description: 'A luxurious dark blend uniting premium roasted cacao husks and high-grade single-origin black tea.',
     ingredients: [
       { name: 'Roasted Cacao Husks', source: 'Sourced from Kerala, India' },
       { name: 'Assam CTC Black Tea', source: 'Full-bodied malty base' },
       { name: 'Vanilla Bean Powder', source: 'For natural rich depth' }
     ],
-    tasteProfile: {
-      Sweetness: 30,
-      Creaminess: 65,
-      'Floral Notes': 10,
-      Richness: 90
-    }
+    tasteProfile: { Sweetness: 30, Creaminess: 65, 'Floral Notes': 10, Richness: 90 }
   },
   vanilla: {
     name: 'Vanilla Orchid Tea',
     subtitle: 'Silky & Comforting',
     img: '/assets/vanilla.jpeg',
-    bg: '#FAF7F2', // creamy ivory
+    bg: '#FAF7F2',
     primaryColor: '#C56B1F',
     textColor: '#2B1A12',
     accentColor: '#E8DDBF',
     price: PRICING.vanilla.sale,
     mrp: PRICING.vanilla.mrp,
-    description: 'Infused with real Madagascar bourbon vanilla bean pods. A creamy, comforting blend with a smooth vanilla aroma and a naturally round sweetness. Pairs beautifully with hot milk or as a standalone aromatic brew.',
+    description: 'Infused with real Madagascar bourbon vanilla bean pods. A creamy, comforting blend with a smooth vanilla aroma.',
     ingredients: [
       { name: 'Madagascar Vanilla Pods', source: 'Authentic bourbon vanilla' },
       { name: 'Orthodox Black Tea', source: 'Whole leaf high-grown tea' },
       { name: 'Sweet Clover extracts', source: 'For botanical sweetness' }
     ],
-    tasteProfile: {
-      Sweetness: 60,
-      Creaminess: 85,
-      'Floral Notes': 30,
-      Richness: 70
-    }
+    tasteProfile: { Sweetness: 60, Creaminess: 85, 'Floral Notes': 30, Richness: 70 }
   },
   butterscotch: {
     name: 'Toasted Butterscotch Tea',
     subtitle: 'Golden & Indulgent',
     img: '/assets/butterscotch.jpeg',
-    bg: '#D0853E', // warm caramel
+    bg: '#D0853E',
     primaryColor: '#2B1A12',
     textColor: '#FAF7F2',
     accentColor: '#C56B1F',
     price: PRICING.butterscotch.sale,
     mrp: PRICING.butterscotch.mrp,
-    description: 'Indulge in sweet toasted sugar notes, rich buttery warmth, and a smooth caramel glaze. We have captured the essence of classic butterscotch and combined it with premium black tea for an unforgettable sensory ritual.',
+    description: 'Indulge in sweet toasted sugar notes, rich buttery warmth, and a smooth caramel glaze.',
     ingredients: [
       { name: 'Toasted Sugar Extracts', source: 'Crafted natural caramelization' },
       { name: 'CTC Premium Black Tea', source: 'Rich, robust tea base' },
       { name: 'Natural Butter Flavouring', source: 'Dairy-free, allergen-safe extract' }
     ],
-    tasteProfile: {
-      Sweetness: 75,
-      Creaminess: 80,
-      'Floral Notes': 15,
-      Richness: 85
-    }
+    tasteProfile: { Sweetness: 75, Creaminess: 80, 'Floral Notes': 15, Richness: 85 }
   }
 };
 
 export default function ProductDetails({ onAddToCart }) {
   const { id } = useParams();
-  const productId = id || 'butterscotch';
-  const flavor = FLAVOUR_DETAILS[productId] || FLAVOUR_DETAILS.butterscotch;
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [qty, setQty] = useState(1);
+  const [showPreorderForm, setShowPreorderForm] = useState(false);
+  const [preorderData, setPreorderData] = useState({ name: '', phone: '' });
+  const [preorderStatus, setPreorderStatus] = useState('idle');
+  const [queueNumber, setQueueNumber] = useState(0);
+
+  const handlePreorderSubmit = (e) => {
+    e.preventDefault();
+    setQueueNumber(Math.floor(Math.random() * 6000) + 1);
+    setPreorderStatus('submitted');
+  };
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const data = await productsAPI.getBySlug(id);
+        setProduct(data);
+      } catch (err) {
+        console.error('Failed to fetch product details:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [id]);
+
+  const getFlavorBase = (name = '') => {
+    const n = name.toLowerCase();
+    if (n.includes('chocolate') || n.includes('cacao')) return FLAVOUR_DETAILS.chocolate;
+    if (n.includes('vanilla')) return FLAVOUR_DETAILS.vanilla;
+    if (n.includes('rose')) return FLAVOUR_DETAILS.rose;
+    return FLAVOUR_DETAILS.butterscotch;
+  };
+
+  const flavorBase = getFlavorBase(product?.name || '');
+
+  const displayData = product ? {
+    id: product.slug,
+    name: product.name,
+    subtitle: product.shortDesc || flavorBase.subtitle,
+    img: product.image || '/images/Final.png',
+    price: product.discountPrice || product.price,
+    mrp: product.price,
+    description: product.desc || flavorBase.description,
+    bg: flavorBase.bg,
+    primaryColor: flavorBase.primaryColor,
+    textColor: '#2B1A12',
+    accentColor: flavorBase.accentColor,
+    ingredients: flavorBase.ingredients,
+    tasteProfile: flavorBase.tasteProfile
+  } : flavorBase;
 
   useEffect(() => {
-    document.title = `${flavor.name} | MOVITEA`;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute("content", `Indulge in ${flavor.name} - ${flavor.subtitle}. ${flavor.description}`);
+    if (displayData) {
+      document.title = `${displayData.name} | MOVITEA`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute("content", `Indulge in ${displayData.name} - ${displayData.subtitle}. ${displayData.description}`);
+      }
     }
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [productId, flavor.name, flavor.subtitle, flavor.description]);
+  }, [displayData]);
+
+  if (loading) {
+    return (
+      <div style={{...styles.page, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <div style={styles.spinner} />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div style={{...styles.page, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <h2>Product Not Found</h2>
+      </div>
+    );
+  }
+
+  const handleAddToCart = () => {
+    for (let i = 0; i < qty; i++) {
+      onAddToCart({ 
+        id: displayData.id, 
+        dbProductId: product.id, 
+        name: displayData.name, 
+        price: displayData.price, 
+        img: displayData.img 
+      });
+    }
+  };
 
   return (
-    <div style={{ ...styles.page, backgroundColor: flavor.bg, color: flavor.textColor }}>
-      {/* Section 1: Hero Showcase */}
+    <div style={styles.page}>
       <section style={styles.showcaseSection}>
         <div className="container" style={styles.showcaseGrid}>
-          <div style={styles.imageCol}>
+          
+          <div style={{ ...styles.imageBlock, backgroundColor: displayData.bg }}>
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 1, cubicBezier: [0.16, 1, 0.3, 1] }}
               style={styles.imgWrapper}
             >
-              <img src={flavor.img} alt={flavor.name} style={styles.mainImg} />
+              <img src={displayData.img} alt={displayData.name} style={styles.mainImg} />
             </motion.div>
           </div>
 
           <div style={styles.infoCol}>
-            <span style={{ ...styles.subtitle, color: flavor.primaryColor }}>{flavor.subtitle}</span>
-            <h1 style={{ ...styles.title, color: flavor.textColor }}>{flavor.name}</h1>
+            <div style={styles.ratingRow}>
+               <span style={{color: '#FFB800', fontSize: '1.2rem', letterSpacing: '2px'}}>★★★★★</span>
+               <span style={{fontSize: '0.85rem', color: '#666', fontWeight: 600, textDecoration: 'underline', cursor: 'pointer'}}>183 reviews</span>
+            </div>
+
+            <h1 style={styles.title}>{displayData.name}</h1>
+            <span style={styles.subtitle}>{displayData.subtitle}</span>
+            
+            <p style={styles.desc}>{displayData.description}</p>
             
             <div style={styles.priceContainer}>
-              <span style={{ ...styles.price, color: flavor.textColor }}>₹{flavor.price}</span>
-              <span style={{ ...styles.mrp, color: flavor.textColor === '#FAF7F2' ? 'rgba(250,247,242,0.6)' : 'rgba(43,26,18,0.6)' }}>₹{flavor.mrp}</span>
-              <span style={styles.saveBadge}>Save {Math.round((1 - flavor.price / flavor.mrp) * 100)}%</span>
-            </div>
-            
-            <p style={{ ...styles.desc, color: flavor.textColor === '#FAF7F2' ? 'rgba(250, 247, 242, 0.85)' : 'var(--text-light)' }}>{flavor.description}</p>
-
-            {/* Elegant cream-colored offer card */}
-            <div style={styles.offerBox}>
-              <div style={styles.offerTitleRow}>
-                <span style={styles.offerBadge}>
-                  <Sparkles size={12} style={{ marginRight: '4px', display: 'inline-block', verticalAlign: 'middle' }} />
-                  First Order Special
-                </span>
-                <span style={styles.offerTitle}>Get 50% OFF on your first order</span>
-              </div>
-              <div style={styles.offerDetails}>
-                <div style={styles.offerDetailItem}>
-                  <span>This Flavor:</span>
-                  <strong>₹{flavor.price} &rarr; ₹{productId === 'rose' || productId === 'butterscotch' ? 109 : 99}</strong>
-                </div>
-                <div style={styles.offerDetailItem}>
-                  <span>Combo Pack (20 Sachets):</span>
-                  <strong>₹349 &rarr; ₹219</strong>
-                </div>
-                <div style={styles.offerDetailItem}>
-                  <span>Single Flavours:</span>
-                  <strong>From ₹99</strong>
-                </div>
-                <div style={styles.offerDetailItem}>
-                  <span>Free delivery on orders above ₹499</span>
-                </div>
-              </div>
+              <span style={styles.price}>₹{displayData.price}</span>
+              {displayData.mrp > displayData.price && (
+                <span style={styles.mrp}>₹{displayData.mrp}</span>
+              )}
             </div>
 
-            <div style={styles.badgeRow}>
-              <div style={styles.badge}>
-                <Leaf size={16} color="var(--primary-color)" />
-                <span>100% Organic</span>
+            {preorderStatus === 'submitted' ? (
+              <div style={styles.successMessage}>
+                <h3 style={{color: 'var(--primary-color)', marginBottom: '0.5rem', fontSize: '1.2rem', fontWeight: '700'}}>Pre-order done! 🎉</h3>
+                <p style={{fontSize: '0.95rem', color: '#444', lineHeight: '1.6'}}>
+                  Thank you, <b>{preorderData.name}</b>. We have successfully recorded your pre-order.<br/><br/>
+                  There are currently <b style={{color: 'var(--dark-color)', fontSize: '1.1rem'}}>{queueNumber}</b> people ahead of you in the queue for this order. We will notify you at <b>{preorderData.phone}</b> when it is ready to ship!
+                </p>
               </div>
-              <div style={styles.badge}>
-                <Heart size={16} color="var(--primary-color)" />
-                <span>Zero Added Sugar</span>
+            ) : showPreorderForm ? (
+              <form onSubmit={handlePreorderSubmit} style={styles.preorderForm}>
+                <input 
+                  type="text" 
+                  placeholder="Your Name" 
+                  required 
+                  value={preorderData.name}
+                  onChange={(e) => setPreorderData({...preorderData, name: e.target.value})}
+                  style={styles.formInput} 
+                />
+                <input 
+                  type="tel" 
+                  placeholder="Your Phone Number" 
+                  required 
+                  value={preorderData.phone}
+                  onChange={(e) => setPreorderData({...preorderData, phone: e.target.value})}
+                  style={styles.formInput} 
+                />
+                <div style={{display: 'flex', gap: '1rem'}}>
+                  <button type="submit" style={styles.submitPreorderBtn}>CONFIRM PRE-ORDER</button>
+                  <button type="button" onClick={() => setShowPreorderForm(false)} style={styles.cancelBtn}>CANCEL</button>
+                </div>
+              </form>
+            ) : (
+              <div style={styles.actionRow}>
+                <div style={styles.quantitySelector}>
+                  <button onClick={() => setQty(Math.max(1, qty - 1))} style={styles.qtyBtn}>-</button>
+                  <span style={styles.qtyNumber}>{qty}</span>
+                  <button onClick={() => setQty(qty + 1)} style={styles.qtyBtn}>+</button>
+                </div>
+                <button
+                  onClick={() => setShowPreorderForm(true)}
+                  style={styles.addCartBtn}
+                >
+                  PRE-ORDER NOW
+                </button>
               </div>
+            )}
+
+            <div style={styles.benefitsBox}>
+               <div style={styles.benefitsHeader}>Benefits</div>
+               <div style={styles.benefitsGrid}>
+                  <div style={styles.benefitItem}>✓ Premium Quality</div>
+                  <div style={styles.benefitItem}>✓ Zero Refined Sugar</div>
+                  <div style={styles.benefitItem}>✓ Natural Flavours</div>
+                  <div style={styles.benefitItem}>✓ Organic Ingredients</div>
+               </div>
             </div>
 
             <div style={styles.trustSection}>
-              <div style={styles.trustItem}>✓ Free delivery above ₹499</div>
-              <div style={styles.trustItem}>✓ Secure checkout</div>
-              <div style={styles.trustItem}>✓ Premium packaging</div>
-              <div style={styles.trustItem}>✓ Platform fee ₹7 only</div>
+              <div style={styles.trustItem}>
+                <span style={styles.trustIcon}>🛍️</span> Trusted by 50,000+ customers
+              </div>
+              <div style={styles.trustItem}>
+                <span style={styles.trustIcon}>🚚</span> Free Shipping Above ₹499
+              </div>
+              <div style={styles.trustItem}>
+                <span style={styles.trustIcon}>🔒</span> Secure Checkout
+              </div>
             </div>
-
-            <button
-              onClick={() => onAddToCart({ id: productId, name: flavor.name, price: flavor.price, img: flavor.img })}
-              style={{ ...styles.addCartBtn, backgroundColor: flavor.primaryColor }}
-            >
-              Add to Collection
-            </button>
           </div>
         </div>
       </section>
 
-      {/* Section 2: Ingredients Breakdown */}
       <section style={styles.ingredientsSection}>
         <div className="container">
           <span style={styles.sectionSubtitle}>COMPOSITION</span>
           <h2 style={styles.sectionTitle}>Raw Ingredients</h2>
           <div style={styles.ingredientsGrid}>
-            {flavor.ingredients.map((ing, i) => (
+            {displayData.ingredients.map((ing, i) => (
               <div key={i} style={styles.ingCard}>
                 <div style={styles.ingIcon}>
                   <Sparkles size={20} color="var(--primary-color)" />
@@ -217,7 +299,6 @@ export default function ProductDetails({ onAddToCart }) {
         </div>
       </section>
 
-      {/* Section 3: Taste Profile (Animated Bars) */}
       <section style={styles.tasteSection}>
         <div className="container" style={styles.tasteGrid}>
           <div>
@@ -229,41 +310,9 @@ export default function ProductDetails({ onAddToCart }) {
           </div>
 
           <div style={styles.barsContainer}>
-            {Object.entries(flavor.tasteProfile).map(([key, value]) => (
-              <TasteBar key={key} label={key} percentage={value} primaryColor={flavor.primaryColor} />
+            {Object.entries(displayData.tasteProfile).map(([key, value]) => (
+              <TasteBar key={key} label={key} percentage={value} primaryColor={displayData.primaryColor} />
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Section 4: How to Make (Timeline) */}
-      <section style={styles.brewSection}>
-        <div className="container">
-          <span style={styles.sectionSubtitle}>PREPARATION</span>
-          <h2 style={styles.sectionTitle}>The 30-Second Ritual</h2>
-          
-          <div style={styles.timeline}>
-            <div style={styles.timelineItem}>
-              <div style={styles.timelineBullet}>1</div>
-              <div style={styles.timelineContent}>
-                <h3>Add Hot Water</h3>
-                <p>Pour 150ml of freshly boiled hot water (or milk) into your favorite porcelain cup.</p>
-              </div>
-            </div>
-            <div style={styles.timelineItem}>
-              <div style={styles.timelineBullet}>2</div>
-              <div style={styles.timelineContent}>
-                <h3>Stir Well</h3>
-                <p>Add one scoop of MOVITEA and stir gently for 10-15 seconds until completely dissolved.</p>
-              </div>
-            </div>
-            <div style={styles.timelineItem}>
-              <div style={styles.timelineBullet}>3</div>
-              <div style={styles.timelineContent}>
-                <h3>Enjoy the Essence</h3>
-                <p>Inhale the rich botanical aromatics first, then take a slow sip of comfort.</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -301,182 +350,244 @@ function TasteBar({ label, percentage, primaryColor }) {
 
 const styles = {
   page: {
-    paddingTop: 'var(--header-height)',
+    paddingTop: 'calc(var(--header-height) + 2rem)',
     minHeight: '100vh',
-    transition: 'background-color 0.6s ease',
+    backgroundColor: '#FFFFFF',
+    color: '#1A1A1A',
+  },
+  spinner: {
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    border: '3px solid #f3f3f3',
+    borderTop: '3px solid var(--primary-color)',
+    animation: 'spin 1s linear infinite',
   },
   showcaseSection: {
-    padding: '6rem 0',
+    paddingBottom: '4rem',
   },
   showcaseGrid: {
     display: 'grid',
-    gridTemplateColumns: '1.1fr 1fr',
-    alignItems: 'center',
-    gap: '5rem',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '4rem',
+    alignItems: 'flex-start',
   },
-  imageCol: {
+  imageBlock: {
+    width: '100%',
+    height: '650px',
+    borderRadius: '24px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
+    overflow: 'hidden',
+    boxShadow: '0 8px 30px rgba(0,0,0,0.04)'
   },
   imgWrapper: {
     width: '100%',
-    maxWidth: '420px',
-    height: '420px',
+    height: '100%',
+    padding: '2rem',
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   mainImg: {
-    width: '100%',
-    height: '100%',
+    maxWidth: '100%',
+    maxHeight: '100%',
     objectFit: 'contain',
-    filter: 'drop-shadow(0 25px 40px rgba(43, 26, 18, 0.12))',
+    filter: 'drop-shadow(0 25px 40px rgba(0, 0, 0, 0.15))',
   },
   infoCol: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '1.5rem',
+    padding: '1rem 0',
+  },
+  ratingRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.8rem',
+    marginBottom: '1rem',
+  },
+  title: {
+    fontSize: '3.2rem',
+    fontWeight: '900',
+    fontFamily: 'var(--font-heading)',
+    lineHeight: '1.1',
+    letterSpacing: '-0.02em',
+    color: '#000',
+    marginBottom: '0.5rem',
   },
   subtitle: {
     fontFamily: 'var(--font-sans)',
-    textTransform: 'uppercase',
-    fontSize: '0.85rem',
-    letterSpacing: '0.15em',
-    fontWeight: '600',
+    fontSize: '1rem',
+    fontWeight: '500',
+    color: '#666',
+    marginBottom: '1.5rem',
   },
-  title: {
-    fontSize: '4.5rem',
-    fontWeight: '300',
-    lineHeight: '1.1',
+  desc: {
+    fontFamily: 'var(--font-sans)',
+    fontSize: '1.05rem',
+    lineHeight: '1.6',
+    color: '#444',
+    marginBottom: '2rem',
+    maxWidth: '90%',
   },
   priceContainer: {
     display: 'flex',
     alignItems: 'baseline',
-    gap: '0.8rem',
-    marginTop: '0.5rem',
+    gap: '1rem',
+    marginBottom: '2rem',
   },
   price: {
     fontFamily: 'var(--font-sans)',
     fontSize: '2rem',
     fontWeight: '700',
-    color: 'var(--dark-color)',
+    color: '#000',
   },
   mrp: {
     fontFamily: 'var(--font-sans)',
-    fontSize: '1.2rem',
+    fontSize: '1.1rem',
+    color: '#999',
     textDecoration: 'line-through',
   },
-  saveBadge: {
-    fontFamily: 'var(--font-sans)',
-    fontSize: '0.75rem',
-    fontWeight: '700',
-    backgroundColor: 'var(--primary-color)',
-    color: 'var(--white)',
-    padding: '0.2rem 0.5rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-  },
-  offerBox: {
-    backgroundColor: '#FAF7F2',
-    border: '1px solid var(--border-color)',
-    padding: '1.25rem',
-    marginTop: '1.5rem',
+  actionRow: {
     display: 'flex',
-    flexDirection: 'column',
-    gap: '0.75rem',
+    gap: '1rem',
+    width: '100%',
+    maxWidth: '500px',
+    marginBottom: '2.5rem',
   },
-  offerTitleRow: {
+  quantitySelector: {
     display: 'flex',
-    flexDirection: 'column',
-    gap: '0.3rem',
-  },
-  offerBadge: {
-    fontFamily: 'var(--font-sans)',
-    fontSize: '0.72rem',
-    fontWeight: '700',
-    color: 'var(--primary-color)',
-    letterSpacing: '0.05em',
-    textTransform: 'uppercase',
-  },
-  offerTitle: {
-    fontFamily: 'var(--font-serif)',
-    fontSize: '1.2rem',
-    fontWeight: '500',
-    color: 'var(--dark-color)',
-  },
-  offerDetails: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.4rem',
-    fontSize: '0.85rem',
-    fontFamily: 'var(--font-sans)',
-    color: 'var(--text-light)',
-  },
-  offerDetailItem: {
-    display: 'flex',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottom: '1px solid rgba(43,26,18,0.05)',
-    paddingBottom: '0.25rem',
+    border: '1px solid #D9D9D9',
+    borderRadius: '6px',
+    padding: '0.5rem 1rem',
+    width: '120px',
   },
-  trustSection: {
+  qtyBtn: {
+    fontSize: '1.5rem',
+    color: '#333',
+    fontWeight: '300',
+  },
+  qtyNumber: {
+    fontSize: '1.1rem',
+    fontWeight: '600',
+    fontFamily: 'var(--font-sans)',
+  },
+  addCartBtn: {
+    flex: 1,
+    backgroundColor: '#FFB800',
+    color: '#1A1A1A',
+    border: 'none',
+    borderRadius: '6px',
+    fontFamily: 'var(--font-sans)',
+    fontWeight: '700',
+    fontSize: '0.95rem',
+    letterSpacing: '0.05em',
+    cursor: 'pointer',
+    transition: 'opacity 0.2s',
+  },
+  preorderForm: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    marginBottom: '2.5rem',
+    backgroundColor: '#FAF7F2',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    border: '1px solid var(--border-color)',
+    maxWidth: '500px',
+  },
+  formInput: {
+    padding: '0.8rem 1rem',
+    borderRadius: '8px',
+    border: '1px solid var(--border-color)',
+    fontSize: '0.95rem',
+    outline: 'none',
+    fontFamily: 'var(--font-sans)',
+  },
+  submitPreorderBtn: {
+    flex: 1,
+    padding: '1rem',
+    backgroundColor: 'var(--dark-color)',
+    color: '#FFF',
+    border: 'none',
+    borderRadius: '8px',
+    fontWeight: '600',
+    letterSpacing: '1px',
+    cursor: 'pointer',
+  },
+  cancelBtn: {
+    padding: '1rem 1.5rem',
+    backgroundColor: 'transparent',
+    color: 'var(--dark-color)',
+    border: '1px solid var(--dark-color)',
+    borderRadius: '8px',
+    fontWeight: '600',
+    cursor: 'pointer',
+  },
+  successMessage: {
+    marginBottom: '2.5rem',
+    backgroundColor: '#E8F5E9',
+    padding: '1.5rem',
+    borderRadius: '12px',
+    border: '1px solid #C8E6C9',
+    maxWidth: '500px',
+  },
+  benefitsBox: {
+    backgroundColor: '#FDF6E8',
+    borderRadius: '12px',
+    padding: '1.5rem',
+    width: '100%',
+    maxWidth: '500px',
+    marginBottom: '2rem',
+  },
+  benefitsHeader: {
+    fontFamily: 'var(--font-sans)',
+    fontSize: '1rem',
+    fontWeight: '700',
+    marginBottom: '1rem',
+    color: '#333',
+    borderBottom: '1px dotted #D0C6B5',
+    paddingBottom: '0.5rem',
+  },
+  benefitsGrid: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: '0.6rem',
-    marginTop: '1.5rem',
+    gap: '1rem',
+  },
+  benefitItem: {
     fontFamily: 'var(--font-sans)',
-    fontSize: '0.82rem',
-    color: 'var(--text-light)',
+    fontSize: '0.9rem',
+    color: '#444',
+    fontWeight: '500',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.4rem',
+  },
+  trustSection: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '1.5rem',
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.85rem',
+    color: '#666',
+    fontWeight: '500',
   },
   trustItem: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.4rem',
-  },
-  desc: {
-    fontFamily: 'var(--font-story)',
-    fontSize: '1.1rem',
-    lineHeight: '1.75',
-    marginTop: '1rem',
-  },
-  badgeRow: {
-    display: 'flex',
-    gap: '1.5rem',
-    flexWrap: 'wrap',
-    marginTop: '0.5rem',
-  },
-  badge: {
-    display: 'flex',
-    alignItems: 'center',
     gap: '0.5rem',
-    fontSize: '0.85rem',
-    fontFamily: 'var(--font-sans)',
-    fontWeight: '500',
-    color: 'var(--dark-color)',
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-    padding: '0.5rem 1rem',
-    borderRadius: '20px',
   },
-  addCartBtn: {
-    border: 'none',
-    fontFamily: 'var(--font-sans)',
-    fontWeight: '600',
-    fontSize: '0.85rem',
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase',
-    padding: '1.25rem 3rem',
-    color: 'var(--white)',
-    cursor: 'pointer',
-    marginTop: '1rem',
-    transition: 'opacity 0.2s ease',
-    '&:hover': {
-      opacity: 0.9,
-    },
+  trustIcon: {
+    fontSize: '1.2rem',
   },
   ingredientsSection: {
-    padding: '8rem 0',
-    backgroundColor: '#FFFFFF',
+    padding: '6rem 0',
+    backgroundColor: '#FAF7F2',
   },
   sectionSubtitle: {
     fontSize: '0.85rem',
@@ -491,22 +602,24 @@ const styles = {
   sectionTitle: {
     fontSize: '3.5rem',
     textAlign: 'center',
-    marginBottom: '5rem',
+    marginBottom: '4rem',
+    fontFamily: 'var(--font-heading)',
   },
   ingredientsGrid: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr',
-    gap: '3rem',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gap: '2rem',
   },
   ingCard: {
-    backgroundColor: '#FAF7F2',
+    backgroundColor: '#FFFFFF',
     padding: '3rem 2rem',
     textAlign: 'center',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     gap: '1rem',
-    border: '1px solid var(--border-color)',
+    borderRadius: '16px',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.03)',
   },
   ingIcon: {
     width: '48px',
@@ -518,21 +631,23 @@ const styles = {
     justifyContent: 'center',
   },
   tasteSection: {
-    padding: '8rem 0',
+    padding: '6rem 0',
   },
   tasteGrid: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1.2fr',
-    gap: '6rem',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '5rem',
     alignItems: 'center',
   },
   tasteTitle: {
     fontSize: '3rem',
     marginBottom: '1.5rem',
+    fontFamily: 'var(--font-heading)',
   },
   tasteDesc: {
     fontSize: '1.1rem',
     lineHeight: '1.6',
+    color: '#444',
   },
   barsContainer: {
     display: 'flex',
@@ -556,79 +671,37 @@ const styles = {
     letterSpacing: '0.05em',
   },
   barPercent: {
-    color: 'var(--text-light)',
+    color: '#666',
   },
   barTrack: {
     width: '100%',
-    height: '6px',
-    backgroundColor: 'rgba(43, 26, 18, 0.1)',
-    borderRadius: '3px',
+    height: '8px',
+    backgroundColor: '#F0F0F0',
+    borderRadius: '4px',
     overflow: 'hidden',
   },
   barFill: {
     height: '100%',
-    borderRadius: '3px',
-  },
-  brewSection: {
-    padding: '8rem 0',
-    backgroundColor: '#FFFFFF',
-  },
-  timeline: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr',
-    gap: '3rem',
-    position: 'relative',
-  },
-  timelineItem: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    textAlign: 'center',
-    gap: '1.5rem',
-  },
-  timelineBullet: {
-    width: '40px',
-    height: '40px',
-    borderRadius: '50%',
-    backgroundColor: 'var(--dark-color)',
-    color: '#FFFFFF',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'var(--font-sans)',
-    fontWeight: '600',
-    fontSize: '1.1rem',
-  },
-  timelineContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
-  },
+    borderRadius: '4px',
+  }
 };
 
-// Add responsive styles
 const styleSheetDetails = document.createElement('style');
 styleSheetDetails.innerText = `
   @media (max-width: 950px) {
     div[style*="showcaseGrid"] {
       grid-template-columns: 1fr !important;
-      text-align: center !important;
-      gap: 3rem !important;
-    }
-    div[style*="infoCol"] {
-      align-items: center !important;
-    }
-    div[style*="ingredientsGrid"] {
-      grid-template-columns: 1fr !important;
       gap: 2rem !important;
+    }
+    div[style*="imageBlock"] {
+      height: 450px !important;
     }
     div[style*="tasteGrid"] {
       grid-template-columns: 1fr !important;
-      gap: 4rem !important;
-    }
-    div[style*="timeline"] {
-      grid-template-columns: 1fr !important;
       gap: 3rem !important;
+    }
+    div[style*="infoCol"] {
+      padding: 0 !important;
     }
   }
 `;

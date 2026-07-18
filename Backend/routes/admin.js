@@ -104,7 +104,7 @@ router.get('/stats', authenticateToken, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Dashboard stats error:', error);
-    res.status(500).json({ error: 'Failed to fetch dashboard stats' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -150,7 +150,8 @@ router.get('/chart', authenticateToken, requireAdmin, async (req, res) => {
 
     res.json(salesByDate);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch chart data' });
+    console.error('Chart data error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

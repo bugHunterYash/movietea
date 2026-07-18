@@ -1,554 +1,324 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+const CAMPAIGN_SLIDES = [
+  {
+    id: 1,
+    image: "/images/loader1.webp"
+  },
+  {
+    id: 2,
+    image: "/images/loader2.webp"
+  },
+  {
+    id: 3,
+    image: "/images/loader3.webp"
+  }
+];
 
 export default function Hero({ onShopClick }) {
-  const containerRef = useRef(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [current, setCurrent] = useState(0);
 
-  const productImages = [
-    '/assets/combo-pack.jpeg',
-    '/assets/rose.jpeg',
-    '/assets/chocolate.jpeg',
-    '/assets/vanilla.jpeg',
-    '/assets/butterscotch.jpeg',
-    '/assets/combo-individual.jfif'
-  ];
-
-  const [currentImgIndex, setCurrentImgIndex] = useState(0);
-
+  // Auto-rotate every 6 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImgIndex((prev) => (prev + 1) % productImages.length);
-    }, 3000);
-    return () => clearInterval(interval);
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % CAMPAIGN_SLIDES.length);
+    }, 6000);
+    return () => clearInterval(timer);
   }, []);
 
-  // Monitor scroll progress of the hero section
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  // Scroll animations for sachets emerging from behind the box
-  const roseX = useTransform(scrollYProgress, [0, 0.8], [0, -300]);
-  const roseY = useTransform(scrollYProgress, [0, 0.8], [0, -120]);
-  const roseRotate = useTransform(scrollYProgress, [0, 0.8], [0, -25]);
-
-  const chocolateX = useTransform(scrollYProgress, [0, 0.8], [0, 300]);
-  const chocolateY = useTransform(scrollYProgress, [0, 0.8], [0, 120]);
-  const chocolateRotate = useTransform(scrollYProgress, [0, 0.8], [0, 25]);
-
-  const vanillaY = useTransform(scrollYProgress, [0, 0.8], [0, -320]);
-  const vanillaRotate = useTransform(scrollYProgress, [0, 0.8], [0, -10]);
-
-  const butterscotchY = useTransform(scrollYProgress, [0, 0.8], [0, 320]);
-  const butterscotchRotate = useTransform(scrollYProgress, [0, 0.8], [0, 15]);
-
-  const sachetOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8], [0, 1, 1]);
-
-  const handleMouseMove = (e) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setMousePos({ x, y });
+  const nextSlide = (e) => {
+    e.stopPropagation();
+    setCurrent((prev) => (prev + 1) % CAMPAIGN_SLIDES.length);
   };
 
-  const handleMouseLeave = () => {
-    setMousePos({ x: 0, y: 0 });
+  const prevSlide = (e) => {
+    e.stopPropagation();
+    setCurrent((prev) => (prev === 0 ? CAMPAIGN_SLIDES.length - 1 : prev - 1));
   };
 
-  const rotateX = -mousePos.y * 12;
-  const rotateY = mousePos.x * 12;
+  const goToSlide = (idx, e) => {
+    e.stopPropagation();
+    setCurrent(idx);
+  };
+
+  const handleBannerClick = () => {
+    if (onShopClick) onShopClick();
+  };
 
   return (
-    <section ref={containerRef} style={styles.heroSection} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-      {/* Background Subtle Gradient & Steam */}
-      <div style={styles.heroBg} />
-      
-      {/* Steam SVG Animation */}
-      <div style={styles.steamContainer}>
-        <svg viewBox="0 0 100 100" style={styles.steamSvg}>
-          <motion.path
-            d="M30 80 Q 25 50 35 30 T 30 10"
-            fill="none"
-            stroke="rgba(197, 107, 31, 0.15)"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            animate={{
-               d: [
-                 "M30 80 Q 25 50 35 30 T 30 10",
-                 "M35 80 Q 30 60 25 40 T 35 10",
-                 "M30 80 Q 25 50 35 30 T 30 10"
-               ]
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.path
-            d="M50 80 Q 55 55 45 35 T 50 10"
-            fill="none"
-            stroke="rgba(197, 107, 31, 0.12)"
-            strokeWidth="2"
-            strokeLinecap="round"
-            animate={{
-               d: [
-                 "M50 80 Q 55 55 45 35 T 50 10",
-                 "M45 80 Q 40 50 55 30 T 45 10",
-                 "M50 80 Q 55 55 45 35 T 50 10"
-               ]
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          />
-        </svg>
-      </div>
+    <div style={styles.wrapper}>
+      <section style={styles.heroSection} onClick={handleBannerClick} className="hero-slider-section">
+        
+        {/* Hidden Spacer Image to dictate container height dynamically based on aspect ratio */}
+        <img 
+          src={CAMPAIGN_SLIDES[0].image} 
+          alt="spacer" 
+          style={{ width: '100%', height: 'auto', visibility: 'hidden', display: 'block' }} 
+        />
 
-      <div className="container" style={styles.container}>
-        {/* Left: Typography */}
-        <div style={styles.leftCol}>
-          <div style={styles.titleContainer}>
-            <motion.div
-              style={styles.badge}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
-            >
-              🎉 First Order Special
-            </motion.div>
-            <motion.span 
-              style={styles.subtitle}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              The Modern Tea Atelier
-            </motion.span>
-            
-            <h1 style={styles.title}>
-              <span className="split-word-container">
-                <motion.span
-                  style={styles.titleSpan}
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 1, cubicBezier: [0.16, 1, 0.3, 1], delay: 0.3 }}
-                >
-                  NOT YOUR
-                </motion.span>
-              </span>
-              <br />
-              <span className="split-word-container">
-                <motion.span
-                  style={styles.titleSpan}
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 1, cubicBezier: [0.16, 1, 0.3, 1], delay: 0.5 }}
-                >
-                  REGULAR TEA
-                </motion.span>
-              </span>
-            </h1>
-          </div>
-
-          <motion.p
-            style={styles.desc}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-          >
-            Organic ingredients. Zero added sugar. Crafted around authentic luxury packaging and premium flavours.
-          </motion.p>
-
+        {/* Slides */}
+        <AnimatePresence initial={false}>
           <motion.div
-            style={styles.priceContainer}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+            key={current}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.4, ease: "easeInOut" }}
+            style={styles.slideContainer}
           >
-            <div style={styles.priceRow}>
-              <span style={styles.priceLabel}>Combo Pack (20 Sachets)</span>
-              <span style={styles.priceReal}>₹349</span>
-              <span style={styles.priceMrp}>₹429</span>
-              <span style={styles.saveBadge}>Save ₹80</span>
-            </div>
-            <div style={styles.firstOrderOfferRow}>
-              <span style={styles.firstOrderOfferLabel}>First Order Price:</span>
-              <span style={styles.firstOrderPrice}>₹219</span>
-              <span style={styles.percentOffBadge}>50% OFF Applied</span>
-            </div>
+            {/* Background Image */}
+            <motion.img 
+              src={CAMPAIGN_SLIDES[current].image} 
+              alt="Campaign Banner"
+              initial={{ opacity: 0.8 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}
+              style={styles.bgImage}
+            />
           </motion.div>
+        </AnimatePresence>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-          >
-            <button className="luxury-btn" onClick={onShopClick}>
-              Explore Collection
-            </button>
-          </motion.div>
+        {/* Navigation Arrows */}
+        <button onClick={prevSlide} style={{...styles.navBtn, left: '2rem'}} className="hero-nav-btn" aria-label="Previous Campaign">
+          <ChevronLeft size={36} strokeWidth={1.5} color="#FFF" />
+        </button>
+        <button onClick={nextSlide} style={{...styles.navBtn, right: '2rem'}} className="hero-nav-btn" aria-label="Next Campaign">
+          <ChevronRight size={36} strokeWidth={1.5} color="#FFF" />
+        </button>
+
+        {/* Pagination Dots */}
+        <div style={styles.paginationContainer}>
+          {CAMPAIGN_SLIDES.map((_, idx) => (
+            <button 
+              key={idx}
+              onClick={(e) => goToSlide(idx, e)}
+              style={{
+                ...styles.dot,
+                backgroundColor: current === idx ? '#FFF' : 'rgba(255,255,255,0.3)',
+                transform: current === idx ? 'scale(1)' : 'scale(0.8)'
+              }}
+              className="hero-dot-btn"
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
         </div>
+        
+      </section>
 
-        {/* Right: Interactive Product Pack & Emerging Sachets */}
-        <div style={styles.rightCol}>
-          <div
-            style={{
-              ...styles.interactiveGroup,
-              transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-            }}
-          >
-            {/* Main Box - rotating product images */}
-            <motion.div
-              style={styles.mainBoxWrapper}
-              initial={{ opacity: 0, scale: 0.85, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 1.2, cubicBezier: [0.16, 1, 0.3, 1], delay: 0.4 }}
-            >
-              <div style={styles.productShadow} />
-              <motion.img
-                key={currentImgIndex}
-                src={productImages[currentImgIndex]}
-                alt="MOVITEA Products"
-                style={styles.boxImg}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-              />
-            </motion.div>
-
-            {/* Emerging Flavours */}
-            {/* Rose sachet - emerges left/up */}
-            <motion.div
-              style={{
-                ...styles.sachet,
-                x: roseX,
-                y: roseY,
-                rotate: roseRotate,
-                opacity: sachetOpacity,
-              }}
-            >
-              <img src="/assets/rose.jpeg" alt="Rose" style={styles.sachetImg} />
-              <span style={styles.sachetLabel}>Rose</span>
-            </motion.div>
-
-            {/* Chocolate sachet - emerges right/down */}
-            <motion.div
-              style={{
-                ...styles.sachet,
-                x: chocolateX,
-                y: chocolateY,
-                rotate: chocolateRotate,
-                opacity: sachetOpacity,
-              }}
-            >
-              <img src="/assets/chocolate.jpeg" alt="Chocolate" style={styles.sachetImg} />
-              <span style={styles.sachetLabel}>Chocolate</span>
-            </motion.div>
-
-            {/* Vanilla sachet - emerges up */}
-            <motion.div
-              style={{
-                ...styles.sachet,
-                y: vanillaY,
-                rotate: vanillaRotate,
-                opacity: sachetOpacity,
-              }}
-            >
-              <img src="/assets/vanilla.jpeg" alt="Vanilla" style={styles.sachetImg} />
-              <span style={styles.sachetLabel}>Vanilla</span>
-            </motion.div>
-
-            {/* Butterscotch sachet - emerges down */}
-            <motion.div
-              style={{
-                ...styles.sachet,
-                y: butterscotchY,
-                rotate: butterscotchRotate,
-                opacity: sachetOpacity,
-              }}
-            >
-              <img src="/assets/butterscotch.jpeg" alt="Butterscotch" style={styles.sachetImg} />
-              <span style={styles.sachetLabel}>Butterscotch</span>
-            </motion.div>
-          </div>
-        </div>
+      {/* Trust Bar below Hero */}
+      <div style={styles.trustBar}>
+        <div style={styles.trustItem}>100% Natural Ingredients</div>
+        <div style={styles.trustDot} />
+        <div style={styles.trustItem}>Zero Added Sugar</div>
+        <div style={styles.trustDot} />
+        <div style={styles.trustItem}>Made in India</div>
+        <div style={styles.trustDot} />
+        <div style={styles.trustItem}>Premium Tea Leaves</div>
+        <div style={styles.trustDot} />
+        <div style={styles.trustItem}>Fast Shipping</div>
       </div>
-    </section>
+    </div>
   );
 }
 
 const styles = {
-  heroSection: {
-    minHeight: '120vh', // Slightly longer to allow scroll trigger space
+  wrapper: {
     display: 'flex',
-    alignItems: 'center',
-    paddingTop: 'var(--header-height)',
+    flexDirection: 'column',
+    width: '100%',
+    marginTop: '110px',
+  },
+  heroSection: {
+    width: '100%',
     position: 'relative',
     overflow: 'hidden',
     backgroundColor: '#FAF7F2',
+    cursor: 'pointer',
+    display: 'block',
   },
-  heroBg: {
+  slideContainer: {
     position: 'absolute',
     top: 0,
     left: 0,
     width: '100%',
     height: '100%',
-    background: 'radial-gradient(circle at 75% 50%, rgba(243, 232, 211, 0.4) 0%, rgba(250, 247, 242, 0) 60%)',
-    zIndex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  steamContainer: {
-    position: 'absolute',
-    right: '10%',
-    bottom: '10%',
-    width: '35%',
-    height: '50%',
-    zIndex: 2,
-    pointerEvents: 'none',
-  },
-  steamSvg: {
+  bgImage: {
     width: '100%',
     height: '100%',
-    opacity: 0.7,
+    objectFit: 'contain',
+    display: 'block',
+    zIndex: 1,
   },
-  container: {
-    display: 'grid',
-    gridTemplateColumns: '1.1fr 1fr',
-    alignItems: 'center',
-    gap: '3rem',
-    zIndex: 3,
-    position: 'relative',
+  gradientOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     width: '100%',
+    height: '100%',
+    zIndex: 2,
   },
-  leftCol: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.5rem',
-  },
-  badge: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#FAF7F2',
-    color: 'var(--primary-color)',
-    border: '1px solid var(--primary-color)',
-    padding: '0.4rem 0.8rem',
-    borderRadius: '30px',
-    fontSize: '0.75rem',
-    fontWeight: '600',
-    letterSpacing: '0.05em',
-    textTransform: 'uppercase',
-    fontFamily: 'var(--font-sans)',
+  contentContainer: {
+    position: 'relative',
+    zIndex: 10,
+    height: '100%',
     display: 'flex',
     alignItems: 'center',
-    gap: '0.3rem',
   },
-  priceContainer: {
-    backgroundColor: 'var(--cream-color)',
-    padding: '1.25rem 1.5rem',
-    borderLeft: '3px solid var(--primary-color)',
+  textContent: {
+    maxWidth: '700px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.6rem',
-    maxWidth: '480px',
+    gap: '2.5rem',
+    alignItems: 'flex-start',
+    paddingTop: 'calc(var(--header-height) + 20px)',
   },
-  priceRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-    flexWrap: 'wrap',
+  headline: {
+    fontSize: '5.5rem',
+    fontFamily: 'var(--font-serif)',
+    fontWeight: '300',
+    lineHeight: '1.05',
+    letterSpacing: '-0.02em',
+    textShadow: '0px 10px 30px rgba(0,0,0,0.2)',
   },
-  priceLabel: {
+  ctaBtn: {
     fontFamily: 'var(--font-sans)',
     fontWeight: '600',
     fontSize: '0.9rem',
-    color: 'var(--dark-color)',
-  },
-  priceReal: {
-    fontFamily: 'var(--font-sans)',
-    fontWeight: '700',
-    fontSize: '1.2rem',
-    color: 'var(--dark-color)',
-  },
-  priceMrp: {
-    fontFamily: 'var(--font-sans)',
-    fontSize: '0.95rem',
-    color: '#888',
-    textDecoration: 'line-through',
-  },
-  saveBadge: {
-    backgroundColor: 'var(--primary-color)',
-    color: 'var(--white)',
-    fontSize: '0.7rem',
-    fontWeight: '700',
-    padding: '0.2rem 0.5rem',
-    letterSpacing: '0.05em',
+    letterSpacing: '0.15em',
     textTransform: 'uppercase',
-  },
-  firstOrderOfferRow: {
+    padding: '1.25rem 2.5rem',
+    backgroundColor: '#FFF',
+    color: '#1A120E',
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
     display: 'flex',
     alignItems: 'center',
-    gap: '0.75rem',
+    boxShadow: '0px 15px 30px rgba(0,0,0,0.15)',
   },
-  firstOrderOfferLabel: {
-    fontFamily: 'var(--font-sans)',
-    fontSize: '0.85rem',
-    color: 'var(--text-light)',
+  navBtn: {
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    zIndex: 20,
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '1rem',
+    opacity: 0.5,
+    transition: 'opacity 0.3s ease, transform 0.3s ease',
   },
-  firstOrderPrice: {
-    fontFamily: 'var(--font-sans)',
-    fontWeight: '800',
-    fontSize: '1.3rem',
-    color: 'var(--primary-color)',
-  },
-  percentOffBadge: {
-    border: '1px dashed var(--primary-color)',
-    color: 'var(--primary-color)',
-    fontSize: '0.7rem',
-    fontWeight: '600',
-    padding: '0.1rem 0.4rem',
-  },
-  titleContainer: {
+  paginationContainer: {
+    position: 'absolute',
+    bottom: '2.5rem',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 20,
     display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
+    gap: '1.2rem',
+    alignItems: 'center',
   },
-  subtitle: {
-    fontFamily: 'var(--font-sans)',
-    textTransform: 'uppercase',
-    fontSize: '0.85rem',
-    letterSpacing: '0.15em',
-    color: 'var(--primary-color)',
-    fontWeight: '500',
+  dot: {
+    width: '10px',
+    height: '10px',
+    borderRadius: '50%',
+    border: 'none',
+    padding: 0,
+    cursor: 'pointer',
+    transition: 'all 0.4s ease',
   },
-  title: {
-    fontSize: '5.2rem',
-    lineHeight: '1.05',
-    color: 'var(--dark-color)',
-    fontWeight: '300',
-  },
-  titleSpan: {
-    display: 'inline-block',
-  },
-  desc: {
-    fontFamily: 'var(--font-story)',
-    fontSize: '1.2rem',
-    lineHeight: '1.8',
-    maxWidth: '480px',
-    color: 'var(--text-light)',
-  },
-  rightCol: {
+  trustBar: {
+    width: '100%',
+    backgroundColor: '#FAF7F2',
+    borderBottom: '1px solid rgba(43, 26, 18, 0.08)',
+    padding: '1.2rem 2rem',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '750px',
-    position: 'relative',
+    gap: '1.5rem',
+    flexWrap: 'wrap',
   },
-  interactiveGroup: {
-    width: '640px',
-    height: '640px',
-    position: 'relative',
-    transition: 'transform 0.2s ease-out',
-    transformStyle: 'preserve-3d',
+  trustItem: {
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.85rem',
+    fontWeight: '600',
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
+    color: '#4A3E38',
   },
-  mainBoxWrapper: {
-    width: '100%',
-    height: '100%',
-    zIndex: 10,
-    position: 'relative',
-  },
-  boxImg: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'contain',
-  },
-  productShadow: {
-    position: 'absolute',
-    bottom: '-10px',
-    left: '10%',
-    width: '80%',
-    height: '25px',
-    background: 'radial-gradient(ellipse at center, rgba(43, 26, 18, 0.2) 0%, rgba(250, 247, 242, 0) 70%)',
-    zIndex: -1,
-  },
-  sachet: {
-    position: 'absolute',
-    top: '25%',
-    left: '25%',
-    width: '320px',
-    height: '320px',
-    zIndex: 5,
-    backgroundColor: '#FFFFFF',
-    border: '1px solid var(--border-color)',
-    padding: '1.5rem',
-    boxShadow: '0 10px 25px rgba(0,0,0,0.06)',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '0.8rem',
-  },
-  sachetImg: {
-    width: '100%',
-    height: '80%',
-    objectFit: 'contain',
-  },
-  sachetLabel: {
-    fontFamily: 'var(--font-serif)',
-    fontSize: '1.2rem',
-    color: 'var(--dark-color)',
-  },
+  trustDot: {
+    width: '4px',
+    height: '4px',
+    borderRadius: '50%',
+    backgroundColor: '#C5A376',
+  }
 };
 
-// Add responsive media query styles for Hero
+// Add interactive styling
 if (typeof document !== 'undefined') {
   const styleSheetHero = document.createElement('style');
   styleSheetHero.innerText = `
+    .campaign-cta-btn:hover {
+      background-color: var(--primary-color) !important;
+      color: #FFF !important;
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(197, 107, 31, 0.3) !important;
+    }
+    
+    .hero-nav-btn:hover {
+      opacity: 1 !important;
+      transform: translateY(-50%) scale(1.1) !important;
+    }
+    
+    .hero-dot-btn:hover {
+      background-color: #FFF !important;
+      opacity: 0.8;
+    }
+
+    /* Keep the hover state of the entire hero section clean */
+    .hero-slider-section:hover .hero-nav-btn {
+      opacity: 0.8;
+    }
+
     @media (max-width: 1024px) {
-      section {
-        min-height: auto !important;
-        padding-bottom: 6rem !important;
+      .campaign-headline {
+        font-size: 4rem !important;
       }
-      section > div[style*="gridTemplateColumns"] {
-        grid-template-columns: 1fr !important;
-        text-align: center !important;
-        padding-top: 3rem !important;
-        gap: 4rem !important;
-      }
-      section h1[style*="fontSize"] {
-        font-size: 3.5rem !important;
-      }
-      section div[style*="leftCol"] {
-        align-items: center !important;
-      }
-      section p[style*="desc"] {
-        text-align: center !important;
-      }
-      section div[style*="rightCol"] {
-        height: 480px !important;
-      }
-      section div[style*="interactiveGroup"] {
-        width: 320px !important;
-        height: 320px !important;
-      }
-      section div[style*="sachet"] {
-        width: 160px !important;
-        height: 160px !important;
-        top: 25% !important;
-        left: 25% !important;
-      }
-      section span[style*="sachetLabel"] {
-        font-size: 0.85rem !important;
+      div[style*="textContent"] {
+        padding-left: 2rem;
       }
     }
-    @media (max-width: 480px) {
-      section h1[style*="fontSize"] {
-        font-size: 2.8rem !important;
+    
+    @media (max-width: 768px) {
+      .campaign-headline {
+        font-size: 3rem !important;
       }
-      section div[style*="interactiveGroup"] {
-        width: 260px !important;
-        height: 260px !important;
+      div[style*="textContent"] {
+        padding-left: 0;
+        align-items: center;
+        text-align: center;
       }
-      section div[style*="sachet"] {
-        width: 130px !important;
-        height: 130px !important;
+      div[style*="heroSection"] {
+        height: 75vh !important;
+      }
+      .hero-nav-btn {
+        display: none !important;
+      }
+      div[style*="trustBar"] {
+        gap: 1rem !important;
+        flex-direction: column !important;
+        text-align: center !important;
+      }
+      div[style*="trustDot"] {
+        display: none !important;
       }
     }
   `;
   document.head.appendChild(styleSheetHero);
 }
-
