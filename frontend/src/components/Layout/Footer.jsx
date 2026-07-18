@@ -16,7 +16,7 @@ export default function Footer() {
         <div style={styles.topRow}>
           {/* Brand Info */}
           <div style={styles.columnLarge}>
-            <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.footerLogo} />
+            <img src="/images/Final.png" alt="MOVITEA" style={styles.footerLogo} />
             <p style={styles.brandDesc}>
               A modern tea atelier dedicated to craft, flavor, and sensory elegance. Elevating your daily ritual one steep at a time.
             </p>
@@ -92,7 +92,7 @@ const styles = {
     gap: '1.5rem',
   },
   footerLogo: {
-    height: '40px',
+    height: '120px',
     alignSelf: 'flex-start',
     mixBlendMode: 'multiply',
   },

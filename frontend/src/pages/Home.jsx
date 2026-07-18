@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Hero from '../components/Home/Hero';
 import FlavourExperience from '../components/Home/FlavourExperience';
-import ProductShowcase from '../components/Home/ProductShowcase';
+import ProductGrid from '../components/Home/ProductGrid';
 import WhyMovitea from '../components/Home/WhyMovitea';
 import ComboPackShowcase from '../components/Home/ComboPackShowcase';
 import Reviews from '../components/Home/Reviews';
@@ -34,8 +34,7 @@ export default function Home({ setSelectedProduct }) {
   return (
     <main>
       <Hero onShopClick={handleShopRedirect} />
-      <FlavourExperience onSelectProduct={handleProductSelect} />
-      <ProductShowcase onSelectProduct={handleProductSelect} />
+      <ProductGrid onShopClick={handleShopRedirect} />
       <WhyMovitea />
       <ComboPackShowcase onShopClick={handleShopRedirect} />
       <Reviews />

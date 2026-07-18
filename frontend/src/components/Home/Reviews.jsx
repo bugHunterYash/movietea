@@ -2,32 +2,28 @@ import React from 'react';
 
 const REVIEWS = [
   {
-    name: 'Aishwarya R.',
-    role: 'Connoisseur',
-    quote: 'Movitea has completely transformed my mornings. The Rose Flavour is subtle, pure, and absolutely divine. Worth every rupee.',
+    name: 'Yaksh Sangani',
+    quote: 'Insane flavour, solid crunch - this snack actually delivers every single time! Wait, I mean tea. This tea is amazing.',
     rating: 5,
-    img: '/assets/review-1.jfif',
+    img: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Yaksh',
   },
   {
-    name: 'Kabir S.',
-    role: 'Tea Enthusiast',
-    quote: 'The Toasted Butterscotch smells like a luxury Parisian patisserie. The creaminess without added sugar is wizardry.',
+    name: 'Mehak Agarwal',
+    quote: 'Rose Flavour is my go-to. 10/10 recommend for all tea lovers.',
     rating: 5,
-    img: '/assets/review-1.jfif',
+    img: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Mehak',
   },
   {
-    name: 'Meera G.',
-    role: 'Wellness Designer',
-    quote: 'I love how clean it is. Just hot water and you get this rich, deep cacao chocolate tea that feels like pure indulgence.',
+    name: 'Aryan Singh',
+    quote: 'Found Movitea while looking for zero sugar options. Never looked back.',
     rating: 5,
-    img: '/assets/review-1.jfif',
+    img: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Aryan',
   },
   {
-    name: 'Rohan M.',
-    role: 'Creative Director',
-    quote: 'Beautiful brand, premium packaging, but most importantly: taste is 10/10. The vanilla pods add a silky texture that default teas lack.',
+    name: 'Riya Saraf',
+    quote: 'Binge-watching K-Dramas just got better - thanks to Vanilla Orchid!',
     rating: 5,
-    img: '/assets/review-1.jfif',
+    img: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Riya',
   },
 ];
 
@@ -38,27 +34,33 @@ export default function Reviews() {
   return (
     <section style={styles.reviewsSection}>
       <div className="container" style={styles.header}>
-        <span style={styles.subtitle}>TESTIMONIALS</span>
-        <h2 style={styles.title}>The Journal of Taste</h2>
+        <h2 style={styles.headline}>
+          <span style={styles.headlineYellow}>MOVITEA!</span><br/>
+          <span style={styles.headlineWhite}>TRIED. TASTED. LOVED.</span>
+        </h2>
       </div>
 
       <div style={styles.marqueeContainer}>
         <div style={styles.marqueeTrack} className="marquee-track">
           {duplicatedReviews.map((rev, index) => (
             <div key={index} style={styles.reviewCard}>
-              <div style={styles.cardTop}>
+              
+              {/* Top: Stars */}
+              <div style={styles.rating}>
+                {'★'.repeat(rev.rating)}
+              </div>
+              
+              {/* Middle: Quote */}
+              <p style={styles.quote}>"{rev.quote}"</p>
+              
+              {/* Bottom: Avatar and Name */}
+              <div style={styles.cardBottom}>
                 <div style={styles.avatarWrapper}>
                   <img src={rev.img} alt={rev.name} style={styles.avatarImg} />
                 </div>
-                <div>
-                  <h4 style={styles.reviewerName}>{rev.name}</h4>
-                  <span style={styles.reviewerRole}>{rev.role}</span>
-                </div>
-                <div style={styles.rating}>
-                  {'★'.repeat(rev.rating)}
-                </div>
+                <h4 style={styles.reviewerName}>{rev.name}</h4>
               </div>
-              <p style={styles.quote}>&ldquo;{rev.quote}&rdquo;</p>
+
             </div>
           ))}
         </div>
@@ -69,64 +71,81 @@ export default function Reviews() {
 
 const styles = {
   reviewsSection: {
-    backgroundColor: '#FAF7F2',
+    backgroundColor: '#1A1A1A', // Dark theme matching the reference
     padding: '8rem 0',
     overflow: 'hidden',
-    borderTop: '1px solid var(--border-color)',
-    borderBottom: '1px solid var(--border-color)',
   },
   header: {
     textAlign: 'center',
-    marginBottom: '4rem',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '0.8rem',
+    marginBottom: '5rem',
   },
-  subtitle: {
-    fontSize: '0.85rem',
-    letterSpacing: '0.15em',
-    color: 'var(--primary-color)',
-    fontWeight: '600',
+  headline: {
+    fontFamily: "'Anton', var(--font-heading)",
+    fontSize: '5rem',
+    fontWeight: '900',
+    lineHeight: '1.1',
+    letterSpacing: '0.02em',
+    textTransform: 'uppercase',
   },
-  title: {
-    fontSize: '3.5rem',
+  headlineYellow: {
+    color: '#FFDF40',
+    WebkitTextStroke: '2px #000',
+    textShadow: '4px 4px 0px #000',
+  },
+  headlineWhite: {
+    color: '#FFFFFF',
+    WebkitTextStroke: '2px #000',
+    textShadow: '4px 4px 0px #000',
   },
   marqueeContainer: {
     width: '100%',
     overflow: 'hidden',
     position: 'relative',
     display: 'flex',
-    maskImage: 'linear-gradient(to right, transparent, white 20%, white 80%, transparent)',
-    WebkitMaskImage: 'linear-gradient(to right, transparent, white 20%, white 80%, transparent)',
+    // Removed the gradient mask so it doesn't fade into dark background awkwardly
   },
   marqueeTrack: {
     display: 'flex',
     gap: '2.5rem',
     width: 'max-content',
     animation: 'marquee 25s linear infinite',
+    padding: '1rem', // Give space for shadow
   },
   reviewCard: {
-    width: '420px',
-    backgroundColor: 'var(--cream-color)',
-    border: '1px solid var(--border-color)',
+    width: '380px',
+    backgroundColor: '#FFFFFF',
+    borderRadius: '24px',
     padding: '2.5rem',
     display: 'flex',
     flexDirection: 'column',
-    gap: '1.5rem',
-    boxShadow: '0 4px 20px rgba(43, 26, 18, 0.02)',
+    gap: '2rem',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
   },
-  cardTop: {
+  rating: {
+    color: '#F97316', // Orange stars
+    fontSize: '1.2rem',
+    letterSpacing: '3px',
+  },
+  quote: {
+    fontSize: '1.05rem',
+    lineHeight: '1.6',
+    color: '#1A120E',
+    fontWeight: '500',
+    fontFamily: 'var(--font-body)',
+    flexGrow: 1,
+  },
+  cardBottom: {
     display: 'flex',
     alignItems: 'center',
-    gap: '1rem',
+    justifyContent: 'space-between',
+    marginTop: 'auto',
   },
   avatarWrapper: {
     width: '50px',
     height: '50px',
     borderRadius: '50%',
+    backgroundColor: '#E5E7EB', // Fallback
     overflow: 'hidden',
-    border: '1px solid var(--primary-color)',
   },
   avatarImg: {
     width: '100%',
@@ -134,52 +153,42 @@ const styles = {
     objectFit: 'cover',
   },
   reviewerName: {
-    fontSize: '1.1rem',
+    fontSize: '0.95rem',
     fontWeight: '600',
-    color: 'var(--dark-color)',
-    fontFamily: 'var(--font-serif)',
-  },
-  reviewerRole: {
-    fontSize: '0.75rem',
-    fontFamily: 'var(--font-sans)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-    color: 'var(--text-light)',
-  },
-  rating: {
-    marginLeft: 'auto',
-    color: 'var(--primary-color)',
-    fontSize: '1rem',
-    letterSpacing: '2px',
-  },
-  quote: {
-    fontSize: '1rem',
-    lineHeight: '1.6',
-    color: 'var(--dark-color)',
-    fontStyle: 'italic',
-    fontWeight: '300',
+    color: '#1A120E',
+    fontFamily: 'var(--font-body)',
   },
 };
 
 // Add keyframes stylesheet
-const styleSheetMarquee = document.createElement('style');
-styleSheetMarquee.innerText = `
-  @keyframes marquee {
-    0% {
-      transform: translate3d(0, 0, 0);
+if (typeof document !== 'undefined') {
+  const styleSheetMarquee = document.createElement('style');
+  styleSheetMarquee.innerText = `
+    @keyframes marquee {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+      100% {
+        transform: translate3d(-50%, 0, 0);
+      }
     }
-    100% {
-      transform: translate3d(-50%, 0, 0);
+    .marquee-track:hover {
+      animation-play-state: paused;
     }
-  }
-  .marquee-track:hover {
-    animation-play-state: paused;
-  }
-  @media (max-width: 600px) {
-    .marquee-track > div {
-      width: 320px !important;
-      padding: 1.5rem !important;
+    @media (max-width: 1024px) {
+      h2[style*="font-size: 5rem"] {
+        font-size: 3.5rem !important;
+      }
     }
-  }
-`;
-document.head.appendChild(styleSheetMarquee);
+    @media (max-width: 600px) {
+      h2[style*="font-size: 5rem"], h2[style*="font-size: 3.5rem"] {
+        font-size: 2.5rem !important;
+      }
+      .marquee-track > div {
+        width: 320px !important;
+        padding: 2rem !important;
+      }
+    }
+  `;
+  document.head.appendChild(styleSheetMarquee);
+}

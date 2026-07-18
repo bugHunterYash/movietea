@@ -22,7 +22,7 @@ export default function Login() {
         transition={{ duration: 0.5 }}
         style={styles.loginCard}
       >
-        <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.logo} />
+        <img src="/images/Final.png" alt="MOVITEA" style={styles.logo} />
         <h1 style={styles.title}>Welcome to MOVITEA</h1>
         <p style={styles.subtitle}>Sign in to access your account and order history</p>
         
