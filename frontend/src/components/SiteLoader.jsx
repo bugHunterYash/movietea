@@ -10,7 +10,8 @@ export default function SiteLoader({ onLoadingComplete }) {
       const imagesToPreload = [
         "/images/loader1.webp",
         "/images/loader2.webp",
-        "/images/loader3.webp"
+        "/images/loader3.webp",
+        "/images/loader4.webp"
       ];
 
       const imagePromises = imagesToPreload.map(src => {

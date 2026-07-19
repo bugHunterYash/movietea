@@ -3,7 +3,7 @@ import React from 'react';
 const REVIEWS = [
   {
     name: 'Yaksh Sangani',
-    quote: 'Insane flavour,  I mean tea. This tea is amazing.',
+    quote: 'Insane flavour I mean tea. This tea is amazing.',
     rating: 5,
     img: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Yaksh',
   },
@@ -35,7 +35,7 @@ export default function Reviews() {
     <section style={styles.reviewsSection}>
       <div className="container" style={styles.header}>
         <h2 style={styles.headline}>
-          <span style={styles.headlineYellow}>MOVITEA!</span><br/>
+          <span style={styles.headlineYellow}>MOVITEA!</span><br />
           <span style={styles.headlineWhite}>TRIED. TASTED. LOVED.</span>
         </h2>
       </div>
@@ -44,15 +44,15 @@ export default function Reviews() {
         <div style={styles.marqueeTrack} className="marquee-track">
           {duplicatedReviews.map((rev, index) => (
             <div key={index} style={styles.reviewCard}>
-              
+
               {/* Top: Stars */}
               <div style={styles.rating}>
                 {'★'.repeat(rev.rating)}
               </div>
-              
+
               {/* Middle: Quote */}
               <p style={styles.quote}>"{rev.quote}"</p>
-              
+
               {/* Bottom: Avatar and Name */}
               <div style={styles.cardBottom}>
                 <div style={styles.avatarWrapper}>
