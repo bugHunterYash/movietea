@@ -5,6 +5,9 @@ import { useInView } from 'react-intersection-observer';
 import { Sparkles, Compass, Leaf, Heart } from 'lucide-react';
 import { productsAPI } from '../utils/api';
 import { PRICING } from '../utils/pricing';
+import ProductImageGallery from '../components/Shop/ProductImageGallery';
+import ProductReviews from '../components/Reviews/ProductReviews';
+import { getProductImages } from '../utils/imageMapper';
 
 const FLAVOUR_DETAILS = {
   rose: {
@@ -187,7 +190,11 @@ export default function ProductDetails({ onAddToCart }) {
               transition={{ duration: 1, cubicBezier: [0.16, 1, 0.3, 1] }}
               style={styles.imgWrapper}
             >
-              <img src={displayData.img} alt={displayData.name} style={styles.mainImg} />
+              <ProductImageGallery 
+                images={getProductImages(displayData.id, displayData.name)}
+                productName={displayData.name}
+                mode="details"
+              />
             </motion.div>
           </div>
 
@@ -314,6 +321,13 @@ export default function ProductDetails({ onAddToCart }) {
               <TasteBar key={key} label={key} percentage={value} primaryColor={displayData.primaryColor} />
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Customer Reviews Section */}
+      <section style={{ backgroundColor: '#FFFFFF' }}>
+        <div className="container">
+          <ProductReviews productSlug={displayData.id} />
         </div>
       </section>
     </div>

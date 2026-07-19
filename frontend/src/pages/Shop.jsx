@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { productsAPI } from '../utils/api';
+import ProductImageGallery from '../components/Shop/ProductImageGallery';
+import { getProductImages } from '../utils/imageMapper';
 
 // Fallback products in case API fails
 const FALLBACK_PRODUCTS = [
@@ -197,21 +199,18 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
               <React.Fragment key={prod.id}>
                 <div style={{ ...styles.card, backgroundColor: fStyle.bg }} className="shop-product-card">
                   
-                  {/* Badge */}
-                  {prod.tag && (
-                    <span style={{ ...styles.cardTag, backgroundColor: fStyle.badge, color: fStyle.badgeText }}>
-                      {prod.tag}
-                    </span>
-                  )}
-                  
                   {/* Image */}
                   <div style={styles.imgContainer} onClick={() => handleProductSelect(prod.id)}>
-                    <img 
-                      src={prod.img} 
-                      alt={prod.name} 
-                      className="product-image-anim" 
-                      style={styles.productImg}
-                      onError={(e) => { e.target.onerror = null; e.target.src = '/images/Final.png'; }}
+                    {/* Badge moved inside imgContainer to align with image bounds */}
+                    {prod.tag && (
+                      <span style={{ ...styles.cardTag, backgroundColor: fStyle.badge, color: fStyle.badgeText }}>
+                        {prod.tag}
+                      </span>
+                    )}
+                    <ProductImageGallery 
+                      images={getProductImages(prod.slug || prod.id, prod.name)} 
+                      productName={prod.name} 
+                      mode="shop" 
                     />
                   </div>
 
@@ -347,15 +346,15 @@ const styles = {
   },
   cardTag: {
     position: 'absolute',
-    top: '1.5rem',
-    left: '1.5rem',
+    top: '1rem',
+    left: '1rem',
     padding: '0.4rem 1rem',
     fontSize: '0.75rem',
     fontWeight: '700',
     borderRadius: '8px',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
-    zIndex: 2,
+    zIndex: 10,
     boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
   },
   imgContainer: {

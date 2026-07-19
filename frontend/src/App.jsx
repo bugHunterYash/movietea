@@ -100,6 +100,9 @@ export default function App() {
       setLoadingAuth(false);
     };
     checkAuth();
+    
+    // Preload shop page for faster navigation
+    import('./pages/Shop').catch(() => {});
   }, []);
 
   // Initialize Lenis Smooth Scrolling
@@ -323,11 +326,28 @@ export default function App() {
 
 function PageLoader() {
   return (
-    <div style={styles.loader}>
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-        style={styles.spinner}
+    <div style={styles.pageLoaderContainer}>
+      <motion.img
+        src="/images/Final.png"
+        alt="Loading..."
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ 
+          opacity: [0, 1, 0.8, 1], 
+          scale: 1 
+        }}
+        transition={{ 
+          opacity: { 
+            times: [0, 0.2, 0.6, 1],
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          },
+          scale: {
+            duration: 1,
+            ease: "easeOut"
+          }
+        }}
+        style={styles.pageLogo}
       />
     </div>
   );
@@ -354,6 +374,19 @@ const styles = {
     justifyContent: 'center',
     height: '60vh',
     width: '100%',
+  },
+  pageLoaderContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '60vh',
+    width: '100%',
+    backgroundColor: '#FAF7F2',
+  },
+  pageLogo: {
+    width: '120px',
+    height: 'auto',
+    objectFit: 'contain'
   },
   loaderContainer: {
     display: 'flex',

@@ -14,17 +14,21 @@ const CAMPAIGN_SLIDES = [
   {
     id: 3,
     image: "/images/loader3.webp"
+  },
+  {
+    id: 4,
+    image: "/images/loader4.webp"
   }
 ];
 
 export default function Hero({ onShopClick }) {
   const [current, setCurrent] = useState(0);
 
-  // Auto-rotate every 6 seconds
+  // Auto-rotate every 3 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % CAMPAIGN_SLIDES.length);
-    }, 6000);
+    }, 3000);
     return () => clearInterval(timer);
   }, []);
 

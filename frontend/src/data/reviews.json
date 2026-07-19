@@ -1,0 +1,1392 @@
+{
+  "chocolate-10-sachets": [
+    {
+      "id": "ylf76x3et",
+      "name": "Aditi Verma",
+      "rating": 4,
+      "title": "Refreshing taste",
+      "comment": "A perfect evening tea to wind down. The chocolate notes are very distinct.",
+      "date": "6 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "8udum2fcu",
+      "name": "Tara Chawla",
+      "rating": 5,
+      "title": "A delightful surprise",
+      "comment": "The rich cocoa aroma is absolutely divine. Perfect for my evening cravings.",
+      "date": "21 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "wiq442v63",
+      "name": "Sameer Ahluwalia",
+      "rating": 5,
+      "title": "Best flavoured tea",
+      "comment": "Perfect portion size in every sachet. Very easy to brew.",
+      "date": "18 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "haar0wc00",
+      "name": "Shruti Nanda",
+      "rating": 4,
+      "title": "Excellent aroma",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "16 May 2026",
+      "verified": true
+    },
+    {
+      "id": "ozdtd8q2h",
+      "name": "Rajat Sen",
+      "rating": 4,
+      "title": "Will definitely order again",
+      "comment": "Feels like a comforting dessert tea without the guilt.",
+      "date": "10 May 2026",
+      "verified": false
+    },
+    {
+      "id": "fgehpevvr",
+      "name": "Priya Nair",
+      "rating": 5,
+      "title": "Smooth and comforting",
+      "comment": "The rich cocoa aroma is absolutely divine. Perfect for my evening cravings.",
+      "date": "21 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "nrk8c1u4z",
+      "name": "Aarti Patel",
+      "rating": 5,
+      "title": "Rich flavour",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "7 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "7j4400q8q",
+      "name": "Neha Jain",
+      "rating": 5,
+      "title": "Great for gifting",
+      "comment": "Feels like a comforting dessert tea without the guilt.",
+      "date": "1 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "ar89u3bov",
+      "name": "Amit Thakur",
+      "rating": 5,
+      "title": "Highly recommended",
+      "comment": "A perfect evening tea to wind down. The chocolate notes are very distinct.",
+      "date": "28 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "o1f6f1rdq",
+      "name": "Kunal Shah",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "A perfect evening tea to wind down. The chocolate notes are very distinct.",
+      "date": "18 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "jdt98x8kk",
+      "name": "Manish Varma",
+      "rating": 5,
+      "title": "Smooth and comforting",
+      "comment": "A perfect evening tea to wind down. The chocolate notes are very distinct.",
+      "date": "14 Feb 2026",
+      "verified": false
+    },
+    {
+      "id": "e8yc4hmcr",
+      "name": "Aakash Dutta",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "Feels like a comforting dessert tea without the guilt.",
+      "date": "3 Feb 2026",
+      "verified": true
+    }
+  ],
+  "vanilla-10-sachets": [
+    {
+      "id": "sz0ggo0qx",
+      "name": "Sneha Kapoor",
+      "rating": 4,
+      "title": "Great for gifting",
+      "comment": "Very comforting and elegant taste. The natural vanilla is amazing.",
+      "date": "30 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "pbkkae3bc",
+      "name": "Anjali Deshmukh",
+      "rating": 5,
+      "title": "Fantastic packaging",
+      "comment": "Very comforting and elegant taste. The natural vanilla is amazing.",
+      "date": "13 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "n3dfqnea3",
+      "name": "Simran Kaur",
+      "rating": 4,
+      "title": "Exceeded expectations",
+      "comment": "Perfect portion size in every sachet. Very easy to brew.",
+      "date": "9 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "t062sig7h",
+      "name": "Tarun Bajaj",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "So creamy and smooth, it feels like a warm hug in a cup.",
+      "date": "3 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "pbsxnc5lx",
+      "name": "Abhishek Iyer",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "28 May 2026",
+      "verified": true
+    },
+    {
+      "id": "r0y8pvu6o",
+      "name": "Vikram Reddy",
+      "rating": 5,
+      "title": "Exceeded expectations",
+      "comment": "The light sweetness of vanilla is very calming after a long day.",
+      "date": "27 May 2026",
+      "verified": true
+    },
+    {
+      "id": "rwkq7u6h5",
+      "name": "Deepak Pillai",
+      "rating": 5,
+      "title": "Fantastic packaging",
+      "comment": "Very comforting and elegant taste. The natural vanilla is amazing.",
+      "date": "12 May 2026",
+      "verified": true
+    },
+    {
+      "id": "p5hzr049r",
+      "name": "Harsh Agarwal",
+      "rating": 5,
+      "title": "Amazing flavour",
+      "comment": "So creamy and smooth, it feels like a warm hug in a cup.",
+      "date": "11 May 2026",
+      "verified": false
+    },
+    {
+      "id": "5zkayxll6",
+      "name": "Kritika Malhotra",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "Perfect portion size in every sachet. Very easy to brew.",
+      "date": "3 Apr 2026",
+      "verified": false
+    },
+    {
+      "id": "d1zzit2au",
+      "name": "Sahil Arora",
+      "rating": 5,
+      "title": "Highly recommended",
+      "comment": "A very relaxing brew. The vanilla aroma fills the room instantly.",
+      "date": "1 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "cep3r51v5",
+      "name": "Siddharth Rao",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "30 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "ezx1s7tps",
+      "name": "Smriti Raj",
+      "rating": 5,
+      "title": "Fantastic packaging",
+      "comment": "So creamy and smooth, it feels like a warm hug in a cup.",
+      "date": "24 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "htqphbwws",
+      "name": "Arjun Desai",
+      "rating": 4,
+      "title": "Smooth and comforting",
+      "comment": "Perfect portion size in every sachet. Very easy to brew.",
+      "date": "24 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "ez5foi8ja",
+      "name": "Ritesh Gupta",
+      "rating": 5,
+      "title": "Amazing flavour",
+      "comment": "A very relaxing brew. The vanilla aroma fills the room instantly.",
+      "date": "2 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "nhefpy89c",
+      "name": "Nitin Khurana",
+      "rating": 5,
+      "title": "Smooth and comforting",
+      "comment": "Very comforting and elegant taste. The natural vanilla is amazing.",
+      "date": "25 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "k2bvee0l6",
+      "name": "Rina Dsouza",
+      "rating": 5,
+      "title": "Perfect morning tea",
+      "comment": "Perfect portion size in every sachet. Very easy to brew.",
+      "date": "18 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "drgu185h5",
+      "name": "Ravi Teja",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "Love how smooth this is. It has become my go-to morning tea.",
+      "date": "11 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "1xqtg260d",
+      "name": "Swati Gokhale",
+      "rating": 5,
+      "title": "Loved every sip",
+      "comment": "Very comforting and elegant taste. The natural vanilla is amazing.",
+      "date": "8 Feb 2026",
+      "verified": true
+    }
+  ],
+  "rose-10-sachets": [
+    {
+      "id": "1pl0at2cp",
+      "name": "Ananya Gupta",
+      "rating": 5,
+      "title": "Premium quality",
+      "comment": "Very fragrant and unique. A truly premium tea experience.",
+      "date": "24 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "v7g2xf4ct",
+      "name": "Kiran Sethi",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "Very fragrant and unique. A truly premium tea experience.",
+      "date": "21 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "zzzn4pndr",
+      "name": "Nandini Das",
+      "rating": 5,
+      "title": "Amazing flavour",
+      "comment": "Refreshing and light. I love having this in the afternoon.",
+      "date": "16 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "zl4uvccnq",
+      "name": "Shreya Joshi",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "Very fragrant and unique. A truly premium tea experience.",
+      "date": "15 Jun 2026",
+      "verified": false
+    },
+    {
+      "id": "ckq5qjeqn",
+      "name": "Nikhil Jain",
+      "rating": 5,
+      "title": "Smooth and comforting",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "11 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "3vjjw0zgc",
+      "name": "Tanvi Bhatia",
+      "rating": 5,
+      "title": "Premium quality",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "28 May 2026",
+      "verified": true
+    },
+    {
+      "id": "57a42w7i0",
+      "name": "Rakesh Verma",
+      "rating": 5,
+      "title": "Smooth and comforting",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "28 May 2026",
+      "verified": true
+    },
+    {
+      "id": "ig489cjvy",
+      "name": "Sonal Goel",
+      "rating": 3,
+      "title": "Best flavoured tea",
+      "comment": "Refreshing and light. I love having this in the afternoon.",
+      "date": "28 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "nqlolxcy0",
+      "name": "Pooja Trivedi",
+      "rating": 5,
+      "title": "Fantastic packaging",
+      "comment": "The floral aroma is incredibly refreshing and elegant.",
+      "date": "11 Mar 2026",
+      "verified": false
+    },
+    {
+      "id": "ie2kpwpte",
+      "name": "Divya Menon",
+      "rating": 5,
+      "title": "Rich flavour",
+      "comment": "Refreshing and light. I love having this in the afternoon.",
+      "date": "1 Mar 2026",
+      "verified": false
+    },
+    {
+      "id": "82wi6p07u",
+      "name": "Kavita Reddy",
+      "rating": 4,
+      "title": "Exceeded expectations",
+      "comment": "Very fragrant and unique. A truly premium tea experience.",
+      "date": "25 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "51by3qybk",
+      "name": "Priyanka Basu",
+      "rating": 5,
+      "title": "Rich flavour",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "15 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "aibhtd5tv",
+      "name": "Rohan Bansal",
+      "rating": 4,
+      "title": "Highly recommended",
+      "comment": "The rose petals make it look and smell so luxurious. Highly recommend.",
+      "date": "25 Jan 2026",
+      "verified": true
+    },
+    {
+      "id": "aqi3q5vx8",
+      "name": "Karan Mehta",
+      "rating": 5,
+      "title": "A delightful surprise",
+      "comment": "Such a delicate and elegant flavour. The rose notes are perfectly balanced.",
+      "date": "24 Jan 2026",
+      "verified": true
+    },
+    {
+      "id": "svi2sndiz",
+      "name": "Yash Bhatia",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "The rose petals make it look and smell so luxurious. Highly recommend.",
+      "date": "22 Jan 2026",
+      "verified": false
+    }
+  ],
+  "butterscotch-10-sachets": [
+    {
+      "id": "4qisi4fvd",
+      "name": "Isha Mistry",
+      "rating": 5,
+      "title": "A delightful surprise",
+      "comment": "The caramel flavour is so rich and sweet. A true premium taste.",
+      "date": "15 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "b7y0rghhl",
+      "name": "Meenal Sharma",
+      "rating": 5,
+      "title": "Perfect morning tea",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "10 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "bugx1xhv4",
+      "name": "Gaurav Soni",
+      "rating": 5,
+      "title": "Smooth and comforting",
+      "comment": "The sweet aroma of butterscotch makes every sip a delight.",
+      "date": "21 May 2026",
+      "verified": true
+    },
+    {
+      "id": "a0w0wiil4",
+      "name": "Ishita Roy",
+      "rating": 4,
+      "title": "Worth every penny",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "30 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "cuhmop8ai",
+      "name": "Prateek Joshi",
+      "rating": 5,
+      "title": "Rich flavour",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "27 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "81stmuqc6",
+      "name": "Snehal Kulkarni",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "My absolute favorite! The buttery taste is so unique for a tea.",
+      "date": "23 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "u2eiliilv",
+      "name": "Gita Parekh",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "My absolute favorite! The buttery taste is so unique for a tea.",
+      "date": "13 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "jkrso4hjt",
+      "name": "Varun Khanna",
+      "rating": 4,
+      "title": "Smooth and comforting",
+      "comment": "Buttery, sweet, and comforting. Smells like a bakery!",
+      "date": "24 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "lliwy51sm",
+      "name": "Aditya Singh",
+      "rating": 5,
+      "title": "Amazing flavour",
+      "comment": "The sweet aroma of butterscotch makes every sip a delight.",
+      "date": "20 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "kesky7k8o",
+      "name": "Muskan Sharma",
+      "rating": 5,
+      "title": "Great for gifting",
+      "comment": "The caramel flavour is so rich and sweet. A true premium taste.",
+      "date": "4 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "wgm3ff3g3",
+      "name": "Ayush Saxena",
+      "rating": 5,
+      "title": "Loved every sip",
+      "comment": "The caramel flavour is so rich and sweet. A true premium taste.",
+      "date": "3 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "1z9f24zeq",
+      "name": "Saurabh Nair",
+      "rating": 4,
+      "title": "Excellent aroma",
+      "comment": "My absolute favorite! The buttery taste is so unique for a tea.",
+      "date": "1 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "zb1int41d",
+      "name": "Nisha Bhat",
+      "rating": 5,
+      "title": "Premium quality",
+      "comment": "The sachets are super convenient for taking to the office.",
+      "date": "1 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "obnoex4pm",
+      "name": "Varsha Kadam",
+      "rating": 5,
+      "title": "Great for gifting",
+      "comment": "The sweet aroma of butterscotch makes every sip a delight.",
+      "date": "27 Jan 2026",
+      "verified": true
+    }
+  ],
+  "chocolate-100gm": [
+    {
+      "id": "hskrbiqi1",
+      "name": "Gita Parekh",
+      "rating": 5,
+      "title": "Refreshing taste",
+      "comment": "The jar packaging is great and keeps the tea fresh for a long time.",
+      "date": "16 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "iob9wagis",
+      "name": "Rahul Gupta",
+      "rating": 5,
+      "title": "Amazing flavour",
+      "comment": "Very café-like experience right at home. Kids love it too!",
+      "date": "4 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "4wg64p0fm",
+      "name": "Isha Mistry",
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "Feels like a comforting dessert tea without the guilt.",
+      "date": "4 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "n8qqv2q5c",
+      "name": "Manish Varma",
+      "rating": 4,
+      "title": "Will definitely order again",
+      "comment": "Very café-like experience right at home. Kids love it too!",
+      "date": "22 Jun 2026",
+      "verified": false
+    },
+    {
+      "id": "b73gl3ipe",
+      "name": "Ayush Saxena",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "The jar packaging is great and keeps the tea fresh for a long time.",
+      "date": "21 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "rux0gxew0",
+      "name": "Kritika Malhotra",
+      "rating": 5,
+      "title": "Highly recommended",
+      "comment": "Love the premium glass jar. Looks great on my shelf!",
+      "date": "5 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "l7ajd1klz",
+      "name": "Ananya Gupta",
+      "rating": 5,
+      "title": "Perfect morning tea",
+      "comment": "A perfect evening tea to wind down. The chocolate notes are very distinct.",
+      "date": "4 May 2026",
+      "verified": true
+    },
+    {
+      "id": "9xoeql13l",
+      "name": "Aarti Patel",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "Very café-like experience right at home. Kids love it too!",
+      "date": "20 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "nhyia0boz",
+      "name": "Swati Gokhale",
+      "rating": 5,
+      "title": "Premium quality",
+      "comment": "The jar packaging is great and keeps the tea fresh for a long time.",
+      "date": "3 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "n0dci03vw",
+      "name": "Yash Bhatia",
+      "rating": 5,
+      "title": "Amazing flavour",
+      "comment": "Feels like a comforting dessert tea without the guilt.",
+      "date": "21 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "q019vsrv7",
+      "name": "Sonal Goel",
+      "rating": 4,
+      "title": "Smooth and comforting",
+      "comment": "Very café-like experience right at home. Kids love it too!",
+      "date": "16 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "ku81xcr8q",
+      "name": "Kunal Shah",
+      "rating": 5,
+      "title": "Exceeded expectations",
+      "comment": "Very economical for daily family use. Lasts a good while.",
+      "date": "23 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "ns45wipk4",
+      "name": "Tanvi Bhatia",
+      "rating": 4,
+      "title": "A delightful surprise",
+      "comment": "Feels like a comforting dessert tea without the guilt.",
+      "date": "25 Jan 2026",
+      "verified": true
+    }
+  ],
+  "vanilla-100gm": [
+    {
+      "id": "53js704zv",
+      "name": "Varun Khanna",
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "A very relaxing brew. The vanilla aroma fills the room instantly.",
+      "date": "20 Jul 2026",
+      "verified": false
+    },
+    {
+      "id": "zp40rnpbw",
+      "name": "Amit Thakur",
+      "rating": 5,
+      "title": "Smooth and comforting",
+      "comment": "Very comforting and elegant taste. The natural vanilla is amazing.",
+      "date": "2 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "5z7xmdhck",
+      "name": "Deepak Pillai",
+      "rating": 4,
+      "title": "Perfect morning tea",
+      "comment": "The light sweetness of vanilla is very calming after a long day.",
+      "date": "26 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "rr3vunvvo",
+      "name": "Siddharth Rao",
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "The jar packaging is great and keeps the tea fresh for a long time.",
+      "date": "5 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "rgdwyjx37",
+      "name": "Tara Chawla",
+      "rating": 5,
+      "title": "Fantastic packaging",
+      "comment": "Very comforting and elegant taste. The natural vanilla is amazing.",
+      "date": "24 May 2026",
+      "verified": true
+    },
+    {
+      "id": "n2it1et4i",
+      "name": "Varsha Kadam",
+      "rating": 4,
+      "title": "Amazing flavour",
+      "comment": "Love the premium glass jar. Looks great on my shelf!",
+      "date": "30 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "pg2jkcbsq",
+      "name": "Meenal Sharma",
+      "rating": 5,
+      "title": "A delightful surprise",
+      "comment": "The jar packaging is great and keeps the tea fresh for a long time.",
+      "date": "21 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "gu4y2jqrh",
+      "name": "Arjun Desai",
+      "rating": 5,
+      "title": "Best flavoured tea",
+      "comment": "The jar packaging is great and keeps the tea fresh for a long time.",
+      "date": "21 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "1wrtb00s1",
+      "name": "Muskan Sharma",
+      "rating": 5,
+      "title": "Highly recommended",
+      "comment": "Love how smooth this is. It has become my go-to morning tea.",
+      "date": "14 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "tc6hd5oq4",
+      "name": "Ritesh Gupta",
+      "rating": 5,
+      "title": "Great for gifting",
+      "comment": "Very economical for daily family use. Lasts a good while.",
+      "date": "11 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "u1rzpkj1s",
+      "name": "Kiran Sethi",
+      "rating": 5,
+      "title": "Premium quality",
+      "comment": "A very relaxing brew. The vanilla aroma fills the room instantly.",
+      "date": "22 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "z9ih0z2bt",
+      "name": "Shruti Nanda",
+      "rating": 5,
+      "title": "Best flavoured tea",
+      "comment": "Very comforting and elegant taste. The natural vanilla is amazing.",
+      "date": "16 Feb 2026",
+      "verified": true
+    }
+  ],
+  "rose-100gm": [
+    {
+      "id": "kzwlm2yio",
+      "name": "Karan Mehta",
+      "rating": 5,
+      "title": "Rich flavour",
+      "comment": "Love the premium glass jar. Looks great on my shelf!",
+      "date": "29 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "7ilbfopba",
+      "name": "Kavita Reddy",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "The rose petals make it look and smell so luxurious. Highly recommend.",
+      "date": "26 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "ks6mcejk5",
+      "name": "Ravi Teja",
+      "rating": 3,
+      "title": "Fantastic packaging",
+      "comment": "Very fragrant and unique. A truly premium tea experience.",
+      "date": "21 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "1f566s26h",
+      "name": "Tarun Bajaj",
+      "rating": 4,
+      "title": "Smooth and comforting",
+      "comment": "Refreshing and light. I love having this in the afternoon.",
+      "date": "19 May 2026",
+      "verified": true
+    },
+    {
+      "id": "ks1m4e8sy",
+      "name": "Nandini Das",
+      "rating": 5,
+      "title": "A delightful surprise",
+      "comment": "Refreshing and light. I love having this in the afternoon.",
+      "date": "17 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "xlmdsqg7f",
+      "name": "Sneha Kapoor",
+      "rating": 5,
+      "title": "Smooth and comforting",
+      "comment": "Very fragrant and unique. A truly premium tea experience.",
+      "date": "12 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "5oi38okbz",
+      "name": "Gaurav Soni",
+      "rating": 5,
+      "title": "A delightful surprise",
+      "comment": "Very fragrant and unique. A truly premium tea experience.",
+      "date": "3 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "dat1p77w4",
+      "name": "Anjali Deshmukh",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "Love the premium glass jar. Looks great on my shelf!",
+      "date": "25 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "fvyb8gttu",
+      "name": "Simran Kaur",
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "Such a delicate and elegant flavour. The rose notes are perfectly balanced.",
+      "date": "3 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "di92gszga",
+      "name": "Rohan Bansal",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "Very economical for daily family use. Lasts a good while.",
+      "date": "24 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "o85s100ag",
+      "name": "Prateek Joshi",
+      "rating": 5,
+      "title": "Great for gifting",
+      "comment": "The jar packaging is great and keeps the tea fresh for a long time.",
+      "date": "22 Feb 2026",
+      "verified": false
+    },
+    {
+      "id": "5cgz3tpfy",
+      "name": "Smriti Raj",
+      "rating": 5,
+      "title": "Exceeded expectations",
+      "comment": "Such a delicate and elegant flavour. The rose notes are perfectly balanced.",
+      "date": "10 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "h4v3txjt6",
+      "name": "Priya Nair",
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "Very fragrant and unique. A truly premium tea experience.",
+      "date": "30 Jan 2026",
+      "verified": true
+    }
+  ],
+  "butterscotch-100gm": [
+    {
+      "id": "sbh3esuzc",
+      "name": "Sahil Arora",
+      "rating": 5,
+      "title": "Loved every sip",
+      "comment": "Very economical for daily family use. Lasts a good while.",
+      "date": "2 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "vl28byy1s",
+      "name": "Rahul Gupta",
+      "rating": 4,
+      "title": "Worth every penny",
+      "comment": "Feels like a treat. The premium taste is definitely worth it.",
+      "date": "19 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "hpyo0uxq6",
+      "name": "Nisha Bhat",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "The sweet aroma of butterscotch makes every sip a delight.",
+      "date": "5 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "31mct8apb",
+      "name": "Nikhil Jain",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "The jar packaging is great and keeps the tea fresh for a long time.",
+      "date": "1 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "ge7eo03d4",
+      "name": "Neha Jain",
+      "rating": 5,
+      "title": "Premium quality",
+      "comment": "Feels like a treat. The premium taste is definitely worth it.",
+      "date": "31 May 2026",
+      "verified": true
+    },
+    {
+      "id": "pl7qdftyn",
+      "name": "Sameer Ahluwalia",
+      "rating": 5,
+      "title": "Highly recommended",
+      "comment": "Love the premium glass jar. Looks great on my shelf!",
+      "date": "27 May 2026",
+      "verified": false
+    },
+    {
+      "id": "sqjij0g5r",
+      "name": "Vikram Reddy",
+      "rating": 5,
+      "title": "Highly recommended",
+      "comment": "The caramel flavour is so rich and sweet. A true premium taste.",
+      "date": "26 May 2026",
+      "verified": true
+    },
+    {
+      "id": "a01gwbkdk",
+      "name": "Rajat Sen",
+      "rating": 5,
+      "title": "Highly recommended",
+      "comment": "The caramel flavour is so rich and sweet. A true premium taste.",
+      "date": "25 May 2026",
+      "verified": true
+    },
+    {
+      "id": "0l2sl7665",
+      "name": "Abhishek Iyer",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "Feels like a treat. The premium taste is definitely worth it.",
+      "date": "12 May 2026",
+      "verified": true
+    },
+    {
+      "id": "8szeehf9r",
+      "name": "Pooja Trivedi",
+      "rating": 5,
+      "title": "Highly recommended",
+      "comment": "The caramel flavour is so rich and sweet. A true premium taste.",
+      "date": "24 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "wpdpth11f",
+      "name": "Shreya Joshi",
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "Feels like a treat. The premium taste is definitely worth it.",
+      "date": "23 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "qs3bh0enn",
+      "name": "Aditya Singh",
+      "rating": 5,
+      "title": "Amazing flavour",
+      "comment": "Buttery, sweet, and comforting. Smells like a bakery!",
+      "date": "21 Mar 2026",
+      "verified": false
+    },
+    {
+      "id": "oq3iu61qd",
+      "name": "Aditi Verma",
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "Very economical for daily family use. Lasts a good while.",
+      "date": "13 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "we7z558jd",
+      "name": "Rina Dsouza",
+      "rating": 5,
+      "title": "Best flavoured tea",
+      "comment": "The caramel flavour is so rich and sweet. A true premium taste.",
+      "date": "21 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "20l2cnxm3",
+      "name": "Rakesh Verma",
+      "rating": 5,
+      "title": "Fantastic packaging",
+      "comment": "The jar packaging is great and keeps the tea fresh for a long time.",
+      "date": "25 Jan 2026",
+      "verified": false
+    },
+    {
+      "id": "fvxi7nnd7",
+      "name": "Aakash Dutta",
+      "rating": 5,
+      "title": "Best flavoured tea",
+      "comment": "Feels like a treat. The premium taste is definitely worth it.",
+      "date": "22 Jan 2026",
+      "verified": true
+    }
+  ],
+  "10-sachets-combo": [
+    {
+      "id": "6frpfk7uj",
+      "name": "Ishita Roy",
+      "rating": 5,
+      "title": "Rich flavour",
+      "comment": "A perfect gift for any tea lover. The packaging is very premium.",
+      "date": "13 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "ripyt4cbp",
+      "name": "Gaurav Soni",
+      "rating": 5,
+      "title": "Great for gifting",
+      "comment": "Perfect portion size in every sachet. Very easy to brew.",
+      "date": "11 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "yrxyj0ic4",
+      "name": "Ritesh Gupta",
+      "rating": 3,
+      "title": "Loved every sip",
+      "comment": "Such a good variety! It’s perfect for trying out all their premium blends.",
+      "date": "3 Jul 2026",
+      "verified": false
+    },
+    {
+      "id": "afxfcyrh2",
+      "name": "Tarun Bajaj",
+      "rating": 5,
+      "title": "Fantastic packaging",
+      "comment": "Great assortment of flavours. Worth buying to find your favorite.",
+      "date": "22 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "64w8bg0dd",
+      "name": "Rajat Sen",
+      "rating": 5,
+      "title": "Best flavoured tea",
+      "comment": "Great assortment of flavours. Worth buying to find your favorite.",
+      "date": "6 Jun 2026",
+      "verified": false
+    },
+    {
+      "id": "u3evlc2of",
+      "name": "Neha Jain",
+      "rating": 4,
+      "title": "Great for gifting",
+      "comment": "Great assortment of flavours. Worth buying to find your favorite.",
+      "date": "23 May 2026",
+      "verified": true
+    },
+    {
+      "id": "bjz9j8dwb",
+      "name": "Divya Menon",
+      "rating": 5,
+      "title": "A delightful surprise",
+      "comment": "Such a good variety! It’s perfect for trying out all their premium blends.",
+      "date": "22 May 2026",
+      "verified": false
+    },
+    {
+      "id": "44d5yaiz4",
+      "name": "Saurabh Nair",
+      "rating": 4,
+      "title": "Highly recommended",
+      "comment": "Perfect portion size in every sachet. Very easy to brew.",
+      "date": "17 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "1ruhagery",
+      "name": "Snehal Kulkarni",
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "Great assortment of flavours. Worth buying to find your favorite.",
+      "date": "7 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "7wunfz0ty",
+      "name": "Harsh Agarwal",
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "Perfect portion size in every sachet. Very easy to brew.",
+      "date": "30 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "i64c055bk",
+      "name": "Priyanka Basu",
+      "rating": 5,
+      "title": "Great for gifting",
+      "comment": "I bought this for gifting and it exceeded expectations.",
+      "date": "13 Mar 2026",
+      "verified": false
+    },
+    {
+      "id": "seubiuf5o",
+      "name": "Rakesh Verma",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "I bought this for gifting and it exceeded expectations.",
+      "date": "9 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "vpobh9qp5",
+      "name": "Nitin Khurana",
+      "rating": 5,
+      "title": "Premium quality",
+      "comment": "Such a good variety! It’s perfect for trying out all their premium blends.",
+      "date": "6 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "5qai2gf6z",
+      "name": "Tanvi Bhatia",
+      "rating": 4,
+      "title": "Best flavoured tea",
+      "comment": "I bought this for gifting and it exceeded expectations.",
+      "date": "25 Jan 2026",
+      "verified": true
+    }
+  ],
+  "100gm-combo": [
+    {
+      "id": "pztu5rell",
+      "name": "Sneha Kapoor",
+      "rating": 5,
+      "title": "Great for gifting",
+      "comment": "Excellent value for money and a great way to experience Movitea.",
+      "date": "17 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "jk99sx8bp",
+      "name": "Prateek Joshi",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "I bought this for gifting and it exceeded expectations.",
+      "date": "23 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "v1en1q5qp",
+      "name": "Sameer Ahluwalia",
+      "rating": 5,
+      "title": "Smooth and comforting",
+      "comment": "I bought this for gifting and it exceeded expectations.",
+      "date": "13 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "2jeo86649",
+      "name": "Sahil Arora",
+      "rating": 5,
+      "title": "Fantastic packaging",
+      "comment": "Such a good variety! It’s perfect for trying out all their premium blends.",
+      "date": "2 Jun 2026",
+      "verified": false
+    },
+    {
+      "id": "acer08eou",
+      "name": "Aditya Singh",
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "Great assortment of flavours. Worth buying to find your favorite.",
+      "date": "27 May 2026",
+      "verified": true
+    },
+    {
+      "id": "rt61pedsd",
+      "name": "Anjali Deshmukh",
+      "rating": 5,
+      "title": "Great for gifting",
+      "comment": "Love the premium glass jar. Looks great on my shelf!",
+      "date": "11 May 2026",
+      "verified": true
+    },
+    {
+      "id": "cc2vas2t2",
+      "name": "Ishita Roy",
+      "rating": 3,
+      "title": "Highly recommended",
+      "comment": "Very economical for daily family use. Lasts a good while.",
+      "date": "4 May 2026",
+      "verified": true
+    },
+    {
+      "id": "zyb367n72",
+      "name": "Smriti Raj",
+      "rating": 5,
+      "title": "A delightful surprise",
+      "comment": "The jar packaging is great and keeps the tea fresh for a long time.",
+      "date": "3 May 2026",
+      "verified": true
+    },
+    {
+      "id": "pz6mklm16",
+      "name": "Manish Varma",
+      "rating": 5,
+      "title": "A delightful surprise",
+      "comment": "Very economical for daily family use. Lasts a good while.",
+      "date": "9 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "ynt422ooy",
+      "name": "Varun Khanna",
+      "rating": 5,
+      "title": "Great for gifting",
+      "comment": "Very economical for daily family use. Lasts a good while.",
+      "date": "29 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "5z070iiiv",
+      "name": "Swati Gokhale",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "Great assortment of flavours. Worth buying to find your favorite.",
+      "date": "27 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "jk8iy90bd",
+      "name": "Nitin Khurana",
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "Excellent value for money and a great way to experience Movitea.",
+      "date": "9 Mar 2026",
+      "verified": true
+    },
+    {
+      "id": "tkboplhck",
+      "name": "Simran Kaur",
+      "rating": 5,
+      "title": "A delightful surprise",
+      "comment": "Such a good variety! It’s perfect for trying out all their premium blends.",
+      "date": "1 Feb 2026",
+      "verified": true
+    }
+  ],
+  "jar-combo": [
+    {
+      "id": "84p6fzx4e",
+      "name": "Nandini Das",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "Very economical for daily family use. Lasts a good while.",
+      "date": "8 Jul 2026",
+      "verified": true
+    },
+    {
+      "id": "lg7lbdi81",
+      "name": "Tara Chawla",
+      "rating": 5,
+      "title": "Perfect morning tea",
+      "comment": "I bought this for gifting and it exceeded expectations.",
+      "date": "20 Jun 2026",
+      "verified": false
+    },
+    {
+      "id": "9918q5wry",
+      "name": "Aarti Patel",
+      "rating": 5,
+      "title": "Highly recommended",
+      "comment": "Excellent value for money and a great way to experience Movitea.",
+      "date": "4 Jun 2026",
+      "verified": true
+    },
+    {
+      "id": "huy4m7z88",
+      "name": "Muskan Sharma",
+      "rating": 4,
+      "title": "Exceeded expectations",
+      "comment": "A perfect gift for any tea lover. The packaging is very premium.",
+      "date": "14 May 2026",
+      "verified": true
+    },
+    {
+      "id": "8xy470q7e",
+      "name": "Rahul Gupta",
+      "rating": 5,
+      "title": "Will definitely order again",
+      "comment": "The jar packaging is great and keeps the tea fresh for a long time.",
+      "date": "3 May 2026",
+      "verified": true
+    },
+    {
+      "id": "h2ymvlcvg",
+      "name": "Priyanka Basu",
+      "rating": 5,
+      "title": "Loved every sip",
+      "comment": "Great assortment of flavours. Worth buying to find your favorite.",
+      "date": "8 Apr 2026",
+      "verified": true
+    },
+    {
+      "id": "jgfydg7k3",
+      "name": "Kiran Sethi",
+      "rating": 5,
+      "title": "Excellent aroma",
+      "comment": "Very economical for daily family use. Lasts a good while.",
+      "date": "21 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "o336ctnlb",
+      "name": "Vikram Reddy",
+      "rating": 5,
+      "title": "Great for gifting",
+      "comment": "Very economical for daily family use. Lasts a good while.",
+      "date": "13 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "8pcl30z15",
+      "name": "Ananya Gupta",
+      "rating": 4,
+      "title": "Loved every sip",
+      "comment": "Excellent value for money and a great way to experience Movitea.",
+      "date": "10 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "mktlkez2f",
+      "name": "Isha Mistry",
+      "rating": 3,
+      "title": "Great for gifting",
+      "comment": "I bought this for gifting and it exceeded expectations.",
+      "date": "6 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "ap7p803lv",
+      "name": "Arjun Desai",
+      "rating": 5,
+      "title": "Perfect morning tea",
+      "comment": "A perfect gift for any tea lover. The packaging is very premium.",
+      "date": "5 Feb 2026",
+      "verified": true
+    },
+    {
+      "id": "fpeazf5gu",
+      "name": "Ayush Saxena",
+      "rating": 5,
+      "title": "Premium quality",
+      "comment": "Great assortment of flavours. Worth buying to find your favorite.",
+      "date": "27 Jan 2026",
+      "verified": true
+    }
+  ]
+}
