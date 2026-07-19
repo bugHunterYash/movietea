@@ -3,7 +3,7 @@ import React from 'react';
 const REVIEWS = [
   {
     name: 'Yaksh Sangani',
-    quote: 'Insane flavour, solid crunch - this snack actually delivers every single time! Wait, I mean tea. This tea is amazing.',
+    quote: 'Insane flavour,  I mean tea. This tea is amazing.',
     rating: 5,
     img: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Yaksh',
   },
