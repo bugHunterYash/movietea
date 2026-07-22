@@ -217,13 +217,23 @@ export default function ProductDetails({ onAddToCart }) {
             </div>
 
             {preorderStatus === 'submitted' ? (
-              <div style={styles.successMessage}>
-                <h3 style={{color: 'var(--primary-color)', marginBottom: '0.5rem', fontSize: '1.2rem', fontWeight: '700'}}>Pre-order done! 🎉</h3>
-                <p style={{fontSize: '0.95rem', color: '#444', lineHeight: '1.6'}}>
-                  Thank you, <b>{preorderData.name}</b>. We have successfully recorded your pre-order.<br/><br/>
-                  There are currently <b style={{color: 'var(--dark-color)', fontSize: '1.1rem'}}>{queueNumber}</b> people ahead of you in the queue for this order. We will notify you at <b>{preorderData.phone}</b> when it is ready to ship!
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                style={styles.successMessage}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.2rem' }}>
+                  <div style={{ width: '45px', height: '45px', borderRadius: '50%', backgroundColor: 'var(--primary-color)', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#FFF', boxShadow: '0 4px 15px rgba(197, 107, 31, 0.3)' }}>
+                    <Sparkles size={24} />
+                  </div>
+                  <h3 style={{color: 'var(--dark-color)', margin: 0, fontSize: '1.5rem', fontWeight: '800', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em'}}>Pre-order Confirmed</h3>
+                </div>
+                <p style={{fontSize: '1.05rem', color: '#555', lineHeight: '1.7', fontFamily: 'var(--font-sans)', margin: 0}}>
+                  Thank you, <b style={{color: 'var(--dark-color)'}}>{preorderData.name}</b>. Your spot is officially secured.<br/><br/>
+                  There are currently <b style={{color: 'var(--primary-color)', fontSize: '1.2rem'}}>{queueNumber}</b> people ahead of you in the queue. We will notify you at <b>{preorderData.phone}</b> the moment it's ready to ship!
                 </p>
-              </div>
+              </motion.div>
             ) : showPreorderForm ? (
               <form onSubmit={handlePreorderSubmit} style={styles.preorderForm}>
                 <input 
@@ -545,11 +555,14 @@ const styles = {
   },
   successMessage: {
     marginBottom: '2.5rem',
-    backgroundColor: '#E8F5E9',
-    padding: '1.5rem',
-    borderRadius: '12px',
-    border: '1px solid #C8E6C9',
+    background: 'linear-gradient(135deg, #FAF7F2 0%, #F5EBE6 100%)',
+    padding: '2rem',
+    borderRadius: '16px',
+    border: '1px solid rgba(197, 107, 31, 0.15)',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
     maxWidth: '500px',
+    position: 'relative',
+    overflow: 'hidden',
   },
   benefitsBox: {
     backgroundColor: '#FDF6E8',

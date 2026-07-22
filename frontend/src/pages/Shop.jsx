@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { productsAPI } from '../utils/api';
 import ProductImageGallery from '../components/Shop/ProductImageGallery';
@@ -111,7 +112,13 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
         saveAmount: p.price - (p.discountPrice || p.price),
         savePercent: Math.round(((p.price - (p.discountPrice || p.price)) / p.price) * 100),
         img: encodeURI(p.image || '/images/Final.png'),
-        tag: p.featured ? 'Featured' : p.shortDesc,
+        tag: (() => {
+          const nameLower = (p.name || '').toLowerCase();
+          if (nameLower.includes('combo') || nameLower.includes('atelier') || p.category === 'Atelier Box') return 'Best Seller';
+          if (nameLower.includes('jar')) return 'Newly Added';
+          if (nameLower.includes('rose') || nameLower.includes('vanilla')) return 'Favourites';
+          return 'Featured';
+        })(),
         desc: p.desc || p.shortDesc,
         slug: p.slug,
         active: p.active,
@@ -141,7 +148,28 @@ export default function Shop({ onAddToCart, setSelectedProduct }) {
       <div style={styles.shopPage}>
         <div className="container">
           <div style={styles.loadingContainer}>
-            <div style={styles.spinner} />
+            <motion.img
+              src="/images/Final.png"
+              alt="Movitea Loading..."
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ 
+                opacity: [0, 1, 0.8, 1], 
+                scale: 1 
+              }}
+              transition={{ 
+                opacity: { 
+                  times: [0, 0.2, 0.6, 1],
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                },
+                scale: {
+                  duration: 1,
+                  ease: "easeOut"
+                }
+              }}
+              style={{ width: '150px', height: 'auto', objectFit: 'contain' }}
+            />
           </div>
         </div>
       </div>
