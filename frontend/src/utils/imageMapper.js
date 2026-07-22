@@ -1,9 +1,9 @@
 export const getProductImages = (slug, productName) => {
   const s = (slug || productName || '').toLowerCase();
-  
+
   // Mapping logic from slug/name to exact filename prefixes found in /shop/
   let prefix = '';
-  
+
   if (s.includes('combo') || s.includes('atelier')) {
     if (s.includes('100gm') || s.includes('100-gm')) {
       prefix = '100 gm combo image';

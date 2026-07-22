@@ -18,6 +18,26 @@ const CAMPAIGN_SLIDES = [
   {
     id: 4,
     image: "/images/loader4.webp"
+  },
+  {
+    id: 5,
+    image: "/images/loader5.webp"
+  },
+  {
+    id: 6,
+    image: "/images/loader6.webp"
+  },
+  {
+    id: 7,
+    image: "/images/loader7.webp"
+  },
+  {
+    id: 8,
+    image: "/images/loader8.webp"
+  },
+  {
+    id: 9,
+    image: "/images/loader9.webp"
   }
 ];
 
@@ -92,22 +112,7 @@ export default function Hero({ onShopClick }) {
           <ChevronRight size={36} strokeWidth={1.5} color="#FFF" />
         </button>
 
-        {/* Pagination Dots */}
-        <div style={styles.paginationContainer}>
-          {CAMPAIGN_SLIDES.map((_, idx) => (
-            <button 
-              key={idx}
-              onClick={(e) => goToSlide(idx, e)}
-              style={{
-                ...styles.dot,
-                backgroundColor: current === idx ? '#FFF' : 'rgba(255,255,255,0.3)',
-                transform: current === idx ? 'scale(1)' : 'scale(0.8)'
-              }}
-              className="hero-dot-btn"
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
-        </div>
+
         
       </section>
 
