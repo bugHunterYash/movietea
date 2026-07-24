@@ -15,7 +15,7 @@ export default function Footer() {
       <div className="container" style={styles.container}>
         <div className="footer-grid" style={styles.topRow}>
           {/* Brand Info */}
-          <div style={styles.columnLarge}>
+          <div className="footer-brand" style={styles.columnLarge}>
             <img src="/images/Final.png" alt="MOVITEA" style={styles.footerLogo} />
             <p style={styles.brandDesc}>
               A modern tea atelier dedicated to craft, flavor, and sensory elegance. Elevating your daily ritual one steep at a time.
@@ -44,7 +44,7 @@ export default function Footer() {
           </div>
 
           {/* Newsletter */}
-          <div style={styles.columnNewsletter}>
+          <div className="footer-newsletter" style={styles.columnNewsletter}>
             <h4 style={styles.colTitle}>Newsletter</h4>
             <p style={styles.newsletterText}>Subscribe to receive editorial content, product launch updates, and private sales.</p>
             <form style={styles.subscribeForm} onSubmit={(e) => e.preventDefault()}>
@@ -192,8 +192,14 @@ styleSheetFooter.innerText = `
       grid-template-columns: 1fr 1fr !important;
       gap: 2.5rem !important;
     }
+    .footer-brand {
+      grid-column: 1 / -1 !important;
+    }
+    .footer-newsletter {
+      grid-column: 1 / -1 !important;
+    }
   }
-    @media (max-width: 600px) {
+  @media (max-width: 600px) {
     .footer-grid {
       grid-template-columns: 1fr !important;
       gap: 2rem !important;
