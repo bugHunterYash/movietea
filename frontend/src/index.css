@@ -19,7 +19,7 @@
   --font-heading: 'Satoshi', sans-serif;
   --font-editorial: 'Cormorant Garamond', serif;
   --font-body: 'Inter', sans-serif;
-  
+
   /* Fallback legacy vars just in case they're used directly elsewhere */
   --font-serif: var(--font-heading);
   --font-sans: var(--font-body);
@@ -40,7 +40,8 @@
   padding: 0;
 }
 
-html, body {
+html,
+body {
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: var(--font-body);
@@ -60,7 +61,8 @@ body.lenis-scroll {
 }
 
 /* Lenis smooth scrolling defaults */
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 
@@ -81,7 +83,12 @@ html.lenis, html.lenis body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   color: var(--dark-color);
   font-weight: 900;
@@ -89,7 +96,9 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.03em;
 }
 
-p, span, div {
+p,
+span,
+div {
   font-family: var(--font-body);
 }
 
@@ -142,26 +151,39 @@ button {
 }
 
 @media (max-width: 1024px) {
-  .premium-headline { font-size: 56px; }
-  .premium-subheadline { font-size: 48px; }
+  .premium-headline {
+    font-size: 56px;
+  }
+
+  .premium-subheadline {
+    font-size: 48px;
+  }
 }
 
 @media (max-width: 768px) {
-  .premium-headline { font-size: 42px; }
-  .premium-subheadline { font-size: 36px; }
+  .premium-headline {
+    font-size: 42px;
+  }
+
+  .premium-subheadline {
+    font-size: 36px;
+  }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--bg-color);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--cream-color);
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-color);
 }

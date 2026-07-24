@@ -12,8 +12,6 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
     { id: 'home', label: 'Home', path: '/' },
     { id: 'about', label: 'About Us', path: '/about' },
     { id: 'shop', label: 'Shop', path: '/shop' },
-    { id: 'product', label: 'Product', path: '/product/rose' },
-    { id: 'gifting', label: 'Gift Collection', path: '/gift-collection' },
     { id: 'contact', label: 'Contact', path: '/contact' },
   ];
 
@@ -81,43 +79,6 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
           <nav style={styles.desktopNav}>
             {navItems.slice(3).map((item) => {
               const isActive = getIsActive(item);
-              if (item.id === 'product') {
-                return (
-                  <div key={item.id} className="nav-dropdown-container" style={styles.dropdownContainer}>
-                    <button
-                      onClick={() => handleNavClick(item.id, item.path)}
-                      style={{
-                        ...styles.navLink,
-                        color: isActive ? 'var(--primary-color)' : 'var(--dark-color)',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {item.label}
-                      {isActive && <span style={styles.activeDot} />}
-                    </button>
-                    <div className="nav-dropdown-menu" style={styles.dropdownMenu}>
-                      {[
-                        { id: 'rose', name: 'Rose Atelier' },
-                        { id: 'chocolate', name: 'Cacao Reserve' },
-                        { id: 'vanilla', name: 'Vanilla Orchid' },
-                        { id: 'butterscotch', name: 'Toasted Butterscotch' }
-                      ].map((flavor) => (
-                        <button
-                          key={flavor.id}
-                          onClick={() => {
-                            setSelectedProduct(flavor.id);
-                            navigate(`/product/${flavor.id}`);
-                            setMobileMenuOpen(false);
-                          }}
-                          style={styles.dropdownItem}
-                        >
-                          {flavor.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                );
-              }
               return (
                 <button
                   key={item.id}
@@ -283,7 +244,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    height: '75px',
+    height: '100px',
     position: 'relative',
   },
   announcementBar: {
@@ -340,7 +301,7 @@ const styles = {
     zIndex: 10,
   },
   logoImg: {
-    height: '130px',
+    height: '110px',
     objectFit: 'contain',
     mixBlendMode: 'multiply',
     transition: 'transform 0.3s ease',

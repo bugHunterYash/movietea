@@ -25,6 +25,7 @@ const Checkout = lazy(() => import('./pages/Checkout'));
 const Admin = lazy(() => import('./pages/Admin'));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 const Login = lazy(() => import('./pages/Login'));
+const BuildYourBox = lazy(() => import('./pages/BuildYourBox'));
 
 export default function App() {
   const location = useLocation();
@@ -297,11 +298,12 @@ export default function App() {
                   <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} setSelectedProduct={setSelectedProduct} />} />
                   <Route path="/product/:id" element={<ProductDetails onAddToCart={handleAddToCart} />} />
                   <Route path="/gift-collection" element={<GiftCollection onAddToCart={handleAddToCart} />} />
-                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/contact" element={<Contact user={user} />} />
                   <Route path="/checkout" element={<Checkout cartItems={cartItems} clearCart={clearCart} user={user} />} />
                   <Route path="/admin/*" element={<Admin user={user} />} />
                   <Route path="/auth/callback" element={<AuthCallback setUser={setUser} />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/build-your-box" element={<BuildYourBox />} />
                 </Routes>
               </Suspense>
             </motion.div>

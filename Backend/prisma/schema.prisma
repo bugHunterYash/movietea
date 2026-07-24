@@ -7,6 +7,29 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+model EmailLog {
+  id              String    @id @default(cuid())
+  resendId        String?   @unique
+  type            String
+  recipient       String
+  subject         String
+  template        String
+  status          String    @default("QUEUED")
+  opens           Int       @default(0)
+  clicks          Int       @default(0)
+  lastOpenedAt    DateTime?
+  lastClickedAt   DateTime?
+  deliveredAt     DateTime?
+  bouncedAt       DateTime?
+  failedReason    String?
+  metadata        String?
+  userId          String?
+  orderId         String?
+  preorderId      String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
 
 
 
@@ -165,11 +188,24 @@ model BulkInquiry {
 }
 
 model PreOrder {
-  id          String   @id @default(cuid())
+  id          String         @id @default(cuid())
+  referenceId String         @unique @default(cuid())
   productId   String
-  product     Product  @relation(fields: [productId], references: [id])
+  product     Product        @relation(fields: [productId], references: [id])
   name        String
+  email       String
   phone       String
-  status      String   @default("New")
-  createdAt   DateTime @default(now())
+  status      String         @default("NEW")
+  notes       String?
+  ipAddress   String?
+  userAgent   String?
+  source      String?
+  deleted     Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([email])
+  @@index([phone])
+  @@index([status])
+  @@index([productId])
 }

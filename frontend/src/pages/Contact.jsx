@@ -1,6 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-export default function Contact() {
+export default function Contact({ user }) {
+  const [formData, setFormData] = useState({ 
+    name: user?.name || '', 
+    email: user?.email || '', 
+    message: '' 
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setStatusMessage('');
+    try {
+      const response = await fetch('https://formspree.io/f/mykrnpbb', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      if (response.ok) {
+        setStatusMessage('Thank you. Our concierge team will connect with you shortly.');
+        setFormData({ name: user?.name || '', email: user?.email || '', message: '' });
+      } else {
+        setStatusMessage('Failed to send message. Please try again later.');
+      }
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      setStatusMessage('Failed to send message. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   React.useEffect(() => {
     document.title = "Contact Concierge | MOVITEA";
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -9,6 +47,12 @@ export default function Contact() {
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
+
+  React.useEffect(() => {
+    if (user) {
+      setFormData(prev => ({ ...prev, name: user.name, email: user.email }));
+    }
+  }, [user]);
   return (
     <div style={styles.page}>
       <div className="container" style={styles.grid}>
@@ -29,8 +73,8 @@ export default function Contact() {
             
             <div style={styles.detailItem}>
               <h4>Atelier Location</h4>
-              <p>12, Luxury Row, Jubilee Hills</p>
-              <p>Hyderabad, TS, India</p>
+              <p>Rzg 405A Rajnagar 2</p>
+              <p>Palam, Delhi 110077</p>
             </div>
 
             <div style={styles.detailItem}>
@@ -43,27 +87,44 @@ export default function Contact() {
 
         {/* Right Side: Contact Form */}
         <div style={styles.formCol}>
-          <form style={styles.form} onSubmit={(e) => { e.preventDefault(); alert("Thank you. Our concierge team will connect with you shortly."); }}>
+          <form style={styles.form} onSubmit={handleSubmit}>
             <h3 style={styles.formTitle}>Send a Message</h3>
             
             <div style={styles.field}>
               <label style={styles.label}>Full Name</label>
-              <input type="text" style={styles.input} required />
+              <input 
+                type="text" 
+                name="name" 
+                value={formData.name} 
+                onChange={handleChange} 
+                style={{...styles.input, backgroundColor: user ? 'transparent' : 'transparent', opacity: user ? 0.6 : 1}} 
+                required 
+                readOnly={!!user} 
+              />
             </div>
 
             <div style={styles.field}>
               <label style={styles.label}>Email Address</label>
-              <input type="email" style={styles.input} required />
+              <input 
+                type="email" 
+                name="email" 
+                value={formData.email} 
+                onChange={handleChange} 
+                style={{...styles.input, backgroundColor: user ? 'transparent' : 'transparent', opacity: user ? 0.6 : 1}} 
+                required 
+                readOnly={!!user} 
+              />
             </div>
 
             <div style={styles.field}>
               <label style={styles.label}>Message</label>
-              <textarea style={styles.textarea} rows="6" required></textarea>
+              <textarea name="message" value={formData.message} onChange={handleChange} style={styles.textarea} rows="6" required></textarea>
             </div>
 
-            <button type="submit" className="luxury-btn" style={styles.submitBtn}>
-              Send Message
+            <button type="submit" className="luxury-btn" style={styles.submitBtn} disabled={isSubmitting}>
+              {isSubmitting ? 'Sending...' : 'Send Message'}
             </button>
+            {statusMessage && <p style={{ marginTop: '1rem', color: statusMessage.includes('Failed') ? 'red' : 'green', fontSize: '0.9rem' }}>{statusMessage}</p>}
           </form>
         </div>
       </div>
