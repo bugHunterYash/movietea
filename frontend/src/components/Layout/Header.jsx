@@ -70,7 +70,7 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
         </nav>
 
         {/* Center: Logo */}
-        <div style={styles.logoContainer} onClick={() => handleNavClick('home', '/')}>
+        <div className="logo-container" style={styles.logoContainer} onClick={() => handleNavClick('home', '/')}>
           <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.logoImg} />
         </div>
 
@@ -144,9 +144,10 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
               <button
                 onClick={() => navigate('/login')}
                 style={styles.loginBtn}
+                className="auth-section"
               >
                 <User size={16} strokeWidth={1.5} />
-                Sign In
+                <span className="login-btn-text">Sign In</span>
               </button>
             )}
           </div>
@@ -487,6 +488,19 @@ if (typeof document !== 'undefined') {
       }
       header .auth-section {
         display: none !important;
+      }
+    }
+    @media (max-width: 1024px) {
+      header .logo-container img {
+        height: 80px !important;
+      }
+      header .auth-section .login-btn-text {
+        display: none;
+      }
+    }
+    @media (max-width: 640px) {
+      header .logo-container img {
+        height: 60px !important;
       }
     }
     header img:hover {
