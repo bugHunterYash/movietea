@@ -1,4 +1,4 @@
-const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
+const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL?.replace(/\/+$/, '')}/api`;
 
 // Get token from localStorage
 const getToken = () => localStorage.getItem('movitea_token');
@@ -201,6 +201,6 @@ export const cartAPI = {
 
 // Google OAuth
 export const getGoogleAuthURL = () => {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = import.meta.env.VITE_BACKEND_URL?.replace(/\/+$/, '');
   return `${backendUrl}/api/auth/google`;
 };
