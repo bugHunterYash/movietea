@@ -31,23 +31,23 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
   return (
     <header style={styles.header}>
       {/* Announcement Bar */}
-      <div style={styles.announcementBar}>
+      <div className="announcement-bar" style={styles.announcementBar}>
         <div className="announcement-track">
-          <span style={styles.announcementText}>
-            First Order Special • Get 50% OFF • Free Delivery Above ₹499 &nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;
-          </span>
-          <span style={styles.announcementText}>
-            First Order Special • Get 50% OFF • Free Delivery Above ₹499 &nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;
-          </span>
-          <span style={styles.announcementText}>
-            First Order Special • Get 50% OFF • Free Delivery Above ₹499 &nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;
-          </span>
-          <span style={styles.announcementText}>
-            First Order Special • Get 50% OFF • Free Delivery Above ₹499 &nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;
-          </span>
+            <span className="announcement-text" style={styles.announcementText}>
+              First Order Special • Get 50% OFF • Free Delivery Above ₹499 &nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+            <span className="announcement-text" style={styles.announcementText}>
+              First Order Special • Get 50% OFF • Free Delivery Above ₹499 &nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+            <span className="announcement-text" style={styles.announcementText}>
+              First Order Special • Get 50% OFF • Free Delivery Above ₹499 &nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+            <span className="announcement-text" style={styles.announcementText}>
+              First Order Special • Get 50% OFF • Free Delivery Above ₹499 &nbsp;&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
         </div>
       </div>
-      <div className="container" style={styles.container}>
+      <div className="container header-main" style={styles.container}>
         {/* Left: Nav items */}
         <nav className="desktop-nav" style={styles.desktopNav}>
           {navItems.slice(0, 3).map((item) => {
@@ -75,7 +75,7 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
         </div>
 
         {/* Right: Nav items + Cart + Auth */}
-        <div style={styles.rightSection}>
+        <div className="right-section" style={styles.rightSection}>
           <nav className="desktop-nav" style={styles.desktopNav}>
             {navItems.slice(3).map((item) => {
               const isActive = getIsActive(item);
@@ -152,12 +152,13 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
             )}
           </div>
 
-          <button onClick={onOpenCart} style={styles.cartBtn} aria-label="Open cart">
+          <button className="cart-btn" onClick={onOpenCart} style={styles.cartBtn} aria-label="Open cart">
             <ShoppingBag size={20} strokeWidth={1.5} color="var(--dark-color)" />
             {cartCount > 0 && <span style={styles.cartBadge}>{cartCount}</span>}
           </button>
 
           <button
+            className="mobile-menu-btn"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             style={styles.mobileMenuBtn}
             aria-label="Toggle menu"
@@ -480,42 +481,68 @@ if (typeof document !== 'undefined') {
       100% { transform: translateX(-50%); }
     }
     @media (max-width: 1024px) {
-      header .logo-container img {
+      .logo-container img {
         height: 80px !important;
       }
-      header .auth-section .login-btn-text {
+      .auth-section .login-btn-text {
         display: none;
       }
-      header .desktop-nav {
+      .desktop-nav {
         gap: 1.5rem !important;
       }
-      header .desktop-nav button {
+      .desktop-nav button {
         font-size: 0.75rem !important;
       }
     }
     @media (max-width: 768px) {
-      header .auth-section {
+      .header-main {
+        position: relative !important;
+      }
+      .desktop-nav {
         display: none !important;
       }
-      header button[aria-label="Toggle menu"] {
-        display: block !important;
+      .auth-section {
+        display: none !important;
       }
-      header .logo-container img {
-        height: 60px !important;
+      .logo-container {
+        position: static !important;
+        transform: none !important;
+        order: 2 !important;
+        flex: 1 !important;
+        display: flex !important;
+        justify-content: center !important;
       }
-      header .desktop-nav {
-        gap: 1rem !important;
+      .logo-container img {
+        height: 55px !important;
       }
-      header .desktop-nav button {
-        font-size: 0.7rem !important;
+      .mobile-menu-btn {
+        display: flex !important;
+        order: 1 !important;
+        margin-right: auto !important;
+      }
+      .cart-btn {
+        order: 3 !important;
+        margin-left: auto !important;
+      }
+      .right-section {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0 !important;
+        width: 100% !important;
+      }
+      .right-section > nav {
+        display: none !important;
+      }
+      .announcement-bar {
+        height: 28px !important;
+      }
+      .announcement-text {
+        font-size: 0.6rem !important;
       }
     }
     @media (max-width: 480px) {
-      header nav {
-        display: none !important;
-      }
-      header .logo-container img {
-        height: 50px !important;
+      .logo-container img {
+        height: 45px !important;
       }
     }
     header img:hover {
