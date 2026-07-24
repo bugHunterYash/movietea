@@ -11,9 +11,9 @@ export default function Footer() {
   };
 
   return (
-    <footer style={styles.footer}>
+    <footer className="site-footer" style={styles.footer}>
       <div className="container" style={styles.container}>
-        <div style={styles.topRow}>
+        <div className="footer-grid" style={styles.topRow}>
           {/* Brand Info */}
           <div style={styles.columnLarge}>
             <img src="/images/Final.png" alt="MOVITEA" style={styles.footerLogo} />
@@ -188,15 +188,23 @@ const styles = {
 const styleSheetFooter = document.createElement('style');
 styleSheetFooter.innerText = `
   @media (max-width: 900px) {
-    footer div[style*="gridTemplateColumns"] {
+    .footer-grid {
       grid-template-columns: 1fr 1fr !important;
-      gap: 3rem !important;
+      gap: 2.5rem !important;
     }
   }
-  @media (max-width: 600px) {
-    footer div[style*="gridTemplateColumns"] {
+    @media (max-width: 600px) {
+    .footer-grid {
       grid-template-columns: 1fr !important;
+      gap: 2rem !important;
+    }
+    .site-footer {
+      padding-top: 3rem !important;
+      padding-bottom: 2rem !important;
+    }
+    .site-footer .container {
       gap: 2.5rem !important;
+      padding: 0 1rem !important;
     }
   }
 `;
