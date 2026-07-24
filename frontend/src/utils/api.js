@@ -201,5 +201,6 @@ export const cartAPI = {
 
 // Google OAuth
 export const getGoogleAuthURL = () => {
-  return `${API_BASE_URL}/auth/google`;
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+  return `${backendUrl}/api/auth/google`;
 };
