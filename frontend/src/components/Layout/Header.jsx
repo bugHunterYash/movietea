@@ -102,10 +102,11 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
               <div style={styles.userMenuContainer}>
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="user-btn"
                   style={styles.userBtn}
                 >
                   {user.image ? (
-                    <img src={user.image} alt={user.name} style={styles.userAvatar} />
+                    <img src={user.image} alt={user.name} className="user-avatar" style={styles.userAvatar} />
                   ) : (
                     <User size={20} strokeWidth={1.5} color="var(--dark-color)" />
                   )}
@@ -505,8 +506,18 @@ if (typeof document !== 'undefined') {
         display: flex !important;
         order: 4 !important;
       }
+      .auth-section .login-btn-text {
+        display: inline !important;
+      }
       .auth-section .user-dropdown {
         display: none !important;
+      }
+      .auth-section .user-btn {
+        padding: 0.2rem !important;
+      }
+      .auth-section .user-avatar {
+        width: 28px !important;
+        height: 28px !important;
       }
       .logo-container {
         position: static !important;
