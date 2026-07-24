@@ -552,6 +552,13 @@ if (typeof document !== 'undefined') {
       .announcement-text {
         font-size: 0.6rem !important;
       }
+      .user-dropdown {
+        right: auto !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        min-width: 220px !important;
+        width: max-content !important;
+      }
     }
     @media (max-width: 480px) {
       .logo-container img {
