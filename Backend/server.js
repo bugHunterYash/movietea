@@ -69,6 +69,8 @@ const userRoutes = require('./routes/users');
 const adminRoutes = require('./routes/admin');
 const cartRoutes = require('./routes/cart');
 const preorderRoutes = require('./routes/preorders');
+const contactRoutes = require('./routes/contact');
+const webhookRoutes = require('./routes/webhooks');
 
 // Use routes
 app.use('/api/auth', authRoutes);
@@ -79,6 +81,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/preorders', preorderRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/webhooks', webhookRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

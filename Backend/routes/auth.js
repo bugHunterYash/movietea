@@ -22,16 +22,30 @@ passport.use(new GoogleStrategy({
     });
 
     if (!user) {
-      user = await prisma.user.create({
-        data: {
-          googleId: profile.id,
-          email: profile.emails[0].value,
-          name: profile.displayName,
-          image: profile.photos[0]?.value
-        }
+      // Check if user already exists with the same email
+      user = await prisma.user.findUnique({
+        where: { email: profile.emails[0].value }
       });
-      // Send welcome email only on first login
-      await sendWelcomeEmail(user.email, user.name);
+
+      if (user) {
+        // Link the Google account to the existing user
+        user = await prisma.user.update({
+          where: { email: profile.emails[0].value },
+          data: { googleId: profile.id }
+        });
+      } else {
+        // Create brand new user
+        user = await prisma.user.create({
+          data: {
+            googleId: profile.id,
+            email: profile.emails[0].value,
+            name: profile.displayName,
+            image: profile.photos[0]?.value
+          }
+        });
+        // Send welcome email only on first login
+        await sendWelcomeEmail(user.email, user.name);
+      }
     }
 
     return done(null, user);

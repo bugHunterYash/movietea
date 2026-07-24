@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Sparkles, Compass, Leaf, Heart } from 'lucide-react';
-import { productsAPI } from '../utils/api';
+import { productsAPI, preordersAPI } from '../utils/api';
 import { PRICING } from '../utils/pricing';
 import ProductImageGallery from '../components/Shop/ProductImageGallery';
 import ProductReviews from '../components/Reviews/ProductReviews';
@@ -90,14 +90,27 @@ export default function ProductDetails({ onAddToCart }) {
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [showPreorderForm, setShowPreorderForm] = useState(false);
-  const [preorderData, setPreorderData] = useState({ name: '', phone: '' });
+  const [preorderData, setPreorderData] = useState({ name: '', email: '', phone: '' });
   const [preorderStatus, setPreorderStatus] = useState('idle');
   const [queueNumber, setQueueNumber] = useState(0);
+  const [referenceId, setReferenceId] = useState('');
 
-  const handlePreorderSubmit = (e) => {
+  const handlePreorderSubmit = async (e) => {
     e.preventDefault();
-    setQueueNumber(Math.floor(Math.random() * 6000) + 1);
-    setPreorderStatus('submitted');
+    try {
+      const response = await preordersAPI.create({
+        productId: product?.id || id,
+        name: preorderData.name,
+        email: preorderData.email,
+        phone: preorderData.phone,
+        source: window.location.pathname
+      });
+      setQueueNumber(Math.floor(Math.random() * 6000) + 1);
+      setReferenceId(response.referenceId);
+      setPreorderStatus('submitted');
+    } catch (error) {
+      alert(error.response?.data?.error || "Failed to submit pre-order. Please try again.");
+    }
   };
   useEffect(() => {
     const fetchProduct = async () => {
@@ -231,6 +244,7 @@ export default function ProductDetails({ onAddToCart }) {
                 </div>
                 <p style={{fontSize: '1.05rem', color: '#555', lineHeight: '1.7', fontFamily: 'var(--font-sans)', margin: 0}}>
                   Thank you, <b style={{color: 'var(--dark-color)'}}>{preorderData.name}</b>. Your spot is officially secured.<br/><br/>
+                  Your Reference ID is <b style={{color: 'var(--primary-color)'}}>{referenceId}</b>.<br/><br/>
                   There are currently <b style={{color: 'var(--primary-color)', fontSize: '1.2rem'}}>{queueNumber}</b> people ahead of you in the queue. We will notify you at <b>{preorderData.phone}</b> the moment it's ready to ship!
                 </p>
               </motion.div>
@@ -242,6 +256,14 @@ export default function ProductDetails({ onAddToCart }) {
                   required 
                   value={preorderData.name}
                   onChange={(e) => setPreorderData({...preorderData, name: e.target.value})}
+                  style={styles.formInput} 
+                />
+                <input 
+                  type="email" 
+                  placeholder="Your Email" 
+                  required 
+                  value={preorderData.email}
+                  onChange={(e) => setPreorderData({...preorderData, email: e.target.value})}
                   style={styles.formInput} 
                 />
                 <input 

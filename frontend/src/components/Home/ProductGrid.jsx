@@ -1,21 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Check, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { preordersAPI } from '../../utils/api';
 
 const PRODUCTS = [
   {
-    id: 1,
+    id: "10-sachets-combo",
     name: "Assorted Atelier Combo Box",
     reviews: 84,
     features: ["4 Premium Flavours", "Zero Sugar", "100% Natural"],
-    price: 569,
-    originalPrice: 700,
+    price: 349,
+    originalPrice: 429,
     discount: "18% OFF",
     image: "/assets/combo-pack.jpeg",
     borderColor: "#C5A376"
   },
   {
-    id: 2,
+    id: "rose-10-sachets",
     name: "Rose Atelier Flavoured Tea",
     reviews: 62,
     features: ["Real Rose Petals", "Zero Sugar", "Relaxing Aroma"],
@@ -26,7 +27,7 @@ const PRODUCTS = [
     borderColor: "#E8B5C3"
   },
   {
-    id: 3,
+    id: "vanilla-10-sachets",
     name: "Vanilla Orchid Flavoured Tea",
     reviews: 124,
     features: ["Madagascar Vanilla", "Zero Sugar", "Smooth Finish"],
@@ -37,7 +38,7 @@ const PRODUCTS = [
     borderColor: "#E8DDBF"
   },
   {
-    id: 4,
+    id: "chocolate-10-sachets",
     name: "Chocolate Reserve Flavoured Tea",
     reviews: 95,
     features: ["Roasted Cacao", "Zero Sugar", "Bold Depth"],
@@ -50,6 +51,37 @@ const PRODUCTS = [
 ];
 
 export default function ProductGrid({ onShopClick }) {
+  const [showPreorderModal, setShowPreorderModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleAddToCart = (product) => {
+    setSelectedProduct(product);
+    setShowPreorderModal(true);
+  };
+
+  const handlePreorderSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const response = await preordersAPI.create({
+        productId: selectedProduct.id,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        source: window.location.pathname
+      });
+      alert(`Pre-order submitted successfully! Your reference ID is ${response.referenceId}. We'll be in touch soon.`);
+      setShowPreorderModal(false);
+      setFormData({ name: '', email: '', phone: '' });
+    } catch (error) {
+      alert(error.response?.data?.error || "Failed to submit pre-order. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div style={styles.wrapper}>
       {/* Title Section */}
@@ -113,7 +145,7 @@ export default function ProductGrid({ onShopClick }) {
               </div>
 
               {/* Add to Cart Button */}
-              <button style={styles.addToCartBtn} onClick={onShopClick} className="goat-add-btn">
+              <button style={styles.addToCartBtn} onClick={() => handleAddToCart(prod)} className="goat-add-btn">
                 ADD TO CART
               </button>
 
@@ -121,9 +153,101 @@ export default function ProductGrid({ onShopClick }) {
           </motion.div>
         ))}
       </div>
+
+      {showPreorderModal && (
+        <div style={modalStyles.overlay}>
+          <div style={modalStyles.modal}>
+            <button style={modalStyles.closeBtn} onClick={() => setShowPreorderModal(false)}>×</button>
+            <h3 style={modalStyles.title}>Thank You for Your Interest</h3>
+            <p style={modalStyles.message}>
+              Due to exceptional demand, we are currently pausing immediate shipments to ensure our quality standards remain uncompromised. You can still secure your {selectedProduct?.name || 'selection'} by joining our pre-order waitlist.
+            </p>
+            <form style={modalStyles.form} onSubmit={handlePreorderSubmit}>
+              <input type="text" placeholder="Full Name" required style={modalStyles.input} value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+              <input type="email" placeholder="Email Address" required style={modalStyles.input} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+              <input type="tel" placeholder="Phone Number" required style={modalStyles.input} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+              <button type="submit" style={modalStyles.submitBtn} disabled={isSubmitting}>
+                {isSubmitting ? 'Submitting...' : 'Submit Pre-order'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+const modalStyles = {
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 9999,
+  },
+  modal: {
+    backgroundColor: '#FAF7F2',
+    padding: '2.5rem',
+    borderRadius: '16px',
+    maxWidth: '500px',
+    width: '90%',
+    position: 'relative',
+    boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+    fontFamily: 'var(--font-sans)',
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: '0.5rem',
+    right: '1.5rem',
+    background: 'none',
+    border: 'none',
+    fontSize: '2rem',
+    cursor: 'pointer',
+    color: '#1A1A1A',
+  },
+  title: {
+    fontSize: '1.5rem',
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: '1rem',
+  },
+  message: {
+    fontSize: '1rem',
+    lineHeight: '1.6',
+    color: '#4A3E38',
+    marginBottom: '2rem',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+  },
+  input: {
+    padding: '0.8rem 1rem',
+    borderRadius: '8px',
+    border: '1px solid #D1C7BD',
+    fontSize: '1rem',
+    fontFamily: 'inherit',
+    backgroundColor: '#FFF',
+  },
+  submitBtn: {
+    marginTop: '0.5rem',
+    padding: '1rem',
+    borderRadius: '8px',
+    border: 'none',
+    backgroundColor: '#FDB827',
+    color: '#1A1A1A',
+    fontWeight: '800',
+    fontSize: '1rem',
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
+  }
+};
 
 const styles = {
   wrapper: {
@@ -148,12 +272,12 @@ const styles = {
   },
   card: {
     backgroundColor: '#FFFFFF',
-    border: '1px solid', // Color overridden inline
+    border: '4px solid #111',
     borderRadius: '16px',
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    boxShadow: '0px 8px 24px rgba(0,0,0,0.04)',
+    boxShadow: '10px 10px 0px #111',
   },
   imageBox: {
     width: '100%',

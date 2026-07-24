@@ -129,19 +129,33 @@ export const ordersAPI = {
 // Promos API
 export const promosAPI = {
   getAll: () => apiFetch('/promos'),
-  validate: (code) => apiFetch('/promos/validate', {
+  apply: (code) => apiFetch('/promos/apply', {
     method: 'POST',
     body: JSON.stringify({ code }),
   }),
-  create: (promoData) => apiFetch('/promos', {
+  create: (data) => apiFetch('/promos', {
     method: 'POST',
-    body: JSON.stringify(promoData),
+    body: JSON.stringify(data),
   }),
-  update: (id, promoData) => apiFetch(`/promos/${id}`, {
+  update: (id, data) => apiFetch(`/promos/${id}`, {
     method: 'PUT',
-    body: JSON.stringify(promoData),
+    body: JSON.stringify(data),
   }),
   delete: (id) => apiFetch(`/promos/${id}`, { method: 'DELETE' }),
+};
+
+// Pre-Orders API
+export const preordersAPI = {
+  create: (data) => apiFetch('/preorders', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+  getAll: () => apiFetch('/preorders'),
+  updateStatus: (id, status) => apiFetch(`/preorders/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ status }),
+  }),
+  delete: (id) => apiFetch(`/preorders/${id}`, { method: 'DELETE' }),
 };
 
 // Users API
@@ -166,6 +180,7 @@ export const usersAPI = {
 export const adminAPI = {
   getStats: () => apiFetch('/admin/stats'),
   getChart: (period = '7d') => apiFetch(`/admin/chart?period=${period}`),
+  getEmailStats: () => apiFetch('/admin/emails'),
 };
 
 // Cart API

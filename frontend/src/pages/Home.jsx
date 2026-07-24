@@ -7,6 +7,7 @@ import WhyMovitea from '../components/Home/WhyMovitea';
 import ComboPackShowcase from '../components/Home/ComboPackShowcase';
 import Reviews from '../components/Home/Reviews';
 import FAQ from '../components/Home/FAQ';
+import BYOBBanner from '../components/Home/BYOBBanner';
 
 export default function Home({ setSelectedProduct }) {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function Home({ setSelectedProduct }) {
     <main>
       <Hero onShopClick={handleShopRedirect} />
       <ProductGrid onShopClick={handleShopRedirect} />
+      <BYOBBanner />
       <WhyMovitea />
       <ComboPackShowcase onShopClick={handleShopRedirect} />
       <Reviews />

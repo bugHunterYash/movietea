@@ -4,28 +4,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const CAMPAIGN_SLIDES = [
   {
-    id: 1,
-    image: "/images/loader1.webp"
-  },
-  {
-    id: 2,
-    image: "/images/loader2.webp"
-  },
-  {
     id: 3,
     image: "/images/loader3.webp"
-  },
-  {
-    id: 4,
-    image: "/images/loader4.webp"
-  },
-  {
-    id: 5,
-    image: "/images/loader5.webp"
-  },
-  {
-    id: 6,
-    image: "/images/loader6.webp"
   },
   {
     id: 7,
@@ -44,11 +24,11 @@ const CAMPAIGN_SLIDES = [
 export default function Hero({ onShopClick }) {
   const [current, setCurrent] = useState(0);
 
-  // Auto-rotate every 3 seconds
+  // Auto-rotate every 4 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % CAMPAIGN_SLIDES.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(timer);
   }, []);
 
@@ -77,7 +57,7 @@ export default function Hero({ onShopClick }) {
         
         {/* Hidden Spacer Image to dictate container height dynamically based on aspect ratio */}
         <img 
-          src={CAMPAIGN_SLIDES[0].image} 
+          src={CAMPAIGN_SLIDES[current].image} 
           alt="spacer" 
           style={{ width: '100%', height: 'auto', visibility: 'hidden', display: 'block' }} 
         />
@@ -86,10 +66,10 @@ export default function Hero({ onShopClick }) {
         <AnimatePresence initial={false}>
           <motion.div
             key={current}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.4, ease: "easeInOut" }}
+            initial={{ opacity: 0, zIndex: 2 }}
+            animate={{ opacity: 1, zIndex: 2 }}
+            exit={{ opacity: 0.99, zIndex: 1 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             style={styles.slideContainer}
           >
             {/* Background Image */}
@@ -137,7 +117,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    marginTop: '110px',
+    marginTop: '135px',
   },
   heroSection: {
     width: '100%',

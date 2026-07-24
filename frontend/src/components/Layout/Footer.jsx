@@ -29,7 +29,6 @@ export default function Footer() {
               <button onClick={() => handleNavClick('/')} style={styles.footerLink}>Home</button>
               <button onClick={() => handleNavClick('/about')} style={styles.footerLink}>About Us</button>
               <button onClick={() => handleNavClick('/shop')} style={styles.footerLink}>Shop Tea</button>
-              <button onClick={() => handleNavClick('/gift-collection')} style={styles.footerLink}>Gift Collection</button>
             </div>
           </div>
 
@@ -58,9 +57,10 @@ export default function Footer() {
         <div style={styles.bottomRow}>
           <p style={styles.copyText}>&copy; {currentYear} MOVITEA. All Rights Reserved.</p>
           <div style={styles.socials}>
-            <a href="#instagram" style={styles.socialLink}>Instagram</a>
-            <a href="#pinterest" style={styles.socialLink}>Pinterest</a>
-            <a href="#twitter" style={styles.socialLink}>Twitter</a>
+            <a href="https://www.instagram.com/movitea_" target="_blank" rel="noopener noreferrer" style={styles.socialLink}>Instagram</a>
+            <a href="https://x.com/Movitea26" target="_blank" rel="noopener noreferrer" style={styles.socialLink}>X</a>
+            <a href="https://www.facebook.com/share/1BiKDUADFX/" target="_blank" rel="noopener noreferrer" style={styles.socialLink}>Facebook</a>
+            <a href="https://www.threads.com/@movitea_" target="_blank" rel="noopener noreferrer" style={styles.socialLink}>Threads</a>
           </div>
         </div>
       </div>

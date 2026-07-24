@@ -19,7 +19,7 @@ import {
   Sparkles,
   Info
 } from 'lucide-react';
-import { adminAPI, productsAPI, ordersAPI, promosAPI, usersAPI, cartAPI } from '../utils/api';
+import { adminAPI, productsAPI, ordersAPI, promosAPI, usersAPI, cartAPI, preordersAPI } from '../utils/api';
 
 export default function Admin({ user }) {
   const navigate = useNavigate();
@@ -38,7 +38,9 @@ export default function Admin({ user }) {
   const [orders, setOrders] = useState([]);
   const [promos, setPromos] = useState([]);
   const [usersList, setUsersList] = useState([]);
+  const [preOrders, setPreOrders] = useState([]);
   const [stats, setStats] = useState(null);
+  const [emailStats, setEmailStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Modal / Form States
@@ -54,7 +56,9 @@ export default function Admin({ user }) {
 
   // Check if user is admin
   useEffect(() => {
-    if (user && user.role !== 'ADMIN') {
+    if (!user) {
+      navigate('/login');
+    } else if (user.role !== 'ADMIN') {
       navigate('/');
     }
   }, [user, navigate]);
@@ -69,19 +73,23 @@ export default function Admin({ user }) {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const [productsData, ordersData, promosData, usersData, statsData] = await Promise.all([
+      const [productsData, ordersData, promosData, usersData, preOrdersData, statsData, emailStatsData] = await Promise.all([
         productsAPI.getAdmin().catch(() => []),
         ordersAPI.getAll().catch(() => []),
         promosAPI.getAll().catch(() => []),
         usersAPI.getAll().catch(() => []),
-        adminAPI.getStats().catch(() => null)
+        preordersAPI.getAll().catch(() => []),
+        adminAPI.getStats().catch(() => null),
+        adminAPI.getEmailStats().catch(() => null)
       ]);
 
       setProducts(productsData);
       setOrders(ordersData);
       setPromos(promosData);
       setUsersList(usersData);
+      setPreOrders(preOrdersData);
       setStats(statsData);
+      setEmailStats(emailStatsData);
     } catch (error) {
       console.error('Failed to fetch admin data:', error);
     } finally {
@@ -99,6 +107,10 @@ export default function Admin({ user }) {
     ? 'promos' 
     : path.includes('/users')
     ? 'users'
+    : path.includes('/preorders')
+    ? 'preorders'
+    : path.includes('/emails')
+    ? 'emails'
     : 'dashboard';
 
   // --- PRODUCT CRUD ---
@@ -747,6 +759,163 @@ export default function Admin({ user }) {
           </div>
         );
 
+      case 'preorders':
+        return (
+          <div style={styles.sectionContainer}>
+            <div style={styles.sectionHeader}>
+              <h2 style={styles.sectionTitle}>Pre-Order Requests</h2>
+              <span style={styles.sectionSubtitle}>Manage customer waitlist and pre-orders</span>
+            </div>
+
+            <div style={styles.adminCardFull}>
+              <h3 style={styles.cardHeader}>All Pre-Orders</h3>
+              <div style={styles.tableWrapper}>
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={styles.th}>Ref ID</th>
+                      <th style={styles.th}>Customer</th>
+                      <th style={styles.th}>Contact</th>
+                      <th style={styles.th}>Product</th>
+                      <th style={styles.th}>Status</th>
+                      <th style={styles.th}>Date</th>
+                      <th style={styles.th}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {preOrders.map(p => (
+                      <tr key={p.id} style={styles.tr}>
+                        <td style={styles.td}>
+                          <span style={{...styles.badge, backgroundColor: '#E8DDBF', color: '#8A7A6B'}}>{p.referenceId}</span>
+                        </td>
+                        <td style={styles.td}>
+                          <div style={{ fontWeight: '600' }}>{p.name}</div>
+                        </td>
+                        <td style={styles.td}>
+                          <div>{p.email}</div>
+                          <div style={{ fontSize: '0.8rem', color: '#666' }}>{p.phone}</div>
+                        </td>
+                        <td style={styles.td}>{p.product?.name || 'Unknown'}</td>
+                        <td style={styles.td}>
+                          <select
+                            value={p.status}
+                            onChange={async (e) => {
+                              try {
+                                await preordersAPI.updateStatus(p.id, e.target.value);
+                                const updated = await preordersAPI.getAll();
+                                setPreOrders(updated);
+                              } catch(err) {
+                                alert('Failed to update status');
+                              }
+                            }}
+                            style={styles.tableSelect}
+                          >
+                            <option value="NEW">New</option>
+                            <option value="CONTACTED">Contacted</option>
+                            <option value="INTERESTED">Interested</option>
+                            <option value="PAID">Paid</option>
+                            <option value="FULFILLED">Fulfilled</option>
+                            <option value="CANCELLED">Cancelled</option>
+                          </select>
+                        </td>
+                        <td style={styles.td}>{new Date(p.createdAt).toLocaleDateString()}</td>
+                        <td style={styles.td}>
+                          <button
+                            onClick={async () => {
+                              if (confirm('Are you sure you want to delete this pre-order?')) {
+                                try {
+                                  await preordersAPI.delete(p.id);
+                                  const updated = await preordersAPI.getAll();
+                                  setPreOrders(updated);
+                                } catch(err) {
+                                  alert('Failed to delete pre-order');
+                                }
+                              }
+                            }}
+                            style={styles.actionBtnDelete}
+                            title="Delete"
+                          >
+                            ×
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'emails':
+        return (
+          <div style={styles.sectionContainer}>
+            <div style={styles.sectionHeader}>
+              <h2 style={styles.sectionTitle}>Email Analytics</h2>
+              <span style={styles.sectionSubtitle}>Monitor deliverability and marketing performance</span>
+            </div>
+
+            {emailStats && (
+              <>
+                <div style={styles.statsGrid}>
+                  <div style={styles.statCard}>
+                    <div style={styles.statLabel}>Total Sent</div>
+                    <div style={styles.statValue}>{emailStats.stats.totalSent}</div>
+                  </div>
+                  <div style={styles.statCard}>
+                    <div style={styles.statLabel}>Open Rate</div>
+                    <div style={styles.statValue}>{emailStats.stats.openRate}</div>
+                  </div>
+                  <div style={styles.statCard}>
+                    <div style={styles.statLabel}>CTR</div>
+                    <div style={styles.statValue}>{emailStats.stats.ctr}</div>
+                  </div>
+                  <div style={styles.statCard}>
+                    <div style={styles.statLabel}>Bounce Rate</div>
+                    <div style={styles.statValue}>{emailStats.stats.bounceRate}</div>
+                  </div>
+                </div>
+
+                <div style={styles.adminCardFull}>
+                  <h3 style={styles.cardHeader}>Recent Emails</h3>
+                  <div style={styles.tableWrapper}>
+                    <table style={styles.table}>
+                      <thead>
+                        <tr>
+                          <th style={styles.th}>Template</th>
+                          <th style={styles.th}>Recipient</th>
+                          <th style={styles.th}>Subject</th>
+                          <th style={styles.th}>Status</th>
+                          <th style={styles.th}>Sent Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {emailStats.logs.map(log => (
+                          <tr key={log.id} style={styles.tr}>
+                            <td style={styles.td}><strong>{log.template}</strong></td>
+                            <td style={styles.td}>{log.recipient}</td>
+                            <td style={styles.td}>{log.subject}</td>
+                            <td style={styles.td}>
+                              <span style={{
+                                ...styles.badge,
+                                backgroundColor: log.status === 'DELIVERED' || log.status === 'OPENED' || log.status === 'CLICKED' ? '#D4EDDA' : log.status === 'BOUNCED' || log.status === 'FAILED' ? '#F8D7DA' : '#FFF3CD',
+                                color: log.status === 'DELIVERED' || log.status === 'OPENED' || log.status === 'CLICKED' ? '#155724' : log.status === 'BOUNCED' || log.status === 'FAILED' ? '#721C24' : '#856404'
+                              }}>
+                                {log.status}
+                              </span>
+                            </td>
+                            <td style={styles.td}>{new Date(log.createdAt).toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        );
+
       case 'dashboard':
       default:
         return (
@@ -754,6 +923,24 @@ export default function Admin({ user }) {
             <div style={styles.sectionHeader}>
               <h2 style={styles.sectionTitle}>Performance Overview</h2>
               <span style={styles.sectionSubtitle}>MOVITEA Brand operations stats</span>
+            </div>
+
+            {/* Pre-Order Summary */}
+            <div style={{...styles.adminCardFull, marginBottom: '2rem'}}>
+              <h3 style={styles.cardHeader}>Pre-Order Summary by Product</h3>
+              <div style={styles.statsGrid}>
+                {Object.entries(preOrders.reduce((acc, p) => {
+                  const name = p.product?.name || 'Unknown';
+                  acc[name] = (acc[name] || 0) + 1;
+                  return acc;
+                }, {})).map(([name, count]) => (
+                  <div key={name} style={styles.statCard}>
+                    <span style={styles.statLabel}>{name}</span>
+                    <span style={{...styles.statVal, color: 'var(--primary-color)'}}>{count}</span>
+                  </div>
+                ))}
+                {preOrders.length === 0 && <p style={{color: '#8A7A6B'}}>No pre-orders yet.</p>}
+              </div>
             </div>
 
             {/* Statistics Cards */}
@@ -900,6 +1087,28 @@ export default function Admin({ user }) {
             }}
           >
             <Users size={18} /> Users
+          </button>
+
+          <button 
+            onClick={() => navigate('/admin/emails')} 
+            style={{
+              ...styles.navBtn,
+              backgroundColor: currentTab === 'emails' ? 'var(--cream-color)' : 'transparent',
+              color: currentTab === 'emails' ? 'var(--primary-color)' : 'var(--dark-color)',
+            }}
+          >
+            <Mail size={18} /> Email Analytics
+          </button>
+
+          <button 
+            onClick={() => navigate('/admin/preorders')} 
+            style={{
+              ...styles.navBtn,
+              backgroundColor: currentTab === 'preorders' ? 'var(--cream-color)' : 'transparent',
+              color: currentTab === 'preorders' ? 'var(--primary-color)' : 'var(--dark-color)',
+            }}
+          >
+            <Sparkles size={18} /> Pre-Orders
           </button>
         </nav>
 

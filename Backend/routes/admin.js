@@ -155,4 +155,42 @@ router.get('/chart', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
+// Get email logs and analytics
+router.get('/emails', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const totalSent = await prisma.emailLog.count();
+    
+    const deliveredCount = await prisma.emailLog.count({ where: { status: 'DELIVERED' } });
+    const openedCount = await prisma.emailLog.count({ where: { status: 'OPENED' } });
+    const clickedCount = await prisma.emailLog.count({ where: { status: 'CLICKED' } });
+    const bouncedCount = await prisma.emailLog.count({ where: { status: 'BOUNCED' } });
+    const failedCount = await prisma.emailLog.count({ where: { status: 'FAILED' } });
+
+    // Assuming OPENED and CLICKED also mean it was delivered successfully
+    const actualDelivered = deliveredCount + openedCount + clickedCount;
+    
+    const stats = {
+      totalSent,
+      delivered: actualDelivered,
+      opened: openedCount + clickedCount,
+      clicks: clickedCount,
+      bounced: bouncedCount,
+      failed: failedCount,
+      openRate: totalSent > 0 ? ((openedCount + clickedCount) / totalSent * 100).toFixed(1) + '%' : '0%',
+      ctr: (openedCount + clickedCount) > 0 ? (clickedCount / (openedCount + clickedCount) * 100).toFixed(1) + '%' : '0%',
+      bounceRate: totalSent > 0 ? (bouncedCount / totalSent * 100).toFixed(1) + '%' : '0%'
+    };
+
+    const recentLogs = await prisma.emailLog.findMany({
+      take: 50,
+      orderBy: { createdAt: 'desc' }
+    });
+
+    res.json({ stats, logs: recentLogs });
+  } catch (error) {
+    console.error('Email logs error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;

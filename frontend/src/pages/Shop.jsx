@@ -363,14 +363,15 @@ const styles = {
     gap: '3rem',
   },
   card: {
-    border: '2px solid #D6B58A',
-    borderRadius: '24px',
+    border: '4px solid #111',
+    borderRadius: '16px',
     padding: '2.5rem 2rem',
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
     transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.04)',
+    boxShadow: '10px 10px 0px #111',
+    backgroundColor: '#FFF',
   },
   cardTag: {
     position: 'absolute',
@@ -383,7 +384,8 @@ const styles = {
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
     zIndex: 10,
-    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    border: '3px solid #111',
+    boxShadow: '4px 4px 0px #111',
   },
   imgContainer: {
     height: '280px',
@@ -502,8 +504,8 @@ styleSheetShop.innerText = `
   @keyframes spin { 100% { transform: rotate(360deg); } }
   
   .shop-product-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(214, 181, 138, 0.25) !important;
+    transform: translate(-4px, -4px);
+    box-shadow: 14px 14px 0px #111 !important;
   }
   
   .shop-product-card:hover .product-image-anim {
@@ -518,19 +520,19 @@ styleSheetShop.innerText = `
     font-size: 0.95rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    background: linear-gradient(135deg, var(--dark-color) 0%, #4A2E20 100%);
+    background: var(--dark-color);
     color: #FFF;
-    border: none;
-    border-radius: 12px;
+    border: 3px solid #111;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    box-shadow: 6px 6px 0px #111;
   }
   
   .premium-cta-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(43, 26, 18, 0.3);
-    background: linear-gradient(135deg, #4A2E20 0%, var(--dark-color) 100%);
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0px #111;
+    background: #4A2E20;
   }
 
   /* Responsive Padding */

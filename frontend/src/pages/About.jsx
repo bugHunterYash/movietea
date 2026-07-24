@@ -1,7 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 export default function About() {
+  const navigate = useNavigate();
+
   React.useEffect(() => {
     document.title = "Our Story | MOVITEA";
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -12,6 +15,24 @@ export default function About() {
   }, []);
   return (
     <div style={styles.page}>
+      {/* Decorative Neo-Brutalist Curve */}
+      <svg
+        style={{
+          position: 'absolute',
+          top: '5%',
+          left: 0,
+          width: '100%',
+          height: '40vh',
+          zIndex: 0,
+          pointerEvents: 'none',
+          opacity: 0.8,
+        }}
+        viewBox="0 0 1000 200"
+        preserveAspectRatio="none"
+      >
+        <path d="M0 100 Q 250 10, 500 100 T 1000 100" fill="none" stroke="#111" strokeWidth="8" />
+        <path d="M0 130 Q 250 40, 500 130 T 1000 130" fill="none" stroke="#111" strokeWidth="4" />
+      </svg>
       {/* Editorial Hero */}
       <section style={styles.heroSection}>
         <div className="container" style={styles.heroGrid}>
@@ -115,7 +136,10 @@ export default function About() {
           <h2 style={styles.sectionTitleCentred}>The Quality Narrative</h2>
           
           <div style={styles.ingredientsFlex}>
-            <div style={styles.ingredientBlock}>
+            <div 
+              style={{...styles.ingredientBlock, cursor: 'pointer'}} 
+              onClick={() => { navigate('/product/rose-10-sachets'); window.scrollTo(0, 0); }}
+            >
               <img src="/assets/rose.jpeg" alt="Rose Buds" style={styles.ingImg} />
               <div style={styles.ingText}>
                 <h3>Kannauj Rose Petals</h3>
@@ -125,7 +149,10 @@ export default function About() {
               </div>
             </div>
 
-            <div style={styles.ingredientBlock}>
+            <div 
+              style={{...styles.ingredientBlock, cursor: 'pointer'}} 
+              onClick={() => { navigate('/product/vanilla-10-sachets'); window.scrollTo(0, 0); }}
+            >
               <img src="/assets/vanilla.jpeg" alt="Vanilla Pods" style={styles.ingImg} />
               <div style={styles.ingText}>
                 <h3>Madagascar Bourbon Vanilla</h3>
@@ -135,12 +162,28 @@ export default function About() {
               </div>
             </div>
 
-            <div style={styles.ingredientBlock}>
+            <div 
+              style={{...styles.ingredientBlock, cursor: 'pointer'}} 
+              onClick={() => { navigate('/product/chocolate-10-sachets'); window.scrollTo(0, 0); }}
+            >
               <img src="/assets/chocolate.jpeg" alt="Cocoa Husks" style={styles.ingImg} />
               <div style={styles.ingText}>
                 <h3>Roasted Kerala Cacao</h3>
                 <p style={styles.ingDesc}>
                   Single-origin cacao husks roasted gently to release rich chocolate aromatics that fuse perfectly with robust Assam black tea.
+                </p>
+              </div>
+            </div>
+
+            <div 
+              style={{...styles.ingredientBlock, cursor: 'pointer'}} 
+              onClick={() => { navigate('/product/butterscotch-10-sachets'); window.scrollTo(0, 0); }}
+            >
+              <img src="/assets/butterscotch.jpeg" alt="Toasted Butterscotch" style={styles.ingImg} />
+              <div style={styles.ingText}>
+                <h3>Toasted Butterscotch</h3>
+                <p style={styles.ingDesc}>
+                  Indulgent notes of toasted sugar, browned butter, and rich caramel, creating a comforting, dessert-like experience in every cup.
                 </p>
               </div>
             </div>
@@ -189,6 +232,8 @@ const styles = {
   page: {
     paddingTop: 'var(--header-height)',
     backgroundColor: '#FAF7F2',
+    position: 'relative',
+    overflow: 'hidden',
   },
   heroSection: {
     padding: '8rem 0 6rem',
@@ -262,7 +307,10 @@ const styles = {
     width: '100%',
     maxWidth: '380px',
     objectFit: 'contain',
-    filter: 'drop-shadow(0 20px 40px rgba(43,26,18,0.1))',
+    border: '4px solid #111',
+    boxShadow: '10px 10px 0px #111',
+    backgroundColor: '#FFF',
+    padding: '1rem',
   },
   heritageSection: {
     padding: '8rem 0',
@@ -321,7 +369,9 @@ const styles = {
   founderImageCol: {
     height: '520px',
     overflow: 'hidden',
-    border: '1px solid var(--border-color)',
+    border: '4px solid #111',
+    boxShadow: '10px 10px 0px #111',
+    backgroundColor: '#FFF',
   },
   founderImg: {
     width: '100%',
@@ -382,14 +432,19 @@ const styles = {
     gridTemplateColumns: '320px 1fr',
     gap: '4rem',
     alignItems: 'center',
-    paddingBottom: '4rem',
-    borderBottom: '1px solid rgba(43,26,18,0.06)',
+    padding: '3rem',
+    border: '4px solid #111',
+    boxShadow: '12px 12px 0px #111',
+    backgroundColor: '#FAF7F2',
   },
   ingImg: {
     width: '100%',
     height: '240px',
-    objectFit: 'cover',
-    border: '1px solid var(--border-color)',
+    objectFit: 'contain',
+    border: '4px solid #111',
+    boxShadow: '6px 6px 0px #111',
+    backgroundColor: '#FFF',
+    padding: '1rem',
   },
   ingText: {
     display: 'flex',
@@ -422,6 +477,10 @@ const styles = {
     gridTemplateColumns: '80px 1fr',
     gap: '2.5rem',
     alignItems: 'flex-start',
+    padding: '2.5rem',
+    border: '4px solid #111',
+    boxShadow: '10px 10px 0px #111',
+    backgroundColor: '#FFF',
   },
   stepNumber: {
     fontSize: '2.5rem',
