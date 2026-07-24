@@ -145,7 +145,7 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
               <button
                 onClick={() => navigate('/login')}
                 style={styles.loginBtn}
-                className="auth-section"
+                className="auth-login-btn"
               >
                 <User size={16} strokeWidth={1.5} />
                 <span className="login-btn-text">Sign In</span>
@@ -158,19 +158,21 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
             {cartCount > 0 && <span style={styles.cartBadge}>{cartCount}</span>}
           </button>
 
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            style={styles.mobileMenuBtn}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <X size={24} strokeWidth={1.5} color="var(--dark-color)" />
-            ) : (
-              <Menu size={24} strokeWidth={1.5} color="var(--dark-color)" />
-            )}
-          </button>
         </div>
+
+        {/* Mobile Menu Button - moved outside right-section for mobile reordering */}
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          style={styles.mobileMenuBtn}
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? (
+            <X size={24} strokeWidth={1.5} color="var(--dark-color)" />
+          ) : (
+            <Menu size={24} strokeWidth={1.5} color="var(--dark-color)" />
+          )}
+        </button>
       </div>
 
       {/* Mobile Menu Overlay */}
@@ -502,9 +504,34 @@ if (typeof document !== 'undefined') {
       .desktop-nav {
         display: none !important;
       }
+      .mobile-menu-btn {
+        display: flex !important;
+        order: 1 !important;
+      }
+      .logo-container {
+        position: static !important;
+        transform: none !important;
+        order: 2 !important;
+        flex: 1 !important;
+        display: flex !important;
+        justify-content: center !important;
+        pointer-events: auto !important;
+      }
+      .logo-container img {
+        height: 55px !important;
+      }
+      .right-section {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        width: auto !important;
+        order: 3 !important;
+      }
+      .right-section > nav {
+        display: none !important;
+      }
       .auth-section {
         display: flex !important;
-        order: 4 !important;
       }
       .auth-section .login-btn-text {
         display: inline !important;
@@ -518,34 +545,6 @@ if (typeof document !== 'undefined') {
       .auth-section .user-avatar {
         width: 28px !important;
         height: 28px !important;
-      }
-      .logo-container {
-        position: static !important;
-        transform: none !important;
-        order: 2 !important;
-        flex: 1 !important;
-        display: flex !important;
-        justify-content: center !important;
-      }
-      .logo-container img {
-        height: 55px !important;
-      }
-      .mobile-menu-btn {
-        display: flex !important;
-        order: 1 !important;
-        margin-right: auto !important;
-      }
-      .cart-btn {
-        order: 3 !important;
-      }
-      .right-section {
-        display: flex !important;
-        align-items: center !important;
-        gap: 0.5rem !important;
-        width: 100% !important;
-      }
-      .right-section > nav {
-        display: none !important;
       }
       .announcement-bar {
         height: 28px !important;
