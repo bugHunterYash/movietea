@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://movietea-ver8.onrender.com/api';
+const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 // Get token from localStorage
 const getToken = () => localStorage.getItem('movitea_token');
@@ -201,6 +201,6 @@ export const cartAPI = {
 
 // Google OAuth
 export const getGoogleAuthURL = () => {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://movietea-ver8.onrender.com';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   return `${backendUrl}/api/auth/google`;
 };
