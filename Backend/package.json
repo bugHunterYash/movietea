@@ -4,7 +4,7 @@
   "description": "MOVITEA Backend API",
   "main": "server.js",
   "scripts": {
-    "start": "npx prisma db push && node server.js",
+    "start": "npx prisma db push && npx tsx server.js",
     "dev": "tsx watch server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
