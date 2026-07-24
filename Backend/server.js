@@ -84,6 +84,10 @@ app.use('/api/preorders', preorderRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/webhooks', webhookRoutes);
 
+app.get('/', (req, res) => {
+  res.status(200).send('MOVITEA API is live! Uptime checks pass.');
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'MOVITEA Backend is running' });
