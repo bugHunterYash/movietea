@@ -49,7 +49,7 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
       </div>
       <div className="container" style={styles.container}>
         {/* Left: Nav items */}
-        <nav style={styles.desktopNav}>
+        <nav className="desktop-nav" style={styles.desktopNav}>
           {navItems.slice(0, 3).map((item) => {
             const isActive = getIsActive(item);
             return (
@@ -70,13 +70,13 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
         </nav>
 
         {/* Center: Logo */}
-        <div style={styles.logoContainer} onClick={() => handleNavClick('home', '/')}>
+        <div className="logo-container" style={styles.logoContainer} onClick={() => handleNavClick('home', '/')}>
           <img src="/assets/logo.jfif" alt="MOVITEA" style={styles.logoImg} />
         </div>
 
         {/* Right: Nav items + Cart + Auth */}
         <div style={styles.rightSection}>
-          <nav style={styles.desktopNav}>
+          <nav className="desktop-nav" style={styles.desktopNav}>
             {navItems.slice(3).map((item) => {
               const isActive = getIsActive(item);
               return (
@@ -144,9 +144,10 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
               <button
                 onClick={() => navigate('/login')}
                 style={styles.loginBtn}
+                className="auth-section"
               >
                 <User size={16} strokeWidth={1.5} />
-                Sign In
+                <span className="login-btn-text">Sign In</span>
               </button>
             )}
           </div>
@@ -478,15 +479,43 @@ if (typeof document !== 'undefined') {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
+    @media (max-width: 1024px) {
+      header .logo-container img {
+        height: 80px !important;
+      }
+      header .auth-section .login-btn-text {
+        display: none;
+      }
+      header .desktop-nav {
+        gap: 1.5rem !important;
+      }
+      header .desktop-nav button {
+        font-size: 0.75rem !important;
+      }
+    }
     @media (max-width: 768px) {
-      header nav {
+      header .auth-section {
         display: none !important;
       }
       header button[aria-label="Toggle menu"] {
         display: block !important;
       }
-      header .auth-section {
+      header .logo-container img {
+        height: 60px !important;
+      }
+      header .desktop-nav {
+        gap: 1rem !important;
+      }
+      header .desktop-nav button {
+        font-size: 0.7rem !important;
+      }
+    }
+    @media (max-width: 480px) {
+      header nav {
         display: none !important;
+      }
+      header .logo-container img {
+        height: 50px !important;
       }
     }
     header img:hover {

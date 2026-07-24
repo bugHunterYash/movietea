@@ -35,10 +35,10 @@ export default function About() {
       </svg>
       {/* Editorial Hero */}
       <section style={styles.heroSection}>
-        <div className="container" style={styles.heroGrid}>
+        <div className="about-hero-grid container" style={styles.heroGrid}>
           <div style={styles.leftTitleCol}>
             <span style={styles.eyebrow}>THE ATELIER MANIFESTO</span>
-            <h1 style={styles.mainEditorialTitle}>Tea, Reimagined.</h1>
+            <h1 className="about-main-title" style={styles.mainEditorialTitle}>Tea, Reimagined.</h1>
             <p style={styles.storyQuote}>
               &ldquo;We do not make tea to quench thirst. We craft it to create a space of quiet pause in a loud world.&rdquo;
             </p>
@@ -70,10 +70,10 @@ export default function About() {
 
       {/* Heritage & Indian Tea Sourcing */}
       <section style={styles.heritageSection}>
-        <div className="container" style={styles.heritageGrid}>
+        <div className="about-heritage-grid container" style={styles.heritageGrid}>
           <div>
             <span style={styles.eyebrow}>TERROIR & HERITAGE</span>
-            <h2 style={styles.sectionTitle}>Sourced from the foothills of Darjeeling and estates of Assam.</h2>
+            <h2 className="about-section-title" style={styles.sectionTitle}>Sourced from the foothills of Darjeeling and estates of Assam.</h2>
           </div>
           <div style={styles.storyContent}>
             <p style={styles.storyParagraph}>
@@ -88,13 +88,13 @@ export default function About() {
 
       {/* Founder Story */}
       <section style={styles.founderSection}>
-        <div className="container" style={styles.founderGrid}>
-          <div style={styles.founderImageCol}>
+        <div className="about-founder-grid container" style={styles.founderGrid}>
+          <div className="founder-image" style={styles.founderImageCol}>
             <img src="/assets/review-1.jfif" alt="Vinit, Founder of MOVITEA" style={styles.founderImg} />
           </div>
           <div style={styles.founderTextCol}>
             <span style={styles.eyebrow}>A MESSAGE FROM THE FOUNDER</span>
-            <h2 style={styles.founderTitle}>The Ritual of Pauz</h2>
+            <h2 className="founder-title" style={styles.founderTitle}>The Ritual of Pauz</h2>
             
             <p style={styles.storyParagraph}>
               Tea has always been more than just a beverage. It is a moment of comfort, a pause in a busy day, and a ritual that brings people together.
@@ -133,16 +133,17 @@ export default function About() {
       <section style={styles.ingredientsSection}>
         <div className="container">
           <span style={styles.eyebrowCentred}>CURATED BOTANICALS</span>
-          <h2 style={styles.sectionTitleCentred}>The Quality Narrative</h2>
+          <h2 className="about-section-title-centred" style={styles.sectionTitleCentred}>The Quality Narrative</h2>
           
-          <div style={styles.ingredientsFlex}>
+          <div className="about-ingredients" style={styles.ingredientsFlex}>
             <div 
+              className="ingredient-item"
               style={{...styles.ingredientBlock, cursor: 'pointer'}} 
               onClick={() => { navigate('/product/rose-10-sachets'); window.scrollTo(0, 0); }}
             >
               <img src="/assets/rose.jpeg" alt="Rose Buds" style={styles.ingImg} />
-              <div style={styles.ingText}>
-                <h3>Kannauj Rose Petals</h3>
+              <div className="ingredient-text" style={styles.ingText}>
+                <h3 className="ingredient-title">Kannauj Rose Petals</h3>
                 <p style={styles.ingDesc}>
                   Hand-picked during the early spring bloom in Kannauj, famous for traditional Indian attar, providing a soft, aromatic floral perfume.
                 </p>
@@ -150,12 +151,13 @@ export default function About() {
             </div>
 
             <div 
+              className="ingredient-item"
               style={{...styles.ingredientBlock, cursor: 'pointer'}} 
               onClick={() => { navigate('/product/vanilla-10-sachets'); window.scrollTo(0, 0); }}
             >
               <img src="/assets/vanilla.jpeg" alt="Vanilla Pods" style={styles.ingImg} />
-              <div style={styles.ingText}>
-                <h3>Madagascar Bourbon Vanilla</h3>
+              <div className="ingredient-text" style={styles.ingText}>
+                <h3 className="ingredient-title">Madagascar Bourbon Vanilla</h3>
                 <p style={styles.ingDesc}>
                   Real cured vanilla pods providing a natural, round sweetness and silky texture without a single gram of added white sugar.
                 </p>
@@ -163,12 +165,13 @@ export default function About() {
             </div>
 
             <div 
+              className="ingredient-item"
               style={{...styles.ingredientBlock, cursor: 'pointer'}} 
               onClick={() => { navigate('/product/chocolate-10-sachets'); window.scrollTo(0, 0); }}
             >
               <img src="/assets/chocolate.jpeg" alt="Cocoa Husks" style={styles.ingImg} />
-              <div style={styles.ingText}>
-                <h3>Roasted Kerala Cacao</h3>
+              <div className="ingredient-text" style={styles.ingText}>
+                <h3 className="ingredient-title">Roasted Kerala Cacao</h3>
                 <p style={styles.ingDesc}>
                   Single-origin cacao husks roasted gently to release rich chocolate aromatics that fuse perfectly with robust Assam black tea.
                 </p>
@@ -176,12 +179,13 @@ export default function About() {
             </div>
 
             <div 
+              className="ingredient-item"
               style={{...styles.ingredientBlock, cursor: 'pointer'}} 
               onClick={() => { navigate('/product/butterscotch-10-sachets'); window.scrollTo(0, 0); }}
             >
               <img src="/assets/butterscotch.jpeg" alt="Toasted Butterscotch" style={styles.ingImg} />
-              <div style={styles.ingText}>
-                <h3>Toasted Butterscotch</h3>
+              <div className="ingredient-text" style={styles.ingText}>
+                <h3 className="ingredient-title">Toasted Butterscotch</h3>
                 <p style={styles.ingDesc}>
                   Indulgent notes of toasted sugar, browned butter, and rich caramel, creating a comforting, dessert-like experience in every cup.
                 </p>
@@ -195,27 +199,27 @@ export default function About() {
       <section style={styles.processSection}>
         <div className="container">
           <span style={styles.eyebrowCentred}>VISUAL CHRONOLOGY</span>
-          <h2 style={styles.sectionTitleCentred}>The Art of the Steep</h2>
+          <h2 className="about-section-title-centred" style={styles.sectionTitleCentred}>The Art of the Steep</h2>
           
-          <div style={styles.processSteps}>
-            <div style={styles.step}>
-              <span style={styles.stepNumber}>01</span>
+          <div className="about-steps" style={styles.processSteps}>
+            <div className="step-item" style={styles.step}>
+              <span className="step-number" style={styles.stepNumber}>01</span>
               <div>
                 <h4 style={styles.stepTitle}>Estate Harvesting</h4>
                 <p style={styles.stepDesc}>Leaves are plucked by hand at sunrise during prime flushing periods to capture maximum cellular oil concentration.</p>
               </div>
             </div>
             
-            <div style={styles.step}>
-              <span style={styles.stepNumber}>02</span>
+            <div className="step-item" style={styles.step}>
+              <span className="step-number" style={styles.stepNumber}>02</span>
               <div>
                 <h4 style={styles.stepTitle}>Botanical Distillation</h4>
                 <p style={styles.stepDesc}>Rose, vanilla, and spice elements undergo low-temperature steam extraction to preserve delicate aromatic molecules.</p>
               </div>
             </div>
 
-            <div style={styles.step}>
-              <span style={styles.stepNumber}>03</span>
+            <div className="step-item" style={styles.step}>
+              <span className="step-number" style={styles.stepNumber}>03</span>
               <div>
                 <h4 style={styles.stepTitle}>Micro-Encapsulation</h4>
                 <p style={styles.stepDesc}>The natural extracts are blended directly into the tea particles, enabling them to dissolve instantly in hot water without residues.</p>
@@ -508,28 +512,92 @@ const styles = {
 const styleSheetAboutRefined = document.createElement('style');
 styleSheetAboutRefined.innerText = `
   @media (max-width: 950px) {
-    div[style*="heroGrid"], div[style*="heritageGrid"], div[style*="founderGrid"] {
+    .about-hero-grid,
+    .about-heritage-grid,
+    .about-founder-grid {
       grid-template-columns: 1fr !important;
-      text-align: center !important;
-      gap: 3.5rem !important;
+      gap: 3rem !important;
     }
-    div[style*="leftTitleCol"], div[style*="founderTextCol"] {
+    .about-hero-grid {
+      text-align: center !important;
+      padding: 4rem 1rem !important;
+    }
+    .about-hero-grid > div {
       align-items: center !important;
     }
-    div[style*="ingredientBlock"] {
+    .about-heritage-grid {
+      padding: 4rem 1rem !important;
+    }
+    .about-founder-grid {
+      padding: 4rem 1rem !important;
+    }
+    .about-main-title {
+      font-size: 4rem !important;
+    }
+    .about-section-title-centred {
+      font-size: 3rem !important;
+      margin-bottom: 3rem !important;
+    }
+    .about-ingredients .ingredient-item {
       grid-template-columns: 1fr !important;
       gap: 2rem !important;
       text-align: center !important;
+      padding: 2rem 1.5rem !important;
     }
-    div[style*="ingredientBlock"] img {
-      max-width: 320px;
+    .about-ingredients .ingredient-item img {
+      max-width: 280px;
       margin: 0 auto;
     }
-    h1[style*="mainEditorialTitle"] {
-      font-size: 4.2rem !important;
+    .about-ingredients .ingredient-text {
+      text-align: center !important;
     }
-    h2[style*="sectionTitleCentred"] {
-      font-size: 3rem !important;
+    .about-steps .step-item {
+      grid-template-columns: 1fr !important;
+      gap: 1.5rem !important;
+      text-align: center !important;
+      padding: 2rem 1.5rem !important;
+    }
+    .about-steps .step-number {
+      text-align: center !important;
+    }
+  }
+  @media (max-width: 600px) {
+    .about-main-title {
+      font-size: 2.8rem !important;
+    }
+    .about-section-title-centred {
+      font-size: 2.2rem !important;
+      margin-bottom: 2.5rem !important;
+    }
+    .about-hero-grid {
+      padding: 3rem 1rem !important;
+    }
+    .about-heritage-grid {
+      padding: 3rem 1rem !important;
+    }
+    .about-founder-grid {
+      padding: 3rem 1rem !important;
+    }
+    .about-founder-grid .founder-image {
+      height: 300px !important;
+    }
+    .about-founder-grid .founder-title {
+      font-size: 2.5rem !important;
+    }
+    .about-ingredients .ingredient-item {
+      padding: 1.5rem 1rem !important;
+      box-shadow: 6px 6px 0px #111 !important;
+    }
+    .about-ingredients .ingredient-item img {
+      max-width: 220px;
+      height: 180px !important;
+    }
+    .about-ingredients .ingredient-title {
+      font-size: 1.5rem !important;
+    }
+    .about-steps .step-item {
+      padding: 1.5rem 1rem !important;
+      box-shadow: 6px 6px 0px #111 !important;
     }
   }
 `;
