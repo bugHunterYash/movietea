@@ -97,7 +97,7 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
           </nav>
 
           {/* User Auth Section */}
-          <div style={styles.authSection}>
+          <div className="auth-section" style={styles.authSection}>
             {user ? (
               <div style={styles.userMenuContainer}>
                 <button
@@ -111,7 +111,7 @@ export default function Header({ cartCount = 0, onOpenCart, setSelectedProduct, 
                   )}
                 </button>
                 {showUserMenu && (
-                  <div style={styles.userDropdown}>
+                  <div className="user-dropdown" style={styles.userDropdown}>
                     <div style={styles.userInfo}>
                       <span style={styles.userName}>{user.name}</span>
                       <span style={styles.userEmail}>{user.email}</span>
@@ -502,6 +502,10 @@ if (typeof document !== 'undefined') {
         display: none !important;
       }
       .auth-section {
+        display: flex !important;
+        order: 4 !important;
+      }
+      .auth-section .user-dropdown {
         display: none !important;
       }
       .logo-container {
@@ -522,12 +526,11 @@ if (typeof document !== 'undefined') {
       }
       .cart-btn {
         order: 3 !important;
-        margin-left: auto !important;
       }
       .right-section {
         display: flex !important;
         align-items: center !important;
-        gap: 0 !important;
+        gap: 0.5rem !important;
         width: 100% !important;
       }
       .right-section > nav {
