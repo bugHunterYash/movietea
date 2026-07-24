@@ -30,24 +30,25 @@ export default function WhyMovitea() {
   const navigate = useNavigate();
 
   return (
-    <section style={styles.section}>
+    <section className="why-section" style={styles.section}>
       <div className="container" style={styles.container}>
         
         {/* Intro Headline */}
         <div style={styles.intro}>
-          <h2 style={styles.headline}>
+          <h2 className="why-headline" style={styles.headline}>
             WHY<br/>
             <span style={styles.headlineHighlight}>MOVITEA!</span>
           </h2>
         </div>
 
         {/* 4-Column Grid */}
-        <div style={styles.gridContainer}>
+        <div className="why-grid" style={styles.gridContainer}>
           {BENEFITS.map((item, index) => {
             const Icon = item.icon;
             return (
               <motion.div
                 key={index}
+                className="why-card"
                 style={styles.card}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -179,20 +180,42 @@ if (typeof document !== 'undefined') {
   const styleSheet = document.createElement('style');
   styleSheet.innerText = `
     @media (max-width: 1024px) {
-      div[style*="gridTemplateColumns: repeat(4"] {
+      .why-grid {
         grid-template-columns: repeat(2, 1fr) !important;
-        row-gap: 4rem !important;
+        row-gap: 3rem !important;
+        gap: 2rem !important;
       }
-      h2[style*="font-size: 5rem"] {
+      .why-headline {
         font-size: 4rem !important;
       }
     }
-    @media (max-width: 600px) {
-      div[style*="gridTemplateColumns: repeat(2"] {
-        grid-template-columns: 1fr !important;
+    @media (max-width: 640px) {
+      .why-section {
+        padding: 3rem 0 4rem 0 !important;
       }
-      h2[style*="font-size: 5rem"], h2[style*="font-size: 4rem"] {
+      .why-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+        padding: 0 0.5rem !important;
+      }
+      .why-headline {
         font-size: 3rem !important;
+        -webkit-text-stroke: 2px #1A120E !important;
+        text-shadow: 4px 4px 0px #1A120E !important;
+      }
+      .why-headline span {
+        -webkit-text-stroke: 2px #1A120E !important;
+        text-shadow: 4px 4px 0px #1A120E !important;
+      }
+      .why-card {
+        padding: 1.5rem 1rem !important;
+        box-shadow: 6px 6px 0px #111 !important;
+      }
+      .why-card h3 {
+        font-size: 1.2rem !important;
+      }
+      .why-card p {
+        font-size: 0.85rem !important;
       }
     }
   `;
